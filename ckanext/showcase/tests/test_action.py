@@ -20,7 +20,7 @@ class TestShowcaseAction(object):
 
         showing_group = factories.Group(type='showing', user=showing_admin)
 
-        showing_list = helpers.call_action('showings_list_admin', context={'user': showing_admin})
+        showing_list = helpers.call_action('showings_list_admin', context={'user': showing_admin.get('name')})
         assert len(showing_list) == 1
         assert showing_list[0]['name'] == showing_group['name']
         assert showing_list[0]['type'] == 'showing'
@@ -38,7 +38,7 @@ class TestShowcaseAction(object):
         factories.Group(user=showing_admin)
         showing_group = factories.Group(type='showing', user=showing_admin)
 
-        showing_list = helpers.call_action('showings_list_admin', context={'user': showing_admin})
+        showing_list = helpers.call_action('showings_list_admin', context={'user': showing_admin.get('name')})
         assert len(showing_list) == 1
         assert showing_list[0]['name'] == showing_group['name']
         assert showing_list[0]['type'] == 'showing'

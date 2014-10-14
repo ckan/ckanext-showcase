@@ -19,7 +19,7 @@ def showings_list_admin(context, data_dict):
     toolkit.check_access('group_list_authz', context, data_dict)
 
     if new_authz.auth_is_loggedin_user():
-        user_id = new_authz.get_user_id_for_username(user.get('name'), allow_none=True)
+        user_id = new_authz.get_user_id_for_username(user, allow_none=True)
     else:
         return []
 
