@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 class ShowcaseDashboardController(UserController):
 
     def dashboard_showandtell(self):
-        '''Displays all Show & Tell items created by the user.'''
+        '''Display all Show & Tell items created by the user.'''
         context = {'for_view': True, 'user': c.user or c.author,
                    'auth_user_obj': c.userobj}
         data_dict = {'user_obj': c.userobj}

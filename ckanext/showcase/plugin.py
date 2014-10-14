@@ -4,6 +4,9 @@ import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.plugins.toolkit as toolkit
 
+from helpers import showandtell_available
+from logic.action import showings_list_admin
+
 log = logging.getLogger(__name__)
 
 
@@ -11,6 +14,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IGroupForm)
     plugins.implements(plugins.IRoutes, inherit=True)
+    plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IActions)
 
     # IConfigurer
 
@@ -30,3 +35,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
                     controller='ckanext.showcase.controller:ShowcaseDashboardController',
                     action='dashboard_showandtell', ckan_icon="bullhorn")
         return map
+
+    def get_helpers(self):
+        return {'showandtell_available': showandtell_available}
+
+    def get_actions(self):
+        return {'showings_list_admin': showings_list_admin}
