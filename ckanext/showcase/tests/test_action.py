@@ -1,3 +1,4 @@
+from nose.tools import assert_equals
 import mock
 
 import ckan.new_tests.helpers as helpers
@@ -21,9 +22,9 @@ class TestShowcaseAction(object):
         showing_group = factories.Group(type='showing', user=showing_admin)
 
         showing_list = helpers.call_action('showings_list_admin', context={'user': showing_admin.get('name')})
-        assert len(showing_list) == 1
-        assert showing_list[0]['name'] == showing_group['name']
-        assert showing_list[0]['type'] == 'showing'
+        assert_equals(len(showing_list), 1)
+        assert_equals(showing_list[0]['name'], showing_group['name'])
+        assert_equals(showing_list[0]['type'], 'showing')
 
     @mock.patch('ckan.new_authz.auth_is_loggedin_user')
     def test_showing_group_in_showing_list_for_user_excludes_normal_groups(self, mockauth):
@@ -39,6 +40,6 @@ class TestShowcaseAction(object):
         showing_group = factories.Group(type='showing', user=showing_admin)
 
         showing_list = helpers.call_action('showings_list_admin', context={'user': showing_admin.get('name')})
-        assert len(showing_list) == 1
-        assert showing_list[0]['name'] == showing_group['name']
-        assert showing_list[0]['type'] == 'showing'
+        assert_equals(len(showing_list), 1)
+        assert_equals(showing_list[0]['name'], showing_group['name'])
+        assert_equals(showing_list[0]['type'], 'showing')
