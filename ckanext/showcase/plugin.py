@@ -20,6 +20,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
     def group_types(self):
         return ['showcase']
 
+    def group_controller(self):
+        return 'ckanext.showcase.controller:ShowcaseController'
+
     def is_fallback(self):
         return False
 
