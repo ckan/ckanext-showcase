@@ -1,0 +1,25 @@
+{#
+
+Based on snippets/search_result_text.html
+
+#}
+{% if type == 'showcase' %}
+  {% set text_query = ungettext('{number} item found for "{query}"', '{number} items found for "{query}"', count) %}
+  {% set text_query_none = _('No items found for "{query}"') %}
+  {% set text_no_query = ungettext('{number} item found', '{number} items found', count) %}
+  {% set text_no_query_none = _('No items found') %}
+{%- endif -%}
+
+{% if query %}
+  {%- if count -%}
+    {{ text_query.format(number=h.localised_number(count), query=query) }}
+  {%- else -%}
+    {{ text_query_none.format(query=query) }}
+  {%- endif -%}
+{%- else -%}
+  {%- if count -%}
+    {{ text_no_query.format(number=h.localised_number(count)) }}
+  {%- else -%}
+    {{ text_no_query_none }}
+  {%- endif -%}
+{%- endif -%}
