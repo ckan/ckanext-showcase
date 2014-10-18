@@ -4,9 +4,6 @@ import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.plugins.toolkit as toolkit
 
-from helpers import showandtell_available
-from logic.action import showings_list_admin
-
 log = logging.getLogger(__name__)
 
 
@@ -14,10 +11,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IGroupForm)
     plugins.implements(plugins.IRoutes, inherit=True)
-    plugins.implements(plugins.ITemplateHelpers)
-    plugins.implements(plugins.IActions)
-
-    # IConfigurer
 
     def update_config(self, config_):
         toolkit.add_template_directory(config_, 'templates')
@@ -25,19 +18,20 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
         # toolkit.add_resource('fanstatic', 'showcase')
 
     def group_types(self):
-        return ["showing"]
+        return ['showcase']
 
     def is_fallback(self):
         return False
 
+    def index_template(self):
+        """
+        Returns a string representing the location of the template to be
+        rendered for the index page
+        """
+        return 'showcase/index.html'
+
     def before_map(self, map):
-        map.connect('user_dashboard_showandtell', '/dashboard/showandtell',
-                    controller='ckanext.showcase.controller:ShowcaseDashboardController',
-                    action='dashboard_showandtell', ckan_icon="bullhorn")
+        map.connect('showcase_index', '/showcase',
+                    controller='ckanext.showcase.controller:ShowcaseController',
+                    action='index')
         return map
-
-    def get_helpers(self):
-        return {'showandtell_available': showandtell_available}
-
-    def get_actions(self):
-        return {'showings_list_admin': showings_list_admin}
