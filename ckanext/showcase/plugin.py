@@ -37,4 +37,5 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
         map.connect('showcase_index', '/showcase',
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='index')
+        map.redirect('/showcases', '/showcase')
         return map
