@@ -2,10 +2,13 @@
 
 {% block subtitle %}{{ _('Showcase') }}{% endblock %}
 
+{% block page_primary_action %}
+{% endblock %}
+
 {% block breadcrumb_content %}
   <li class="active">{% link_for _('Showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='index' %}</li>
 {% endblock %}
 
 {% block groups_search_form %}
-  {% snippet 'snippets/showcase_search_form.html', type='showcase', query=c.q, sorting_selected=c.sort_by_selected, count=c.page.item_count, placeholder=_('Search Showcase items...'), show_empty=request.params, no_bottom_border=true if c.page.items %}
+  {% snippet 'snippets/showcase_search_form.html', type='showcase', query=c.q, sorting_selected=c.sort_by_selected, count=c.page.item_count, placeholder=_('Search Showcase...'), show_empty=request.params, no_bottom_border=true if c.page.items %}
 {% endblock %}
