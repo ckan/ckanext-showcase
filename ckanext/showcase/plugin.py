@@ -76,4 +76,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
             m.connect('showcase_activity', '/showcase/activity/{id}/{offset}',
                       action='activity', ckan_icon='time'),
             m.connect('showcase_read', '/showcase/{id}', action='read', ckan_icon='sitemap')
+
+        map.redirect('/showcases', '/showcase')
+        map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map
