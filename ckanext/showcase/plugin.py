@@ -38,9 +38,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
     def read_template(self):
         return 'showcase/read.html'
 
-    def about_template(self):
-        return 'showcase/about.html'
-
     # IRoutes
 
     def before_map(self, map):
@@ -64,14 +61,10 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
                           'admins',
                           'activity',
                       ])))
-            m.connect('showcase_about', '/showcase/about/{id}', action='about',
-                      ckan_icon='info-sign'),
             m.connect('showcase_edit', '/showcase/edit/{id}', action='edit',
                       ckan_icon='edit')
             m.connect('showcase_members', '/showcase/members/{id}', action='members',
                       ckan_icon='showcase'),
-            m.connect('showcase_activity', '/showcase/activity/{id}/{offset}',
-                      action='activity', ckan_icon='time'),
             m.connect('showcase_read', '/showcase/{id}', action='read', ckan_icon='sitemap')
 
         map.redirect('/showcases', '/showcase')

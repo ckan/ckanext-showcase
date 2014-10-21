@@ -4,23 +4,17 @@
 
 {% block primary_content_inner %}
   {% block groups_search_form %}
-    {% set facets = {
-      'fields': c.fields_grouped,
-      'search': c.search_facets,
-      'titles': c.facet_titles,
-      'translated_fields': c.translated_fields,
-      'remove_field': c.remove_field }
-    %}
-    {% set sorting = [
-      (_('Relevance'), 'score desc, metadata_modified desc'),
-      (_('Name Ascending'), 'title_string asc'),
-      (_('Name Descending'), 'title_string desc'),
-      (_('Last Modified'), 'metadata_modified desc'),
-      (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
-    %}
-    {% snippet 'snippets/search_form.html', type='dataset', query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, placeholder=_('Search datasets...'), show_empty=request.params, fields=c.fields %}
   {% endblock %}
+  <h1>{% block page_heading %}{{ c.group_dict.display_name }}{% endblock %}</h1>
+  {% block group_description %}
+    {% if c.group_dict.description %}
+      {{ h.render_markdown(c.group_dict.description) }}
+    {% endif %}
+  {% endblock %}
+
+
   {% block packages_list %}
+    <h2>Datasets used</h2>
     {% if c.page.items %}
       {{ h.snippet('snippets/package_list.html', packages=c.page.items) }}
     {% endif %}
