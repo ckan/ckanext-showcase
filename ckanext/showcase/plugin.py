@@ -38,9 +38,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
     def read_template(self):
         return 'showcase/read.html'
 
-    def activity_template(self):
-        return 'showcase/activity_stream.html'
-
     def about_template(self):
         return 'showcase/about.html'
 
