@@ -8,10 +8,12 @@ from routes.mapper import SubMapper
 
 log = logging.getLogger(__name__)
 
+DATASET_TYPE_NAME = 'showcase'
 
-class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
+
+class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
-    plugins.implements(plugins.IGroupForm)
+    plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IRoutes, inherit=True)
 
     # IConfigurer
@@ -21,51 +23,25 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultGroupForm):
         # toolkit.add_public_directory(config_, 'public')
         # toolkit.add_resource('fanstatic', 'showcase')
 
-    # IGroupForm
+    # IDatasetForm
 
-    def group_types(self):
-        return ['showcase']
-
-    def group_controller(self):
-        return 'ckanext.showcase.controller:ShowcaseController'
+    def package_types(self):
+        return [DATASET_TYPE_NAME]
 
     def is_fallback(self):
         return False
 
-    def index_template(self):
-        return 'showcase/index.html'
-
-    def read_template(self):
-        return 'showcase/read.html'
+    # def search_template(self):
+    #     return 'showcase/search.html'
 
     # IRoutes
 
     def before_map(self, map):
-        # These named routes are used for custom group forms which will use the
-        # names below based on the group.type ('group' is the default type)
+        # These named routes are used for custom dataset forms which will use the
+        # names below based on the dataset.type ('dataset' is the default type)
         with SubMapper(map, controller='ckanext.showcase.controller:ShowcaseController') as m:
-            m.connect('showcase_index', '/showcase', action='index',
+            m.connect('showcase_index', '/showcase', action='search',
                       highlight_actions='index search')
-            m.connect('showcase_list', '/showcase/list', action='list')
-            m.connect('showcase_new', '/showcase/new', action='new')
-            m.connect('showcase_action', '/showcase/{action}/{id}',
-                      requirements=dict(action='|'.join([
-                          'edit',
-                          'delete',
-                          'member_new',
-                          'member_delete',
-                          'history',
-                          'followers',
-                          'follow',
-                          'unfollow',
-                          'admins',
-                          'activity',
-                      ])))
-            m.connect('showcase_edit', '/showcase/edit/{id}', action='edit',
-                      ckan_icon='edit')
-            m.connect('showcase_members', '/showcase/members/{id}', action='members',
-                      ckan_icon='showcase'),
-            m.connect('showcase_read', '/showcase/{id}', action='read', ckan_icon='sitemap')
 
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
