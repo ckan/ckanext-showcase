@@ -1,0 +1,34 @@
+{% extends "package/search.html" %}
+{% import 'macros/form.html' as form %}
+
+{% block subtitle %}{{ _("Showcases") }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{ h.nav_link(_('Showcases'), controller='ckanext.showcase.controller:ShowcaseController', action='search', highlight_actions = 'new index') }}</li>
+{% endblock %}
+
+{% block page_primary_action %}
+  {% if h.check_access('package_create') %}
+    <div class="page_primary_action">
+      {% link_for _('Add Showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='new', class_='btn btn-primary', icon='plus-sign-alt' %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block form %}
+  {% set facets = {
+    'fields': c.fields_grouped,
+    'search': c.search_facets,
+    'titles': c.facet_titles,
+    'translated_fields': c.translated_fields,
+    'remove_field': c.remove_field }
+  %}
+  {% set sorting = [
+    (_('Relevance'), 'score desc, metadata_modified desc'),
+    (_('Name Ascending'), 'title_string asc'),
+    (_('Name Descending'), 'title_string desc'),
+    (_('Last Modified'), 'metadata_modified desc'),
+    (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
+  %}
+  {% snippet 'snippets/showcase_search_form.html', type='showcase', placeholder=_('Search showcases...'), query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, show_empty=request.params, error=c.query_error, fields=c.fields %}
+{% endblock %}

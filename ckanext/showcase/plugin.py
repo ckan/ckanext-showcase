@@ -31,8 +31,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def is_fallback(self):
         return False
 
-    # def search_template(self):
-    #     return 'showcase/search.html'
+    def search_template(self):
+        return 'showcase/search.html'
 
     # IRoutes
 
