@@ -13,6 +13,7 @@ class TestShowcaseIndex(helpers.FunctionalTestBase):
     def setup(self):
         super(TestShowcaseIndex, self).setup()
         # Clear the search index
+        # Remove this if #2024 gets merged
         search.clear()
 
     def test_loggedout_user_cannot_view_showcase(self):
