@@ -1,0 +1,22 @@
+{% extends "package/read_base.html" %}
+
+{% block subtitle %}{{ pkg.title or pkg.name }} - {{ _('Showcases') }}{% endblock %}
+
+{% block breadcrumb_content %}
+    {% set showcase = pkg.title or pkg.name %}
+    <li>{{ h.nav_link(_('Showcases'), controller='ckanext.showcase.controller:ShowcaseController', action='search', highlight_actions = 'new index') }}</li>
+    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), controller='ckanext.showcase.controller:ShowcaseController', action='read', id=pkg.name %}</li>
+{% endblock %}
+
+{% block content_action %}
+  {% if h.check_access('package_update', {'id':pkg.id }) %}
+    {% link_for _('Manage'), controller='package', action='edit', id=pkg.name, class_='btn', icon='wrench' %}
+  {% endif %}
+{% endblock %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon('showcase_read', _('Showcase'), id=pkg.name) }}
+  {# {{ h.build_nav_icon('related_list', _('Related'), id=pkg.name) }} #}
+{% endblock %}
+
+{% block package_license %}{% endblock %}
