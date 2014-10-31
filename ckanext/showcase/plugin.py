@@ -53,7 +53,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def get_auth_functions(self):
         return {
-            'ckanext_showcase_create': ckanext.showcase.logic.auth.create
+            'ckanext_showcase_create': ckanext.showcase.logic.auth.create,
+            'ckanext_showcase_update': ckanext.showcase.logic.auth.update
         }
 
     # IRoutes
@@ -67,7 +68,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             m.connect('add showcase', '/showcase/new', action='new')
             m.connect('showcase_read', '/showcase/{id}', action='read',
                       ckan_icon='sitemap')
-
+            m.connect('showcase_edit', '/showcase/edit/{id}', action='edit',
+                      ckan_icon='edit')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map

@@ -59,7 +59,8 @@ class TestShowcaseAuth(helpers.FunctionalTestBase):
 
         response = app.get("/showcase", status=200)
 
-        response.mustcontain(no="Add Showcase")
+        # test for new showcase link in response
+        response.mustcontain(no="/showcase/new")
 
     def test_auth_logged_in_user_cant_see_add_showcase_button(self):
         '''
@@ -72,7 +73,8 @@ class TestShowcaseAuth(helpers.FunctionalTestBase):
         response = app.get("/showcase", status=200,
                            extra_environ={'REMOTE_USER': str(user['name'])})
 
-        response.mustcontain(no="Add Showcase")
+        # test for new showcase link in response
+        response.mustcontain(no="/showcase/new")
 
     def test_auth_sysadmin_can_see_add_showcase_button(self):
         '''
@@ -85,61 +87,110 @@ class TestShowcaseAuth(helpers.FunctionalTestBase):
         response = app.get("/showcase", status=200,
                            extra_environ={'REMOTE_USER': str(user['name'])})
 
-        response.mustcontain("Add Showcase")
+        # test for new showcase link in response
+        response.mustcontain("/showcase/new")
 
-    # def test_auth_not_logged_in_user_cant_view_create_showcase(self):
-    #     '''
-    #     A not logged in user can't access the create showcase page.
-    #     '''
-    #     assert False
+    def test_auth_not_logged_in_user_cant_view_create_showcase(self):
+        '''
+        A not logged in user can't access the create showcase page.
+        '''
+        app = self._get_test_app()
+        app.get("/showcase/new", status=302)
 
-    # def test_auth_logged_in_user_cant_view_create_showcase_page(self):
-    #     '''
-    #     A logged in user can't access the create showcase page.
-    #     '''
-    #     assert False
+    def test_auth_logged_in_user_cant_view_create_showcase_page(self):
+        '''
+        A logged in user can't access the create showcase page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+        app.get("/showcase/new", status=401,
+                extra_environ={'REMOTE_USER': str(user['name'])})
 
-    # def test_auth_sysadmin_can_view_create_showcase_page(self):
-    #     '''
-    #     A sysadmin can access the create showcase page.
-    #     '''
-    #     assert False
+    def test_auth_sysadmin_can_view_create_showcase_page(self):
+        '''
+        A sysadmin can access the create showcase page.
+        '''
+        app = self._get_test_app()
+        user = factories.Sysadmin()
+        app.get("/showcase/new", status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})
 
-    # def test_auth_not_logged_in_user_cant_see_manage_button(self):
-    #     '''
-    #     A not logged in user can't see the Manage button on an individual
-    #     showcase details page.
-    #     '''
-    #     assert False
+    def test_auth_not_logged_in_user_cant_see_manage_button(self):
+        '''
+        A not logged in user can't see the Manage button on an individual
+        showcase details page.
+        '''
+        app = self._get_test_app()
 
-    # def test_auth_logged_in_user_can_see_manage_button(self):
-    #     '''
-    #     A logged in user can't see the Manage button on an individual showcase
-    #     details page.
-    #     '''
-    #     assert False
+        factories.Dataset(type='showcase', name='my-showcase')
 
-    # def test_auth_sysadmin_can_see_manage_button(self):
-    #     '''
-    #     A sysadmin can see the Manage button on an individual showcase details
-    #     page.
-    #     '''
-    #     assert False
+        response = app.get('/showcase/my-showcase', status=200)
 
-    # def test_auth_not_logged_in_user_cant_view_edit_showcase_page(self):
-    #     '''
-    #     A not logged in user can't access the showcase edit page.
-    #     '''
-    #     assert False
+        # test for url to edit page
+        response.mustcontain(no="/showcase/edit/my-showcase")
 
-    # def test_auth_logged_in_user_cant_view_edit_showcase_page(self):
-    #     '''
-    #     A logged in user can't access the showcase edit page.
-    #     '''
-    #     assert False
+    def test_auth_logged_in_user_can_see_manage_button(self):
+        '''
+        A logged in user can't see the Manage button on an individual showcase
+        details page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
 
-    # def test_auth_sysadmin_can_view_edit_showcase_page(self):
-    #     '''
-    #     A sysadmin can access the showcase edit page.
-    #     '''
-    #     assert False
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/showcase/my-showcase', status=200,
+                           extra_environ={'REMOTE_USER': str(user['name'])})
+
+        # test for url to edit page
+        response.mustcontain(no="/showcase/edit/my-showcase")
+
+    def test_auth_sysadmin_can_see_manage_button(self):
+        '''
+        A sysadmin can see the Manage button on an individual showcase details
+        page.
+        '''
+        app = self._get_test_app()
+        user = factories.Sysadmin()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/showcase/my-showcase', status=200,
+                           extra_environ={'REMOTE_USER': str(user['name'])})
+
+        # test for url to edit page
+        response.mustcontain("/showcase/edit/my-showcase")
+
+    def test_auth_not_logged_in_user_cant_view_edit_showcase_page(self):
+        '''
+        A not logged in user can't access the showcase edit page.
+        '''
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/edit/my-showcase', status=302)
+
+    def test_auth_logged_in_user_cant_view_edit_showcase_page(self):
+        '''
+        A logged in user can't access the showcase edit page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/edit/my-showcase', status=401,
+                extra_environ={'REMOTE_USER': str(user['name'])})
+
+    def test_auth_sysadmin_can_view_edit_showcase_page(self):
+        '''
+        A sysadmin can access the showcase edit page.
+        '''
+        app = self._get_test_app()
+        user = factories.Sysadmin()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/edit/my-showcase', status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})

@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block content_action %}
-  {% if h.check_access('package_update', {'id':pkg.id }) %}
-    {% link_for _('Manage'), controller='package', action='edit', id=pkg.name, class_='btn', icon='wrench' %}
+  {% if h.check_access('ckanext_showcase_update', {'id':pkg.id }) %}
+    {% link_for _('Manage'), controller='ckanext.showcase.controller:ShowcaseController', action='edit', id=pkg.name, class_='btn', icon='wrench' %}
   {% endif %}
 {% endblock %}
 
