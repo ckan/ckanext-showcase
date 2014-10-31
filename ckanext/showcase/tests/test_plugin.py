@@ -16,20 +16,6 @@ class TestShowcaseIndex(helpers.FunctionalTestBase):
         # Remove this if #2024 gets merged
         search.clear()
 
-    def test_loggedout_user_cannot_view_showcase(self):
-        '''A not logged in user can view the Showcases page.'''
-        app = self._get_test_app()
-        app.get("/showcase", status=200)
-
-    def test_loggedin_user_can_view_showcase(self):
-        '''
-        A logged in user can view the Showcases page.
-        '''
-        app = self._get_test_app()
-        user = factories.User()
-        app.get("/showcase", status=200,
-                extra_environ={'REMOTE_USER': str(user["name"])})
-
     def test_showcases_redirects_to_showcase(self):
         '''/showcases redirects to /showcase.'''
         app = self._get_test_app()
@@ -51,7 +37,8 @@ class TestShowcaseIndex(helpers.FunctionalTestBase):
         '''
         app = self._get_test_app()
 
-        factories.Dataset(type='showcase')
+        factories.Dataset(type='showcase', name='my-showcase')
 
         response = app.get("/showcase", status=200)
         response.mustcontain("1 showcase found")
+        response.mustcontain("my-showcase")
