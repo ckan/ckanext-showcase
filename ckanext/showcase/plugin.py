@@ -3,6 +3,7 @@ import logging
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.plugins.toolkit as toolkit
+from ckan.common import OrderedDict, _
 
 from routes.mapper import SubMapper
 
@@ -14,6 +15,7 @@ DATASET_TYPE_NAME = 'showcase'
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
+    plugins.implements(plugins.IFacets)
     plugins.implements(plugins.IRoutes, inherit=True)
 
     # IConfigurer
@@ -36,6 +38,13 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def read_template(self):
         return 'showcase/read.html'
+
+    # IFacets
+
+    def dataset_facets(self, facets_dict, package_type):
+        if package_type != DATASET_TYPE_NAME:
+            return facets_dict
+        return OrderedDict({'tags': _('Tags')})
 
     # IRoutes
 
