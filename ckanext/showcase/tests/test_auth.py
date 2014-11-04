@@ -1,15 +1,8 @@
-import ckan.lib.search as search
 import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
 
 class TestShowcaseAuth(helpers.FunctionalTestBase):
-
-    def setup(self):
-        super(TestShowcaseAuth, self).setup()
-        # Clear the search index
-        # Remove this if #2024 gets merged
-        search.clear()
 
     def test_auth_not_logged_in_user_can_view_showcase_index(self):
         '''A not logged in user can view the Showcases index.'''

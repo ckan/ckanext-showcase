@@ -1,6 +1,5 @@
 from nose import tools as nosetools
 
-import ckan.lib.search as search
 import ckan.new_tests.helpers as helpers
 import ckan.new_tests.factories as factories
 
@@ -9,12 +8,6 @@ log = logging.getLogger(__name__)
 
 
 class TestShowcaseIndex(helpers.FunctionalTestBase):
-
-    def setup(self):
-        super(TestShowcaseIndex, self).setup()
-        # Clear the search index
-        # Remove this if #2024 gets merged
-        search.clear()
 
     def test_showcases_redirects_to_showcase(self):
         '''/showcases redirects to /showcase.'''
