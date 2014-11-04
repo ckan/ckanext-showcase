@@ -17,7 +17,7 @@ DATASET_TYPE_NAME = 'showcase'
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
-    plugins.implements(plugins.IFacets)
+    plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
 
@@ -41,6 +41,12 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def read_template(self):
         return 'showcase/read.html'
+
+    def edit_template(self):
+        return 'showcase/edit.html'
+
+    def package_form(self):
+        return 'showcase/new_package_form.html'
 
     # IFacets
 

@@ -1,0 +1,40 @@
+{% extends "package/snippets/package_form.html" %}
+
+{% set form_style = c.form_style or c.action %}
+
+{% block basic_fields %}
+    {% snippet 'package/snippets/package_basic_fields.html', data=data, errors=errors, licenses=c.licenses, groups_available=c.groups_available %}
+{% endblock %}
+
+{% block metadata_fields %}
+    {% snippet 'package/snippets/package_metadata_fields.html', data=data, errors=errors %}
+{% endblock %}
+
+{% block stages %}
+  {% if form_style != 'edit' %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block save_button_text %}
+  {% if form_style != 'edit' %}
+    {{ super() }}
+  {% else %}
+    {{ _('Update Showcase') }}
+  {% endif %}
+{% endblock %}
+
+{% block cancel_button %}
+  {% if form_style != 'edit' %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block delete_button %}
+  {% if form_style == 'edit' and h.check_access('package_delete', {'id': c.pkg_dict.id}) %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block disclaimer %}
+{% endblock %}
