@@ -8,6 +8,8 @@ from ckan.common import OrderedDict, _
 from routes.mapper import SubMapper
 
 import ckanext.showcase.logic.auth
+import ckanext.showcase.logic.action.create
+import ckanext.showcase.logic.action.update
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +22,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IFacets, inherit=True)
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
+    plugins.implements(plugins.IActions)
 
     # IConfigurer
 
@@ -39,6 +42,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def search_template(self):
         return 'showcase/search.html'
 
+    def new_template(self):
+        return 'showcase/new.html'
+
     def read_template(self):
         return 'showcase/read.html'
 
@@ -47,6 +53,30 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def package_form(self):
         return 'showcase/new_package_form.html'
+
+    def create_package_schema(self):
+        schema = super(ShowcasePlugin, self).create_package_schema()
+        schema.update({
+            'image_url': [toolkit.get_validator('ignore_missing'),
+                          toolkit.get_converter('convert_to_extras')]
+        })
+        return schema
+
+    def update_package_schema(self):
+        schema = super(ShowcasePlugin, self).update_package_schema()
+        schema.update({
+            'image_url': [toolkit.get_validator('ignore_missing'),
+                          toolkit.get_converter('convert_to_extras')]
+        })
+        return schema
+
+    def show_package_schema(self):
+        schema = super(ShowcasePlugin, self).show_package_schema()
+        schema.update({
+            'image_url': [toolkit.get_validator('ignore_missing'),
+                          toolkit.get_converter('convert_from_extras')]
+        })
+        return schema
 
     # IFacets
 
@@ -79,3 +109,12 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map
+
+    # IActions
+
+    def get_actions(self):
+        action_functions = {
+            'ckanext_showcase_create': ckanext.showcase.logic.action.create.showcase_create,
+            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update
+        }
+        return action_functions
