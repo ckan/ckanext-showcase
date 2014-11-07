@@ -10,6 +10,7 @@ from routes.mapper import SubMapper
 import ckanext.showcase.logic.auth
 import ckanext.showcase.logic.action.create
 import ckanext.showcase.logic.action.update
+import ckanext.showcase.logic.action.get
 
 log = logging.getLogger(__name__)
 
@@ -115,6 +116,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def get_actions(self):
         action_functions = {
             'ckanext_showcase_create': ckanext.showcase.logic.action.create.showcase_create,
-            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update
+            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update,
+            'ckanext_showcase_show': ckanext.showcase.logic.action.get.showcase_show
         }
         return action_functions
