@@ -2,19 +2,15 @@ import ckan.logic as logic
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.uploader as uploader
 import ckan.plugins as plugins
-import ckan.lib.navl.dictization_functions
 from ckan.common import _
 import ckan.lib.dictization.model_save as model_save
 
 # Define some shortcuts
 # Ensure they are module-private so that they don't get loaded as available
 # actions in the action API.
-_validate = ckan.lib.navl.dictization_functions.validate
 _check_access = logic.check_access
 _get_action = logic.get_action
 ValidationError = logic.ValidationError
-NotFound = logic.NotFound
-_get_or_bust = logic.get_or_bust
 
 import logging
 log = logging.getLogger(__name__)

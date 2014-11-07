@@ -4,7 +4,6 @@ import datetime
 import ckan.plugins as plugins
 import ckan.logic as logic
 import ckan.lib.dictization.model_save as model_save
-import ckan.lib.navl.dictization_functions
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.uploader as uploader
 
@@ -15,12 +14,10 @@ log = logging.getLogger(__name__)
 # Define some shortcuts
 # Ensure they are module-private so that they don't get loaded as available
 # actions in the action API.
-_validate = ckan.lib.navl.dictization_functions.validate
 _get_action = logic.get_action
 _check_access = logic.check_access
 NotFound = logic.NotFound
 ValidationError = logic.ValidationError
-_get_or_bust = logic.get_or_bust
 
 
 def showcase_update(context, data_dict):
