@@ -20,7 +20,8 @@
       {% endblock %}
     </h1>
 
-    {{pkg.extras}}
+    {{ pkg.image_display_url }}
+
     {% block package_notes %}
       {% if c.pkg_notes_formatted %}
         <div class="notes embedded-content">

@@ -2,6 +2,8 @@ import logging
 
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
+import ckan.lib.munge as munge
+import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
 from ckan.common import OrderedDict, _
 
@@ -24,6 +26,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IPackageController, inherit=True)
 
     # IConfigurer
 
@@ -56,6 +59,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return 'showcase/new_package_form.html'
 
     def create_package_schema(self):
+        log.info('showcase plugin create_package_schema')
         schema = super(ShowcasePlugin, self).create_package_schema()
         schema.update({
             'image_url': [toolkit.get_validator('ignore_missing'),
@@ -64,6 +68,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return schema
 
     def update_package_schema(self):
+        log.info('showcase plugin update_package_schema')
         schema = super(ShowcasePlugin, self).update_package_schema()
         schema.update({
             'image_url': [toolkit.get_validator('ignore_missing'),
@@ -72,6 +77,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return schema
 
     def show_package_schema(self):
+        log.info('showcase plugin show_package_schema')
         schema = super(ShowcasePlugin, self).show_package_schema()
         schema.update({
             'image_url': [toolkit.get_converter('convert_from_extras'),
@@ -116,7 +122,20 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def get_actions(self):
         action_functions = {
             'ckanext_showcase_create': ckanext.showcase.logic.action.create.showcase_create,
-            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update,
-            'ckanext_showcase_show': ckanext.showcase.logic.action.get.showcase_show
+            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update
         }
         return action_functions
+
+    # IPackageController
+
+    def after_show(self, context, pkg_dict):
+        image_url = pkg_dict.get('image_url')
+        pkg_dict['image_display_url'] = image_url
+        if image_url and not image_url.startswith('http'):
+            #munge here should not have an effect only doing it incase
+            #of potential vulnerability of dodgy api input
+            pkg_dict['image_url'] = munge.munge_filename(image_url)
+            pkg_dict['image_display_url'] = \
+                h.url_for_static('uploads/{0}/{1}'
+                                 .format(DATASET_TYPE_NAME, pkg_dict.get('image_url')),
+                                 qualified=True)
