@@ -74,8 +74,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def show_package_schema(self):
         schema = super(ShowcasePlugin, self).show_package_schema()
         schema.update({
-            'image_url': [toolkit.get_validator('ignore_missing'),
-                          toolkit.get_converter('convert_from_extras')]
+            'image_url': [toolkit.get_converter('convert_from_extras'),
+                          toolkit.get_validator('ignore_missing')]
         })
         return schema
 
