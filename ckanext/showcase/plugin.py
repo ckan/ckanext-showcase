@@ -133,7 +133,11 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         if image_url and not image_url.startswith('http'):
             #munge here should not have an effect only doing it incase
             #of potential vulnerability of dodgy api input
-            pkg_dict['image_url'] = munge.munge_filename(image_url)
+
+            # Can't munge here, as munge can't be called twice on file names
+            # with spaces
+            # pkg_dict['image_url'] = munge.munge_filename(image_url)
+            pkg_dict['image_url'] = image_url
             pkg_dict['image_display_url'] = \
                 h.url_for_static('uploads/{0}/{1}'
                                  .format(DATASET_TYPE_NAME, pkg_dict.get('image_url')),
