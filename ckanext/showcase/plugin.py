@@ -12,7 +12,6 @@ from routes.mapper import SubMapper
 import ckanext.showcase.logic.auth
 import ckanext.showcase.logic.action.create
 import ckanext.showcase.logic.action.update
-import ckanext.showcase.logic.action.get
 
 log = logging.getLogger(__name__)
 
