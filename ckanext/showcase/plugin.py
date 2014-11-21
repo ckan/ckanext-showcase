@@ -2,7 +2,6 @@ import logging
 
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
-import ckan.lib.munge as munge
 import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
 from ckan.common import OrderedDict, _
@@ -127,18 +126,17 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     # IPackageController
 
-    def after_show(self, context, pkg_dict):
+    def before_view(self, pkg_dict):
+        '''
+        Add a display url for the Showcase image to the pkg dict so template
+        has access to it.
+        '''
         image_url = pkg_dict.get('image_url')
         pkg_dict['image_display_url'] = image_url
         if image_url and not image_url.startswith('http'):
-            #munge here should not have an effect only doing it incase
-            #of potential vulnerability of dodgy api input
-
-            # Can't munge here, as munge can't be called twice on file names
-            # with spaces
-            # pkg_dict['image_url'] = munge.munge_filename(image_url)
             pkg_dict['image_url'] = image_url
             pkg_dict['image_display_url'] = \
                 h.url_for_static('uploads/{0}/{1}'
                                  .format(DATASET_TYPE_NAME, pkg_dict.get('image_url')),
                                  qualified=True)
+        return pkg_dict
