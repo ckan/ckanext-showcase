@@ -11,6 +11,7 @@ from routes.mapper import SubMapper
 import ckanext.showcase.logic.auth
 import ckanext.showcase.logic.action.create
 import ckanext.showcase.logic.action.update
+from ckanext.showcase.model import setup as model_setup
 
 log = logging.getLogger(__name__)
 
@@ -18,6 +19,7 @@ DATASET_TYPE_NAME = 'showcase'
 
 
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
+    plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IFacets, inherit=True)
@@ -28,10 +30,15 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     # IConfigurer
 
-    def update_config(self, config_):
-        toolkit.add_template_directory(config_, 'templates')
-        # toolkit.add_public_directory(config_, 'public')
+    def update_config(self, config):
+        toolkit.add_template_directory(config, 'templates')
+        # toolkit.add_public_directory(config, 'public')
         # toolkit.add_resource('fanstatic', 'showcase')
+
+    # IConfigurable
+
+    def configure(self, config):
+        model_setup()
 
     # IDatasetForm
 
@@ -57,7 +64,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return 'showcase/new_package_form.html'
 
     def create_package_schema(self):
-        log.info('showcase plugin create_package_schema')
         schema = super(ShowcasePlugin, self).create_package_schema()
         schema.update({
             'image_url': [toolkit.get_validator('ignore_missing'),
@@ -66,7 +72,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return schema
 
     def update_package_schema(self):
-        log.info('showcase plugin update_package_schema')
         schema = super(ShowcasePlugin, self).update_package_schema()
         schema.update({
             'image_url': [toolkit.get_validator('ignore_missing'),
@@ -75,7 +80,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return schema
 
     def show_package_schema(self):
-        log.info('showcase plugin show_package_schema')
         schema = super(ShowcasePlugin, self).show_package_schema()
         schema.update({
             'image_url': [toolkit.get_converter('convert_from_extras'),
@@ -86,6 +90,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # IFacets
 
     def dataset_facets(self, facets_dict, package_type):
+        '''Only show tags for Showcase search list.'''
         if package_type != DATASET_TYPE_NAME:
             return facets_dict
         return OrderedDict({'tags': _('Tags')})
@@ -95,7 +100,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def get_auth_functions(self):
         return {
             'ckanext_showcase_create': ckanext.showcase.logic.auth.create,
-            'ckanext_showcase_update': ckanext.showcase.logic.auth.update
+            'ckanext_showcase_update': ckanext.showcase.logic.auth.update,
+            'ckanext_showcase_package_association_create': ckanext.showcase.logic.auth.package_association_create
         }
 
     # IRoutes
@@ -120,7 +126,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def get_actions(self):
         action_functions = {
             'ckanext_showcase_create': ckanext.showcase.logic.action.create.showcase_create,
-            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update
+            'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update,
+            'ckanext_showcase_package_association_create': ckanext.showcase.logic.action.create.showcase_package_association_create
         }
         return action_functions
 
