@@ -48,6 +48,4 @@ def showcase_package_association_create(context, data_dict):
         raise toolkit.ValidationError("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' already exists.".format(package_id, showcase_id))
 
     # create the association
-    ShowcasePackageAssociation.create(package_id=package_id, showcase_id=showcase_id)
-
-    return 'lol'
+    return ShowcasePackageAssociation.create(package_id=package_id, showcase_id=showcase_id)

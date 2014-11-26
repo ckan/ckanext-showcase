@@ -46,7 +46,7 @@ class ShowcasePackageAssociation(DomainObject):
         showcase_package_association = cls(**kwargs)
         Session.add(showcase_package_association)
         Session.commit()
-        return showcase_package_association
+        return showcase_package_association.as_dict()
 
 
 def define_showcase_package_association_table():
