@@ -27,10 +27,10 @@ def showcase_create(context, data_dict):
 def showcase_package_association_create(context, data_dict):
     '''Create an association between a showcase and a package.
 
-    :param showcase_id: the id of the showcase to associate
+    :param showcase_id: id or name of the showcase to associate
     :type showcase_id: string
 
-    :param package_id: the id of the package to associate
+    :param package_id: id or name of the package to associate
     :type package_id: string
     '''
 

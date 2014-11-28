@@ -48,6 +48,14 @@ class ShowcasePackageAssociation(DomainObject):
         Session.commit()
         return showcase_package_association.as_dict()
 
+    @classmethod
+    def get_package_ids(cls, showcase_id):
+        '''
+        Return a list of package ids associated with the passed showcase id.
+        '''
+        showcase_package_association_list = Session.query(cls.package_id).filter_by(showcase_id=showcase_id).all()
+        return showcase_package_association_list
+
 
 def define_showcase_package_association_table():
         global showcase_package_assocation_table

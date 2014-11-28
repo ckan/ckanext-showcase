@@ -11,6 +11,7 @@ from routes.mapper import SubMapper
 import ckanext.showcase.logic.auth
 import ckanext.showcase.logic.action.create
 import ckanext.showcase.logic.action.update
+import ckanext.showcase.logic.action.get
 from ckanext.showcase.model import setup as model_setup
 
 log = logging.getLogger(__name__)
@@ -101,7 +102,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return {
             'ckanext_showcase_create': ckanext.showcase.logic.auth.create,
             'ckanext_showcase_update': ckanext.showcase.logic.auth.update,
-            'ckanext_showcase_package_association_create': ckanext.showcase.logic.auth.package_association_create
+            'ckanext_showcase_package_association_create': ckanext.showcase.logic.auth.package_association_create,
+            'ckanext_showcase_package_list': ckanext.showcase.logic.auth.showcase_package_list
         }
 
     # IRoutes
@@ -127,7 +129,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         action_functions = {
             'ckanext_showcase_create': ckanext.showcase.logic.action.create.showcase_create,
             'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update,
-            'ckanext_showcase_package_association_create': ckanext.showcase.logic.action.create.showcase_package_association_create
+            'ckanext_showcase_package_association_create': ckanext.showcase.logic.action.create.showcase_package_association_create,
+            'ckanext_showcase_package_list': ckanext.showcase.logic.action.get.showcase_package_list
         }
         return action_functions
 
