@@ -77,3 +77,23 @@ class TestCreateShowcasePackageAssociation(helpers.FunctionalTestBase):
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 1)
         nosetools.assert_equal(association_dict.get('showcase_id'), showcase['id'])
         nosetools.assert_equal(association_dict.get('package_id'), package['id'])
+
+    def test_association_create_existing(self):
+        '''
+        Attempt to create association with existing details returns Validation
+        Error.
+        '''
+        sysadmin = factories.User(sysadmin=True)
+        package_id = factories.Dataset()['id']
+        showcase_id = factories.Dataset(type='showcase')['id']
+
+        context = {'user': sysadmin['name']}
+        # Create association
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_id,
+                            showcase_id=showcase_id)
+        # Attempted duplicate creation results in ValidationError
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_package_association_create',
+                                context=context, package_id=package_id,
+                                showcase_id=showcase_id)
