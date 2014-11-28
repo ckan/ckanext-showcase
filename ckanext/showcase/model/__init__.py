@@ -49,11 +49,19 @@ class ShowcasePackageAssociation(DomainObject):
         return showcase_package_association.as_dict()
 
     @classmethod
-    def get_package_ids(cls, showcase_id):
+    def get_package_ids_for_showcase(cls, showcase_id):
         '''
-        Return a list of package ids associated with the passed showcase id.
+        Return a list of package ids associated with the passed showcase_id.
         '''
         showcase_package_association_list = Session.query(cls.package_id).filter_by(showcase_id=showcase_id).all()
+        return showcase_package_association_list
+
+    @classmethod
+    def get_showcase_ids_for_package(cls, package_id):
+        '''
+        Return a list of showcase ids associated with the passed package_id.
+        '''
+        showcase_package_association_list = Session.query(cls.showcase_id).filter_by(package_id=package_id).all()
         return showcase_package_association_list
 
 

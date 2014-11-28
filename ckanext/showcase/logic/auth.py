@@ -20,3 +20,9 @@ def update(context, data_dict):
 def showcase_package_list(context, data_dict):
     '''All users can access a showcase's package list'''
     return {'success': True}
+
+
+@toolkit.auth_allow_anonymous_access
+def package_showcase_list(context, data_dict):
+    '''All users can access a packages's showcase list'''
+    return {'success': True}
