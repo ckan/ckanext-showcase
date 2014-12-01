@@ -67,19 +67,13 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return 'showcase/new_package_form.html'
 
     def create_package_schema(self):
-        schema = super(ShowcasePlugin, self).create_package_schema()
-        schema.update(showcase_schema.showcase_create_schema())
-        return schema
+        return showcase_schema.showcase_create_schema()
 
     def update_package_schema(self):
-        schema = super(ShowcasePlugin, self).update_package_schema()
-        schema.update(showcase_schema.showcase_update_schema())
-        return schema
+        return showcase_schema.showcase_update_schema()
 
     def show_package_schema(self):
-        schema = super(ShowcasePlugin, self).show_package_schema()
-        schema.update(showcase_schema.showcase_show_schema())
-        return schema
+        return showcase_schema.showcase_show_schema()
 
     # IFacets
 
