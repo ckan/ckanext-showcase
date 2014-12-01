@@ -21,7 +21,7 @@
     'search': c.search_facets,
     'titles': c.facet_titles,
     'translated_fields': c.translated_fields,
-    'remove_field': c.remove_field }
+    'remove_field': h.facet_remove_field }
   %}
   {% set sorting = [
     (_('Relevance'), 'score desc, metadata_modified desc'),

@@ -13,6 +13,7 @@ import ckanext.showcase.logic.action.create
 import ckanext.showcase.logic.action.update
 import ckanext.showcase.logic.action.get
 import ckanext.showcase.logic.schema as showcase_schema
+import ckanext.showcase.logic.helpers as showcase_helpers
 from ckanext.showcase.model import setup as model_setup
 
 
@@ -30,6 +31,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
+    plugins.implements(plugins.ITemplateHelpers)
 
     # IConfigurer
 
@@ -74,6 +76,11 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def show_package_schema(self):
         return showcase_schema.showcase_show_schema()
+
+    # ITemplateHelpers
+
+    def get_helpers(self):
+        return {'facet_remove_field': showcase_helpers.facet_remove_field}
 
     # IFacets
 
