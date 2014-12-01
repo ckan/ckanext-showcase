@@ -107,6 +107,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                       ckan_icon='sitemap')
             m.connect('showcase_edit', '/showcase/edit/{id}', action='edit',
                       ckan_icon='edit')
+            m.connect('/dataset/{action}/{id}', requirements=dict(action='|'.join(['new_resource', ])))
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map
@@ -130,12 +131,17 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         Add a display url for the Showcase image to the pkg dict so template
         has access to it.
         '''
+
+        log.info('before_view')
+
         image_url = pkg_dict.get('image_url')
         pkg_dict['image_display_url'] = image_url
+        log.info(image_url)
         if image_url and not image_url.startswith('http'):
             pkg_dict['image_url'] = image_url
             pkg_dict['image_display_url'] = \
                 h.url_for_static('uploads/{0}/{1}'
                                  .format(DATASET_TYPE_NAME, pkg_dict.get('image_url')),
                                  qualified=True)
+            log.info('added image_display_url to pkg_dict')
         return pkg_dict

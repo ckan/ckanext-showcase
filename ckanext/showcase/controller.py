@@ -8,6 +8,7 @@ import ckan.logic as logic
 from ckan.common import c, request, _
 from ckan.controllers.package import PackageController
 
+render = base.render
 abort = base.abort
 redirect = base.redirect
 NotFound = logic.NotFound
@@ -93,16 +94,10 @@ class ShowcaseController(PackageController):
                     # this is actually an edit not a save
                     pkg_dict = get_action('ckanext_showcase_update')(context, data_dict)
 
-                    if request.params['save'] == 'go-metadata':
-                        # redirect to add metadata
-                        url = h.url_for(controller='package',
-                                        action='new_metadata',
-                                        id=pkg_dict['name'])
-                    else:
-                        # redirect to add dataset resources
-                        url = h.url_for(controller='package',
-                                        action='new_resource',
-                                        id=pkg_dict['name'])
+                    # redirect to add dataset resources
+                    url = h.url_for(controller='package',
+                                    action='new_resource',
+                                    id=pkg_dict['name'])
                     redirect(url)
                 # Make sure we don't index this dataset
                 if request.params['save'] not in ['go-resource', 'go-metadata']:
@@ -163,8 +158,9 @@ class ShowcaseController(PackageController):
                 del data_dict['_ckan_phase']
                 del data_dict['save']
             context['message'] = data_dict.get('log_message', '')
-            if not context['moderated']:
-                context['pending'] = False
+            # if not context['moderated']:
+            #     context['pending'] = False
+            context['pending'] = False
             data_dict['id'] = name_or_id
             pkg = get_action('ckanext_showcase_update')(context, data_dict)
             if request.params.get('save', '') == 'Approve':
@@ -190,3 +186,122 @@ class ShowcaseController(PackageController):
             errors = e.error_dict
             error_summary = e.error_summary
             return self.edit(name_or_id, data_dict, errors, error_summary)
+
+    def new_resource(self, id, data=None, errors=None, error_summary=None):
+        '''FIXME: This is a temporary hack to bypass saving resources. Instead
+        we'll just allow the dataset to be saved with no resources.'''
+
+        if request.method == 'POST' and not data:
+            save_action = request.params.get('save')
+            data = data or clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
+                request.POST))))
+            # we don't want to include save as it is part of the form
+            del data['save']
+            # resource_id = data['id']
+            del data['id']
+
+            context = {'model': model, 'session': model.Session,
+                       'user': c.user or c.author, 'auth_user_obj': c.userobj}
+
+            # see if we have any data that we are trying to save
+            data_provided = False
+            # for key, value in data.iteritems():
+            #     if ((value or isinstance(value, cgi.FieldStorage))
+            #         and key != 'resource_type'):
+            #         data_provided = True
+            #         break
+
+            if not data_provided and save_action != "go-dataset-complete":
+                if save_action == 'go-dataset':
+                    # go to final stage of adddataset
+                    redirect(h.url_for(controller='package',
+                                       action='edit', id=id))
+                # see if we have added any resources
+                # try:
+                #     data_dict = get_action('package_show')(context, {'id': id})
+                # except NotAuthorized:
+                #     abort(401, _('Unauthorized to update dataset'))
+                # except NotFound:
+                #     abort(404,
+                #       _('The dataset {id} could not be found.').format(id=id))
+                # if not len(data_dict['resources']):
+                #     # no data so keep on page
+                #     msg = _('You must add at least one data resource')
+                #     # On new templates do not use flash message
+                #     if g.legacy_templates:
+                #         h.flash_error(msg)
+                #         redirect(h.url_for(controller='package',
+                #                            action='new_resource', id=id))
+                #     else:
+                #         errors = {}
+                #         error_summary = {_('Error'): msg}
+                #         return self.new_resource(id, data, errors, error_summary)
+                # we have a resource so let them add metadata
+                # redirect(h.url_for(controller='package',
+                #                    action='new_metadata', id=id))
+
+            data['package_id'] = id
+            # try:
+            #     if resource_id:
+            #         data['id'] = resource_id
+            #         get_action('resource_update')(context, data)
+            #     else:
+            #         get_action('resource_create')(context, data)
+            # except ValidationError, e:
+            #     errors = e.error_dict
+            #     error_summary = e.error_summary
+            #     return self.new_resource(id, data, errors, error_summary)
+            # except NotAuthorized:
+            #     abort(401, _('Unauthorized to create a resource'))
+            # except NotFound:
+            #     abort(404,
+            #         _('The dataset {id} could not be found.').format(id=id))
+            if save_action == 'go-metadata':
+                # XXX race condition if another user edits/deletes
+                data_dict = get_action('package_show')(context, {'id': id})
+                get_action('package_update')(
+                    dict(context, allow_state_change=True),
+                    dict(data_dict, state='active'))
+                redirect(h.url_for(controller='package',
+                                   action='read', id=id))
+            elif save_action == 'go-dataset':
+                # go to first stage of add dataset
+                redirect(h.url_for(controller='package',
+                                   action='edit', id=id))
+            elif save_action == 'go-dataset-complete':
+                # go to first stage of add dataset
+                redirect(h.url_for(controller='package',
+                                   action='read', id=id))
+            else:
+                # add more resources
+                redirect(h.url_for(controller='package',
+                                   action='new_resource', id=id))
+
+        # get resources for sidebar
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author, 'auth_user_obj': c.userobj}
+        try:
+            pkg_dict = get_action('package_show')(context, {'id': id})
+        except NotFound:
+            abort(404, _('The dataset {id} could not be found.').format(id=id))
+        try:
+            check_access('resource_create', context, pkg_dict)
+        except NotAuthorized:
+            abort(401, _('Unauthorized to create a resource for this package'))
+
+        package_type = pkg_dict['type'] or 'dataset'
+
+        errors = errors or {}
+        error_summary = error_summary or {}
+        vars = {'data': data, 'errors': errors,
+                'error_summary': error_summary, 'action': 'new',
+                'resource_form_snippet': self._resource_form(package_type),
+                'dataset_type': package_type}
+        vars['pkg_name'] = id
+        # required for nav menu
+        vars['pkg_dict'] = pkg_dict
+        template = 'package/new_resource_not_draft.html'
+        if pkg_dict['state'].startswith('draft'):
+            vars['stage'] = ['complete', 'active']
+            template = 'package/new_resource.html'
+        return render(template, extra_vars=vars)
