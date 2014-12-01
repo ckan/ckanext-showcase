@@ -12,7 +12,9 @@ import ckanext.showcase.logic.auth
 import ckanext.showcase.logic.action.create
 import ckanext.showcase.logic.action.update
 import ckanext.showcase.logic.action.get
+import ckanext.showcase.logic.schema as showcase_schema
 from ckanext.showcase.model import setup as model_setup
+
 
 log = logging.getLogger(__name__)
 
@@ -66,26 +68,17 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def create_package_schema(self):
         schema = super(ShowcasePlugin, self).create_package_schema()
-        schema.update({
-            'image_url': [toolkit.get_validator('ignore_missing'),
-                          toolkit.get_converter('convert_to_extras')]
-        })
+        schema.update(showcase_schema.showcase_create_schema())
         return schema
 
     def update_package_schema(self):
         schema = super(ShowcasePlugin, self).update_package_schema()
-        schema.update({
-            'image_url': [toolkit.get_validator('ignore_missing'),
-                          toolkit.get_converter('convert_to_extras')]
-        })
+        schema.update(showcase_schema.showcase_update_schema())
         return schema
 
     def show_package_schema(self):
         schema = super(ShowcasePlugin, self).show_package_schema()
-        schema.update({
-            'image_url': [toolkit.get_converter('convert_from_extras'),
-                          toolkit.get_validator('ignore_missing')]
-        })
+        schema.update(showcase_schema.showcase_show_schema())
         return schema
 
     # IFacets
