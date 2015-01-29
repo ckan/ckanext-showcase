@@ -135,18 +135,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     # IPackageController
 
-    def after_show(self, context, pkg_dict):
+    def _add_to_pkg_dict(self, context, pkg_dict):
         '''
-        Modify package_show pkg_dict.
-        '''
-        # If a showcase, add a num_datasets count.
-        if pkg_dict['type'] == 'showcase':
-            pkg_dict['num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
-                                                             (context, {'showcase_id': pkg_dict['id']}))
-
-    def before_view(self, pkg_dict):
-        '''
-        Modify pkg_dict that is sent to templates.
+        Add key/values to pkg_dict and return it.
         '''
 
         # Add a display url for the Showcase image to the pkg dict so template
@@ -161,8 +152,24 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                                  qualified=True)
 
         # Add dataset count
-        context = {'model': ckan_model, 'session': ckan_model.Session,
-                   'user': pylons_c.user or pylons_c.author}
         pkg_dict['num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
                                                          (context, {'showcase_id': pkg_dict['id']}))
         return pkg_dict
+
+    def after_show(self, context, pkg_dict):
+        '''
+        Modify package_show pkg_dict.
+        '''
+        # If a showcase, add a num_datasets count.
+        if pkg_dict['type'] == 'showcase':
+            pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
+
+    def before_view(self, pkg_dict):
+        '''
+        Modify pkg_dict that is sent to templates.
+        '''
+
+        context = {'model': ckan_model, 'session': ckan_model.Session,
+                   'user': pylons_c.user or pylons_c.author}
+
+        return self._add_to_pkg_dict(context, pkg_dict)
