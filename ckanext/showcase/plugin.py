@@ -1,10 +1,12 @@
 import logging
 
+from pylons import c as pylons_c
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
 from ckan.common import OrderedDict, _
+from ckan import model as ckan_model
 
 from routes.mapper import SubMapper
 
@@ -133,22 +135,34 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     # IPackageController
 
+    def after_show(self, context, pkg_dict):
+        '''
+        Modify package_show pkg_dict.
+        '''
+        # If a showcase, add a num_datasets count.
+        if pkg_dict['type'] == 'showcase':
+            pkg_dict['num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
+                                                             (context, {'showcase_id': pkg_dict['id']}))
+
     def before_view(self, pkg_dict):
         '''
-        Add a display url for the Showcase image to the pkg dict so template
-        has access to it.
+        Modify pkg_dict that is sent to templates.
         '''
 
-        log.info('before_view')
-
+        # Add a display url for the Showcase image to the pkg dict so template
+        # has access to it.
         image_url = pkg_dict.get('image_url')
         pkg_dict['image_display_url'] = image_url
-        log.info(image_url)
         if image_url and not image_url.startswith('http'):
             pkg_dict['image_url'] = image_url
             pkg_dict['image_display_url'] = \
                 h.url_for_static('uploads/{0}/{1}'
                                  .format(DATASET_TYPE_NAME, pkg_dict.get('image_url')),
                                  qualified=True)
-            log.info('added image_display_url to pkg_dict')
+
+        # Add dataset count
+        context = {'model': ckan_model, 'session': ckan_model.Session,
+                   'user': pylons_c.user or pylons_c.author}
+        pkg_dict['num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
+                                                         (context, {'showcase_id': pkg_dict['id']}))
         return pkg_dict

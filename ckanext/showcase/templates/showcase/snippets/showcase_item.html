@@ -31,13 +31,13 @@ truncate_title - The length to truncate the title to (default: 80).
         <p class="empty">{{ _("This showcase has no description") }}</p>
       {% endif %}
     {% endblock %}
-  {#   {% block datasets %}
-      {% if group.packages %}
-        <strong class="count">{{ ungettext('{num} Dataset', '{num} Datasets', group.packages).format(num=group.packages) }}</strong>
-      {% elif group.packages == 0 %}
+    {% block datasets %}
+      {% if package.num_datasets %}
+        <strong class="count">{{ ungettext('{num} Dataset', '{num} Datasets', package.num_datasets).format(num=package.num_datasets) }}</strong>
+      {% elif package.num_datasets == 0 %}
         <span class="count">{{ _('0 Datasets') }}</span>
       {% endif %}
-    {% endblock %} #}
+    {% endblock %}
     {% block link %}
       <a href="{{ h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='read', id=package.name) }}" title="{{ _('View {name}').format(name=package.title) }}" class="media-view">
         <span>{{ _('View {name}').format(name=package.title) }}</span>
