@@ -26,9 +26,9 @@
     {% endif %}
 
     {% block package_notes %}
-      {% if c.pkg_notes_formatted %}
+      {% if pkg.showcase_notes_formatted %}
         <div class="notes embedded-content">
-          {{ c.pkg_notes_formatted }}
+          {{ pkg.showcase_notes_formatted }}
         </div>
       {% endif %}
     {% endblock %}

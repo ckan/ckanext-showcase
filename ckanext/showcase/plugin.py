@@ -155,8 +155,11 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                                  qualified=True)
 
         # Add dataset count
-        pkg_dict['num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
-                                                         (context, {'showcase_id': pkg_dict['id']}))
+        pkg_dict[u'num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
+                                                          (context, {'showcase_id': pkg_dict['id']}))
+
+        # Rendered notes
+        pkg_dict[u'showcase_notes_formatted'] = h.render_markdown(pkg_dict['notes'])
         return pkg_dict
 
     def after_show(self, context, pkg_dict):
