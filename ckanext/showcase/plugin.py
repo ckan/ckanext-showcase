@@ -1,6 +1,6 @@
 import logging
 
-from pylons import c as pylons_c
+from pylons import c
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
@@ -140,13 +140,16 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         Add key/values to pkg_dict and return it.
         '''
 
+        if pkg_dict['type'] != 'showcase':
+            return pkg_dict
+
         # Add a display url for the Showcase image to the pkg dict so template
         # has access to it.
         image_url = pkg_dict.get('image_url')
-        pkg_dict['image_display_url'] = image_url
+        pkg_dict[u'image_display_url'] = image_url
         if image_url and not image_url.startswith('http'):
-            pkg_dict['image_url'] = image_url
-            pkg_dict['image_display_url'] = \
+            pkg_dict[u'image_url'] = image_url
+            pkg_dict[u'image_display_url'] = \
                 h.url_for_static('uploads/{0}/{1}'
                                  .format(DATASET_TYPE_NAME, pkg_dict.get('image_url')),
                                  qualified=True)
@@ -161,8 +164,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         Modify package_show pkg_dict.
         '''
         # If a showcase, add a num_datasets count.
-        if pkg_dict['type'] == 'showcase':
-            pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
+        pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
     def before_view(self, pkg_dict):
         '''
@@ -170,6 +172,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         '''
 
         context = {'model': ckan_model, 'session': ckan_model.Session,
-                   'user': pylons_c.user or pylons_c.author}
+                   'user': c.user or c.author}
 
         return self._add_to_pkg_dict(context, pkg_dict)

@@ -38,4 +38,13 @@
     {% snippet "showcase/snippets/tags.html", tags=pkg.tags %}
   {% endblock %}
 
+  {% block package_search_results_list %}
+    {% if pkg.num_datasets %}
+      <h2>{{ ungettext('{num} dataset in this Showcase', '{num} datasets in this Showcase', pkg.num_datasets).format(num=pkg.num_datasets) }}</h2>
+    {% elif pkg.num_datasets == 0 %}
+      <h2>{{ _('There are no datasets in this Showcase') }}</h2>
+    {% endif %}
+    {{ h.snippet('snippets/package_list.html', packages=c.showcase_pkgs) }}
+  {% endblock %}
+
 {% endblock %}
