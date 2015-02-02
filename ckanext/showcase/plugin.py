@@ -109,16 +109,16 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         # These named routes are used for custom dataset forms which will use the
         # names below based on the dataset.type ('dataset' is the default type)
         with SubMapper(map, controller='ckanext.showcase.controller:ShowcaseController') as m:
-            m.connect('showcase_index', '/showcase', action='search',
+            m.connect('ckanext_showcase_index', '/showcase', action='search',
                       highlight_actions='index search')
-            m.connect('add showcase', '/showcase/new', action='new')
-            m.connect('showcase_read', '/showcase/{id}', action='read',
-                      ckan_icon='sitemap')
-            m.connect('showcase_edit', '/showcase/edit/{id}', action='edit',
+            m.connect('ckanext_showcase_new', '/showcase/new', action='new')
+            m.connect('ckanext_showcase_read', '/showcase/{id}', action='read',
+                      ckan_icon='picture')
+            m.connect('ckanext_showcase_edit', '/showcase/edit/{id}', action='edit',
                       ckan_icon='edit')
             m.connect('/dataset/{action}/{id}', requirements=dict(action='|'.join(['new_resource', ])))
             m.connect('dataset_showcase_list', '/dataset/showcases/{id}', action='dataset_showcase_list',
-                      ckan_icon='bullhorn')
+                      ckan_icon='picture')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map
