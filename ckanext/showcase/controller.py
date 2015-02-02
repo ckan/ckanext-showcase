@@ -1,3 +1,5 @@
+import logging
+
 from pylons import config
 
 import ckan.model as model
@@ -6,8 +8,10 @@ import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.lib.render
-from ckan.common import c, request, _, response
+from ckan.common import c, request, _
 from ckan.controllers.package import PackageController
+
+from ckanext.showcase.plugin import DATASET_TYPE_NAME
 
 render = base.render
 abort = base.abort
@@ -21,9 +25,6 @@ clean_dict = logic.clean_dict
 parse_params = logic.parse_params
 NotAuthorized = logic.NotAuthorized
 
-from ckanext.showcase.plugin import DATASET_TYPE_NAME
-
-import logging
 log = logging.getLogger(__name__)
 
 
@@ -308,6 +309,9 @@ class ShowcaseController(PackageController):
         return render(template, extra_vars=vars)
 
     def read(self, id, format='html'):
+        '''
+        Detail view for a single showcase.
+        '''
 
         context = {'model': model, 'session': model.Session,
                    'user': c.user or c.author, 'for_view': True,
@@ -341,3 +345,31 @@ class ShowcaseController(PackageController):
                     "not supported (template file {file} not found)."
                     .format(package_type=package_type, format=format, file=template))
             abort(404, msg)
+
+    def dataset_showcase_list(self, id):
+        '''
+        Display a list of showcases a dataset is associated with.
+        '''
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author, 'for_view': True,
+                   'auth_user_obj': c.userobj}
+        data_dict = {'id': id}
+
+        try:
+            check_access('package_show', context, data_dict)
+        except NotFound:
+            abort(404, _('Dataset not found'))
+        except NotAuthorized:
+            abort(401, _('Not authorized to see this page'))
+
+        try:
+            c.pkg_dict = get_action('package_show')(context, data_dict)
+            c.showcase_list = get_action('ckanext_package_showcase_list')(context, {'package_id': c.pkg_dict['id']})
+            c.pkg = context['package']
+            # c.resources_json = h.json.dumps(c.pkg_dict.get('resources', []))
+        except NotFound:
+            abort(404, _('Dataset not found'))
+        except logic.NotAuthorized:
+            abort(401, _('Unauthorized to read package %s') % id)
+
+        return render("package/dataset_showcase_list.html")

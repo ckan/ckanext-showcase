@@ -1,0 +1,14 @@
+{% extends "package/read_base.html" %}
+
+{% block subtitle %}{{ _('Showcases') }} - {{ super() }}{% endblock %}
+
+{% block primary_content_inner %}
+  <h2>{% block page_heading %}{{ _('Showcases featuring {dataset}').format(dataset=h.dataset_display_name(c.pkg_dict)) }}{% endblock %}</h2>
+  {% block showcase_list %}
+    {% if c.showcase_list %}
+      {% snippet "showcase/snippets/showcase_list.html", packages=c.showcase_list, pkg_id=c.pkg_dict.name %}
+    {% else %}
+      <p class="empty">{{ _('There are no showcases that feature this dataset') }}</p>
+    {% endif %}
+  {% endblock %}
+{% endblock %}

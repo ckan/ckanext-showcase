@@ -117,6 +117,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             m.connect('showcase_edit', '/showcase/edit/{id}', action='edit',
                       ckan_icon='edit')
             m.connect('/dataset/{action}/{id}', requirements=dict(action='|'.join(['new_resource', ])))
+            m.connect('dataset_showcase_list', '/dataset/showcases/{id}', action='dataset_showcase_list',
+                      ckan_icon='bullhorn')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map
@@ -166,7 +168,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         '''
         Modify package_show pkg_dict.
         '''
-        # If a showcase, add a num_datasets count.
         pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
     def before_view(self, pkg_dict):
