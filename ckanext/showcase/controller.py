@@ -366,7 +366,6 @@ class ShowcaseController(PackageController):
             c.pkg_dict = get_action('package_show')(context, data_dict)
             c.showcase_list = get_action('ckanext_package_showcase_list')(context, {'package_id': c.pkg_dict['id']})
             c.pkg = context['package']
-            # c.resources_json = h.json.dumps(c.pkg_dict.get('resources', []))
         except NotFound:
             abort(404, _('Dataset not found'))
         except logic.NotAuthorized:
