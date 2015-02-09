@@ -372,3 +372,18 @@ class ShowcaseController(PackageController):
             abort(401, _('Unauthorized to read package %s') % id)
 
         return render("package/dataset_showcase_list.html")
+
+    def manage_datasets(self, id):
+        '''
+        List datasets associated with the given showcase id.
+        '''
+
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author}
+
+        try:
+            check_access('ckanext_showcase_update', context)
+        except NotAuthorized:
+            abort(401, _('User %r not authorized to edit %s') % (c.user, id))
+
+        return 'Hello'

@@ -116,6 +116,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                       ckan_icon='picture')
             m.connect('ckanext_showcase_edit', '/showcase/edit/{id}', action='edit',
                       ckan_icon='edit')
+            m.connect('ckanext_showcase_manage_datasets', '/showcase/manage_datasets/{id}',
+                      action="manage_datasets", ckan_icon="sitemap")
             m.connect('/dataset/{action}/{id}', requirements=dict(action='|'.join(['new_resource', ])))
             m.connect('dataset_showcase_list', '/dataset/showcases/{id}', action='dataset_showcase_list',
                       ckan_icon='picture')
