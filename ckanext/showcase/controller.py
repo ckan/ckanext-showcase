@@ -115,7 +115,7 @@ class ShowcaseController(PackageController):
 
         # redirect to showcase details page
         url = h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='read', id=name_or_id)
+                        action='read', id=pkg['name'])
         redirect(url)
 
     def read(self, id, format='html'):
