@@ -8,14 +8,11 @@ from ckan.lib.navl.validators import (not_empty,
 from ckan.logic.validators import (package_id_not_changed,
                                    name_validator,
                                    package_name_validator,
-                                   package_version_validator,
                                    tag_string_convert,
                                    ignore_not_package_admin,
                                    no_http,
-                                   boolean_validator,
-                                   datasets_with_no_organization_cannot_be_private,
                                    )
-from ckan.logic.schema import (default_tags_schema, default_extras_schema)
+from ckan.logic.schema import (default_tags_schema, default_extras_schema, default_resource_schema)
 
 from ckanext.showcase.logic.validators import (convert_package_name_or_id_to_id_for_type_dataset,
                                                convert_package_name_or_id_to_id_for_type_showcase)
@@ -36,6 +33,7 @@ def showcase_base_schema():
         'log_message': [ignore_missing, unicode, no_http],
         '__extras': [ignore],
         '__junk': [empty],
+        'resources': default_resource_schema(),
         'tags': default_tags_schema(),
         'tag_string': [ignore_missing, tag_string_convert],
         'extras': default_extras_schema(),
