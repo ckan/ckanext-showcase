@@ -121,7 +121,7 @@ class ShowcaseController(PackageController):
 
     def read(self, id, format='html'):
         '''
-        Detail view for a single showcase.
+        Detail view for a single showcase, listing its associated datasets.
         '''
 
         context = {'model': model, 'session': model.Session,
@@ -134,9 +134,9 @@ class ShowcaseController(PackageController):
             c.pkg_dict = get_action('package_show')(context, data_dict)
             c.pkg = context['package']
         except NotFound:
-            abort(404, _('Dataset not found'))
+            abort(404, _('Showcase not found'))
         except NotAuthorized:
-            abort(401, _('Unauthorized to read package %s') % id)
+            abort(401, _('Unauthorized to read showcase %s') % id)
 
         # get showcase packages
         c.showcase_pkgs = get_action('ckanext_showcase_package_list')(context, {'showcase_id': c.pkg_dict['id']})
@@ -198,4 +198,38 @@ class ShowcaseController(PackageController):
         except NotAuthorized:
             abort(401, _('User %r not authorized to edit %s') % (c.user, id))
 
-        return 'Hello'
+        # check if showcase exists
+        try:
+            c.pkg_dict = get_action('package_show')(context, data_dict)
+            c.pkg = context['package']
+        except NotFound:
+            abort(404, _('Showcase not found'))
+        except NotAuthorized:
+            abort(401, _('Unauthorized to read showcase %s') % id)
+
+        # Are we removing a showcase/dataset association?
+        if request.method == 'POST' and 'bulk_action.remove' in request.params:
+            # Find the datasets to perform the action on, they are prefixed by
+            # dataset_ in the form data
+            dataset_ids = []
+            for param in request.params:
+                if param.startswith('dataset_'):
+                    dataset_ids.append(param[8:])
+            if dataset_ids:
+                for dataset_id in dataset_ids:
+                    get_action('ckanext_showcase_package_association_delete')(context, {'showcase_id': c.pkg_dict['id'],
+                                                                                        'package_id': dataset_id})
+                h.flash_notice(_('Dataset has been removed from showcase.'))
+                url = h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                action='manage_datasets',
+                                id=id)
+                redirect(url)
+
+        # get showcase packages
+        c.showcase_pkgs = get_action('ckanext_showcase_package_list')(context, {'showcase_id': c.pkg_dict['id']})
+
+        package_type = DATASET_TYPE_NAME
+        self._setup_template_variables(context, data_dict,
+                                       package_type=package_type)
+
+        return render('showcase/manage_datasets.html')

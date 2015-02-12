@@ -42,6 +42,11 @@ class ShowcasePackageAssociation(DomainObject):
             return False
 
     @classmethod
+    def get(cls, **kwargs):
+        pkg = cls.filter(**kwargs).first()
+        return pkg
+
+    @classmethod
     def create(cls, **kwargs):
         showcase_package_association = cls(**kwargs)
         Session.add(showcase_package_association)

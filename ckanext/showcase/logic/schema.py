@@ -112,6 +112,10 @@ def showcase_package_association_create_schema():
     return schema
 
 
+def showcase_package_association_delete_schema():
+    return showcase_package_association_create_schema()
+
+
 def showcase_package_list_schema():
     schema = {
         'showcase_id': [not_empty, unicode, convert_package_name_or_id_to_id_for_type_showcase]
