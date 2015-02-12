@@ -111,7 +111,6 @@ class ShowcaseController(PackageController):
             error_summary = e.error_summary
             return self.edit(name_or_id, data_dict, errors, error_summary)
 
-        c.pkg = context['package']
         c.pkg_dict = pkg
 
         # redirect to showcase details page
@@ -132,7 +131,6 @@ class ShowcaseController(PackageController):
         # check if showcase exists
         try:
             c.pkg_dict = get_action('package_show')(context, data_dict)
-            c.pkg = context['package']
         except NotFound:
             abort(404, _('Showcase not found'))
         except NotAuthorized:
@@ -176,7 +174,6 @@ class ShowcaseController(PackageController):
         try:
             c.pkg_dict = get_action('package_show')(context, data_dict)
             c.showcase_list = get_action('ckanext_package_showcase_list')(context, {'package_id': c.pkg_dict['id']})
-            c.pkg = context['package']
         except NotFound:
             abort(404, _('Dataset not found'))
         except logic.NotAuthorized:
@@ -201,7 +198,6 @@ class ShowcaseController(PackageController):
         # check if showcase exists
         try:
             c.pkg_dict = get_action('package_show')(context, data_dict)
-            c.pkg = context['package']
         except NotFound:
             abort(404, _('Showcase not found'))
         except NotAuthorized:
