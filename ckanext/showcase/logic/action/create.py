@@ -4,6 +4,7 @@ import ckan.lib.uploader as uploader
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.navl.dictization_functions import validate
 
+from ckanext.showcase.logic.converters import convert_package_name_or_id_to_title_or_name
 from ckanext.showcase.logic.schema import showcase_package_association_create_schema
 from ckanext.showcase.model import ShowcasePackageAssociation
 
@@ -45,7 +46,8 @@ def showcase_package_association_create(context, data_dict):
     package_id, showcase_id = toolkit.get_or_bust(validated_data_dict, ['package_id', 'showcase_id'])
 
     if ShowcasePackageAssociation.exists(package_id=package_id, showcase_id=showcase_id):
-        raise toolkit.ValidationError("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' already exists.".format(package_id, showcase_id))
+        raise toolkit.ValidationError("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' already exists.".format(package_id, showcase_id),
+                                      error_summary=u"The dataset, {0}, is already in the showcase".format(convert_package_name_or_id_to_title_or_name(package_id, context)))
 
     # create the association
     return ShowcasePackageAssociation.create(package_id=package_id, showcase_id=showcase_id)

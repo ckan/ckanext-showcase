@@ -1,0 +1,84 @@
+{% extends 'showcase/edit_base.html' %}
+
+{% block subtitle %}{{ _('Showcases - Add datasets') }}{% endblock %}
+
+{% block primary_content_inner %}
+  <section class="module">
+    <div class="module-content">
+      {% block form %}
+        {% set facets = {
+          'fields': c.fields_grouped,
+          'search': c.search_facets,
+          'titles': c.facet_titles,
+          'translated_fields': c.translated_fields,
+          'remove_field': c.remove_field }
+        %}
+        {% set sorting = [
+          (_('Relevance'), 'score desc, metadata_modified desc'),
+          (_('Name Ascending'), 'title_string asc'),
+          (_('Name Descending'), 'title_string desc'),
+          (_('Last Modified'), 'metadata_modified desc'),
+          (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
+        %}
+        {% snippet 'snippets/search_form.html', type='dataset', query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, show_empty=request.params, error=c.query_error, fields=c.fields %}
+      {% endblock %}
+       <h3 class="page-heading">
+        {% block page_heading %}
+            {{ _('Datasets available to add to this showcase') }}
+        {% endblock %}
+      </h3>
+      {% block package_search_results_list %}
+        {% if c.page.items %}
+          <form method="POST" data-module="basic-form">
+            {#{% block errors %}{{ form.errors(error_summary) }}{% endblock %}#}
+            <table class="table table-bordered table-header table-hover table-bulk-edit table-edit-hover" data-module="table-selectable-rows">
+              <col width="8">
+              <col width="120">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="table-actions">
+                    <div class="btn-group">
+                      <button name="bulk_action.showcase_add" value="add" class="btn" type="submit">
+                        <i class="icon-plus"></i>
+                        {{ _('Add to Showcase') }}
+                      </button>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for package in c.page.items %}
+                  {% set truncate = truncate or 180 %}
+                  {% set truncate_title = truncate_title or 80 %}
+                  {% set title = package.title or package.name %}
+                  {% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
+                  <tr>
+                    <td>
+                      <input type="checkbox" name="dataset_{{ package.id }}">
+                    </td>
+                    <td class="context">
+                      <h3 class="dataset-heading">
+                        {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='package', action='read', id=package.name)) }}
+                      </h3>
+                      {% if notes %}
+                        <p>{{ notes|urlize }}</p>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </form>
+        {% else %}
+          <p class="empty">{{ _('No datasets could be found') }}</p>
+        {% endif %}
+      {% endblock %}
+    </div>
+
+    {% block page_pagination %}
+      {{ c.page.pager(q=c.q) }}
+    {% endblock %}
+  </section>
+
+{% endblock %}

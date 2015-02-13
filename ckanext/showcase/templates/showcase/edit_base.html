@@ -25,6 +25,7 @@
 {% block content_primary_nav %}
   {{ h.build_nav_icon('ckanext_showcase_edit', _('Edit showcase'), id=pkg.name) }}
   {{ h.build_nav_icon('ckanext_showcase_manage_datasets', _('Manage datasets'), id=pkg.name) }}
+  {{ h.build_nav_icon('ckanext_showcase_add_datasets', _('Add datasets'), id=pkg.name) }}
 {% endblock %}
 
 {% block secondary_content %}
