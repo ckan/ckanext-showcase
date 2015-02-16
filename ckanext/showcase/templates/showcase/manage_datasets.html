@@ -53,7 +53,12 @@
           </table>
         </form>
       {% else %}
-        <p class="empty">{{ _('This showcase has no datasets associated to it') }}</p>
+        <p class="empty">
+          {{ _('This showcase has no datasets associated to it') }}.
+          {% if h.check_access('group_create') %}
+            {% link_for _('How about adding some?'), controller='ckanext.showcase.controller:ShowcaseController', action='add_datasets', id=c.pkg_dict.name %}</a>
+          {% endif %}
+        </p>
       {% endif %}
     {% endblock %}
   </div>

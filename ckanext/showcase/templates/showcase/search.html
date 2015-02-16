@@ -36,3 +36,18 @@
 {% block package_search_results_list %}
   {{ h.snippet('showcase/snippets/showcase_list.html', packages=c.page.items) }}
 {% endblock %}
+
+{% block package_search_results_api %}
+{% endblock %}
+
+{% block secondary_content %}
+{{ h.snippet('showcase/snippets/helper.html') }}
+<div class="filters">
+  <div>
+    {% for facet in c.facet_titles %}
+      {{ h.snippet('snippets/facet_list.html', title=c.facet_titles[facet], name=facet) }}
+    {% endfor %}
+  </div>
+  <a class="close no-text hide-filters"><i class="icon-remove-sign"></i><span class="text">close</span></a>
+</div>
+{% endblock %}
