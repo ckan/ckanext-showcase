@@ -1,8 +1,11 @@
 from routes import url_for
 from nose import tools as nosetools
 
+import ckan.model as model
 import ckan.new_tests.helpers as helpers
 import ckan.new_tests.factories as factories
+
+from ckanext.showcase.model import ShowcasePackageAssociation
 
 import logging
 log = logging.getLogger(__name__)
@@ -72,3 +75,66 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
 
         # Unique to add_datasets page
         nosetools.assert_true('bulk_action.showcase_add' in create_response)
+
+
+class TestDatasetView(helpers.FunctionalTestBase):
+
+    '''Plugin adds a new showcases view for datasets.'''
+
+    def test_dataset_read_has_showcases_tab(self):
+        '''
+        Dataset view page has a new Showcases tab linked to the correct place.
+        '''
+        app = self._get_test_app()
+        dataset = factories.Dataset(name='my-dataset')
+
+        response = app.get(
+            url=url_for(controller='package', action='read', id=dataset['id'])
+        )
+        # response contains link to dataset's showcase list
+        nosetools.assert_true('/dataset/showcases/{0}'.format(dataset['name']) in response)
+
+    def test_dataset_showcase_page_lists_showcases_no_associations(self):
+        '''
+        No showcases are listed if dataset has no showcase associations.
+        '''
+
+        app = self._get_test_app()
+        dataset = factories.Dataset(name='my-dataset')
+
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='dataset_showcase_list', id=dataset['id'])
+        )
+
+        nosetools.assert_equal(len(response.html.select('ul.media-grid li.media-item')), 0)
+
+    def test_dataset_showcase_page_lists_showcases_two_associations(self):
+        '''
+        Two showcases are listed for dataset with two showcase associations.
+        '''
+
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        dataset = factories.Dataset(name='my-dataset')
+        showcase_one = factories.Dataset(name='my-first-showcase', type='showcase')
+        showcase_two = factories.Dataset(name='my-second-showcase', type='showcase')
+        factories.Dataset(name='my-third-showcase', type='showcase')
+
+        context = {'user': sysadmin['name']}
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset['id'],
+                            showcase_id=showcase_one['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset['id'],
+                            showcase_id=showcase_two['id'])
+
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='dataset_showcase_list', id=dataset['id'])
+        )
+
+        nosetools.assert_equal(len(response.html.select('li.media-item')), 2)
+        nosetools.assert_true('my-first-showcase' in response)
+        nosetools.assert_true('my-second-showcase' in response)
+        nosetools.assert_true('my-third-showcase' not in response)
