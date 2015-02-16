@@ -95,7 +95,7 @@ class ShowcaseController(PackageController):
 
         # redirect to add datasets
         url = h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='manage_datasets',
+                        action='add_datasets',
                         id=pkg_dict['name'])
         redirect(url)
 
