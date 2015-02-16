@@ -1,11 +1,8 @@
 from routes import url_for
 from nose import tools as nosetools
 
-import ckan.model as model
 import ckan.new_tests.helpers as helpers
 import ckan.new_tests.factories as factories
-
-from ckanext.showcase.model import ShowcasePackageAssociation
 
 import logging
 log = logging.getLogger(__name__)

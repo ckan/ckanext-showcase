@@ -83,7 +83,10 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # ITemplateHelpers
 
     def get_helpers(self):
-        return {'facet_remove_field': showcase_helpers.facet_remove_field}
+        return {
+            'facet_remove_field': showcase_helpers.facet_remove_field,
+            'get_site_statistics': showcase_helpers.get_site_statistics
+        }
 
     # IFacets
 
