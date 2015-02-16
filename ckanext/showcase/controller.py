@@ -9,11 +9,11 @@ import ckan.lib.base as base
 import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
-import ckan.lib.render
 import ckan.plugins as p
 from ckan.common import OrderedDict, c, request, _, g
 from ckan.controllers.package import PackageController, search_url, _encode_params
 
+from ckanext.showcase.model import ShowcasePackageAssociation
 from ckanext.showcase.plugin import DATASET_TYPE_NAME
 
 render = base.render
@@ -266,11 +266,11 @@ class ShowcaseController(PackageController):
                                 id=id)
                 redirect(url)
 
-        self._add_dataset_search()
+        self._add_dataset_search(c.pkg_dict['id'])
 
         return render('showcase/add_datasets.html')
 
-    def _add_dataset_search(self):
+    def _add_dataset_search(self, showcase_id):
         '''
         Search logic for discovering datasets to add to a showcase.
         '''
@@ -278,13 +278,6 @@ class ShowcaseController(PackageController):
         from ckan.lib.search import SearchError
 
         package_type = 'dataset'
-
-        try:
-            context = {'model': model, 'user': c.user or c.author,
-                       'auth_user_obj': c.userobj}
-            check_access('site_read', context)
-        except NotAuthorized:
-            abort(401, _('Not authorized to see this page'))
 
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
@@ -376,6 +369,14 @@ class ShowcaseController(PackageController):
                 # dataset types on the default search page
                 if not asbool(config.get('ckan.search.show_all_types', 'False')):
                     fq += ' +dataset_type:dataset'
+
+            # Only search for packages that aren't already associated with the
+            # Showcase
+            associated_package_ids = ShowcasePackageAssociation.get_package_ids_for_showcase(showcase_id)
+            # flatten resulting list to space separated string
+            associated_package_ids_str = associated_package_ids[0][0]
+            associated_package_ids_str = ' OR '.join([id[0] for id in associated_package_ids])
+            fq += ' !id:({0})'.format(associated_package_ids_str)
 
             facets = OrderedDict()
 
