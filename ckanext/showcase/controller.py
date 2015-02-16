@@ -145,17 +145,8 @@ class ShowcaseController(PackageController):
 
         package_type = DATASET_TYPE_NAME
 
-        template = self._read_template(package_type)
-        template = template[:template.index('.') + 1] + format
-
-        try:
-            return render(template,
-                          extra_vars={'dataset_type': package_type})
-        except ckan.lib.render.TemplateNotFound:
-            msg = _("Viewing {package_type} datasets in {format} format is "
-                    "not supported (template file {file} not found)."
-                    .format(package_type=package_type, format=format, file=template))
-            abort(404, msg)
+        return render(self._read_template(package_type),
+                      extra_vars={'dataset_type': package_type})
 
     def dataset_showcase_list(self, id):
         '''
