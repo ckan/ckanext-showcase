@@ -57,7 +57,7 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
         '''Creating a new showcase redirects to the add datasets form.'''
         app = self._get_test_app()
         sysadmin = factories.Sysadmin()
-        factories.Dataset(name='my-showcase')
+        factories.Dataset(name='my-dataset')
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
@@ -67,7 +67,7 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
 
         # create showcase
         form = response.forms['dataset-edit']
-        form['name'] = u'my-dataset'
+        form['name'] = u'my-showcase'
         create_response = submit_and_follow(app, form, env, 'save')
 
         # Unique to add_datasets page

@@ -374,9 +374,9 @@ class ShowcaseController(PackageController):
             # Showcase
             associated_package_ids = ShowcasePackageAssociation.get_package_ids_for_showcase(showcase_id)
             # flatten resulting list to space separated string
-            associated_package_ids_str = associated_package_ids[0][0]
-            associated_package_ids_str = ' OR '.join([id[0] for id in associated_package_ids])
-            fq += ' !id:({0})'.format(associated_package_ids_str)
+            if associated_package_ids:
+                associated_package_ids_str = ' OR '.join([id[0] for id in associated_package_ids])
+                fq += ' !id:({0})'.format(associated_package_ids_str)
 
             facets = OrderedDict()
 
