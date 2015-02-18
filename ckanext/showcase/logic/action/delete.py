@@ -1,12 +1,43 @@
 import logging
 
 import ckan.plugins.toolkit as toolkit
-from ckan.lib.navl.dictization_functions import validate
+import ckan.lib.navl.dictization_functions
 
 from ckanext.showcase.logic.schema import showcase_package_association_delete_schema
 from ckanext.showcase.model import ShowcasePackageAssociation
 
+validate = ckan.lib.navl.dictization_functions.validate
+
 log = logging.getLogger(__name__)
+
+
+def showcase_delete(context, data_dict):
+    '''Delete a showcase and its ShowcasePackageAssociation objects.
+
+    :param id: the id or name of the showcase to delete
+    :type id: string
+    '''
+
+    model = context['model']
+    id = toolkit.get_or_bust(data_dict, 'id')
+
+    entity = model.Package.get(id)
+
+    if entity is None:
+        raise toolkit.ObjectNotFound
+
+    toolkit.check_access('ckanext_showcase_delete', context, data_dict)
+
+    # get list of showcase packages associations for this showcase
+    showcase_package_associations = ShowcasePackageAssociation.filter(showcase_id=entity.id)
+
+    # delete each association in turn
+    for association in showcase_package_associations:
+        toolkit.get_action('ckanext_showcase_package_association_delete')(context, {'showcase_id': association.showcase_id,
+                                                                                    'package_id': association.package_id})
+    # now delete the showcase
+    entity.purge()
+    model.repo.commit()
 
 
 def showcase_package_association_delete(context, data_dict):

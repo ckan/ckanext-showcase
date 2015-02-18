@@ -144,9 +144,35 @@ class ShowcaseController(PackageController):
         c.showcase_pkgs = get_action('ckanext_showcase_package_list')(context, {'showcase_id': c.pkg_dict['id']})
 
         package_type = DATASET_TYPE_NAME
-
         return render(self._read_template(package_type),
                       extra_vars={'dataset_type': package_type})
+
+    def delete(self, id):
+        if 'cancel' in request.params:
+            h.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
+                          action='edit', id=id)
+
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author, 'auth_user_obj': c.userobj}
+
+        try:
+            check_access('ckanext_showcase_delete', context, {'id': id})
+        except NotAuthorized:
+            abort(401, _('Unauthorized to delete showcase %s') % '')
+
+        try:
+            if request.method == 'POST':
+                get_action('ckanext_showcase_delete')(context, {'id': id})
+                h.flash_notice(_('Showcase has been deleted.'))
+                h.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
+                              action='search')
+            c.pkg_dict = get_action('package_show')(context, {'id': id})
+        except NotAuthorized:
+            abort(401, _('Unauthorized to delete showcase %s') % '')
+        except NotFound:
+            abort(404, _('Showcase not found'))
+        return render('showcase/confirm_delete.html',
+                      extra_vars={'dataset_type': DATASET_TYPE_NAME})
 
     def dataset_showcase_list(self, id):
         '''

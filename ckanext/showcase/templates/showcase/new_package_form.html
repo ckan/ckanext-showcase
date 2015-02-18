@@ -54,11 +54,9 @@
   {% block form_actions %}
     <div class="form-actions">
       {% block delete_button %}
-        {% if form_style == 'edit' and h.check_access('package_delete', {'id': c.pkg_dict.id}) %}
-          {% if h.check_access('package_delete', {'id': data.id}) and not data.state == 'deleted' %}
-            {% set locale = h.dump_json({'content': _('Are you sure you want to delete this dataset?')}) %}
-            <a class="btn btn-danger pull-left" href="{% url_for controller='package', action='delete', id=data.id %}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
-          {% endif %}
+        {% if form_style == 'edit' and h.check_access('ckanext_showcase_delete', {'id': data.id}) and not data.state == 'deleted' %}
+          {% set locale = h.dump_json({'content': _('Are you sure you want to delete this showcase?')}) %}
+          <a class="btn btn-danger pull-left" href="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='delete', id=data.id %}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
         {% endif %}
       {% endblock %}
       {% block save_button %}

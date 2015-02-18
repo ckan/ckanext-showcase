@@ -9,6 +9,86 @@ from ckanext.showcase.model import ShowcasePackageAssociation
 from ckan.model.package import Package
 
 
+class TestDeleteShowcase(helpers.FunctionalTestBase):
+
+    def test_showcase_delete_no_args(self):
+        '''
+        Calling showcase delete with no args raises a ValidationError.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_delete', context=context)
+
+    def test_showcase_delete_incorrect_args(self):
+        '''
+        Calling showcase delete with incorrect args raises ObjectNotFound.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        factories.Dataset(type='showcase')
+        nosetools.assert_raises(toolkit.ObjectNotFound, helpers.call_action,
+                                'ckanext_showcase_delete', context=context,
+                                id='blah-blah')
+
+    def test_showcase_delete_by_id(self):
+        '''
+        Calling showcase delete with showcase id.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        showcase = factories.Dataset(type='showcase')
+
+        # One showcase object created
+        nosetools.assert_equal(model.Session.query(Package).count(), 1)
+
+        helpers.call_action('ckanext_showcase_delete',
+                            context=context, id=showcase['id'])
+
+        nosetools.assert_equal(model.Session.query(Package).count(), 0)
+
+    def test_showcase_delete_by_name(self):
+        '''
+        Calling showcase delete with showcase name.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        showcase = factories.Dataset(type='showcase')
+
+        # One showcase object created
+        nosetools.assert_equal(model.Session.query(Package).count(), 1)
+
+        helpers.call_action('ckanext_showcase_delete',
+                            context=context, id=showcase['name'])
+
+        nosetools.assert_equal(model.Session.query(Package).count(), 0)
+
+    def test_showcase_delete_removes_associations(self):
+        '''
+        Deleting a showcase also deletes associated ShowcasePackageAssociation
+        objects.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        showcase = factories.Dataset(type='showcase', name='my-showcase')
+        dataset_one = factories.Dataset(name='dataset-one')
+        dataset_two = factories.Dataset(name='dataset-two')
+
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset_one['id'],
+                            showcase_id=showcase['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset_two['id'],
+                            showcase_id=showcase['id'])
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 2)
+
+        helpers.call_action('ckanext_showcase_delete',
+                            context=context, id=showcase['id'])
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
+
+
 class TestDeleteShowcasePackageAssociation(helpers.FunctionalTestBase):
 
     def test_association_delete_no_args(self):

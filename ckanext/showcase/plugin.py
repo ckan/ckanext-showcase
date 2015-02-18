@@ -102,6 +102,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return {
             'ckanext_showcase_create': ckanext.showcase.logic.auth.create,
             'ckanext_showcase_update': ckanext.showcase.logic.auth.update,
+            'ckanext_showcase_delete': ckanext.showcase.logic.auth.delete,
             'ckanext_showcase_package_association_create': ckanext.showcase.logic.auth.package_association_create,
             'ckanext_showcase_package_association_delete': ckanext.showcase.logic.auth.package_association_delete,
             'ckanext_showcase_package_list': ckanext.showcase.logic.auth.showcase_package_list,
@@ -117,6 +118,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             m.connect('ckanext_showcase_index', '/showcase', action='search',
                       highlight_actions='index search')
             m.connect('ckanext_showcase_new', '/showcase/new', action='new')
+            m.connect('ckanext_showcase_delete', '/showcase/delete/{id}', action='delete')
             m.connect('ckanext_showcase_read', '/showcase/{id}', action='read',
                       ckan_icon='picture')
             m.connect('ckanext_showcase_edit', '/showcase/edit/{id}', action='edit',
@@ -137,6 +139,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         action_functions = {
             'ckanext_showcase_create': ckanext.showcase.logic.action.create.showcase_create,
             'ckanext_showcase_update': ckanext.showcase.logic.action.update.showcase_update,
+            'ckanext_showcase_delete': ckanext.showcase.logic.action.delete.showcase_delete,
             'ckanext_showcase_package_association_create': ckanext.showcase.logic.action.create.showcase_package_association_create,
             'ckanext_showcase_package_association_delete': ckanext.showcase.logic.action.delete.showcase_package_association_delete,
             'ckanext_showcase_package_list': ckanext.showcase.logic.action.get.showcase_package_list,
