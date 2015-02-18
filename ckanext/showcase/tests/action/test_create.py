@@ -1,11 +1,72 @@
 from nose import tools as nosetools
 
+from ckan.model.package import Package
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
 import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
 from ckanext.showcase.model import ShowcasePackageAssociation
+
+
+class TestCreateShowcase(helpers.FunctionalTestBase):
+
+    def test_showcase_create_no_args(self):
+        '''
+        Calling showcase create without args raises ValidationError.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+
+        # no showcases exist.
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 0)
+
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_create',
+                                context=context)
+
+        # no showcases (dataset of type 'showcase') created.
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 0)
+
+    def test_showcase_create_with_name_arg(self):
+        '''
+        Calling showcase create with a name arg creates a showcase package.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+
+        # no showcases exist.
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 0)
+
+        helpers.call_action('ckanext_showcase_create',
+                            context=context, name='my-showcase')
+
+        # a showcases (dataset of type 'showcase') created.
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 1)
+
+    def test_showcase_create_with_existing_name(self):
+        '''
+        Calling showcase create with an existing name raises ValidationError.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        # a single showcases exist.
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 1)
+
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_create',
+                                context=context, name='my-showcase')
+
+        # still only one showcase exists.
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 1)
 
 
 class TestCreateShowcasePackageAssociation(helpers.FunctionalTestBase):

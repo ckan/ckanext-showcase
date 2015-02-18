@@ -4,15 +4,21 @@ import ckan.lib.uploader as uploader
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.navl.dictization_functions import validate
 
-from ckanext.showcase.logic.converters import convert_package_name_or_id_to_title_or_name
-from ckanext.showcase.logic.schema import showcase_package_association_create_schema
+import ckanext.showcase.logic.converters as showcase_converters
+import ckanext.showcase.logic.schema as showcase_schema
 from ckanext.showcase.model import ShowcasePackageAssociation
+
+convert_package_name_or_id_to_title_or_name = showcase_converters.convert_package_name_or_id_to_title_or_name
+showcase_package_association_create_schema = showcase_schema.showcase_package_association_create_schema
 
 log = logging.getLogger(__name__)
 
 
 def showcase_create(context, data_dict):
     '''Upload the image and continue with package creation.'''
+
+    # force type to 'showcase'
+    data_dict['type'] = 'showcase'
 
     upload = uploader.Upload('showcase')
     upload.update_data_dict(data_dict, 'image_url',

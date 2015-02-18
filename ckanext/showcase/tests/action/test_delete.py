@@ -40,12 +40,14 @@ class TestDeleteShowcase(helpers.FunctionalTestBase):
         showcase = factories.Dataset(type='showcase')
 
         # One showcase object created
-        nosetools.assert_equal(model.Session.query(Package).count(), 1)
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 1)
 
         helpers.call_action('ckanext_showcase_delete',
                             context=context, id=showcase['id'])
 
-        nosetools.assert_equal(model.Session.query(Package).count(), 0)
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 0)
 
     def test_showcase_delete_by_name(self):
         '''
@@ -56,12 +58,14 @@ class TestDeleteShowcase(helpers.FunctionalTestBase):
         showcase = factories.Dataset(type='showcase')
 
         # One showcase object created
-        nosetools.assert_equal(model.Session.query(Package).count(), 1)
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 1)
 
         helpers.call_action('ckanext_showcase_delete',
                             context=context, id=showcase['name'])
 
-        nosetools.assert_equal(model.Session.query(Package).count(), 0)
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 0)
 
     def test_showcase_delete_removes_associations(self):
         '''
@@ -186,5 +190,10 @@ class TestDeleteShowcasePackageAssociation(helpers.FunctionalTestBase):
                             context=context, package_id=package_id,
                             showcase_id=showcase_id)
 
-        # packages still exist
-        nosetools.assert_equal(model.Session.query(Package).count(), 2)
+        # package still exist
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'dataset').count(), 1)
+
+        # showcase still exist
+        nosetools.assert_equal(model.Session.query(Package)
+                               .filter(Package.type == 'showcase').count(), 1)
