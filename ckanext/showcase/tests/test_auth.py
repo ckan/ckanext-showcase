@@ -221,3 +221,37 @@ class TestShowcaseAuth(helpers.FunctionalTestBase):
 
         app.get('/showcase/manage_datasets/my-showcase', status=200,
                 extra_environ={'REMOTE_USER': str(user['name'])})
+
+    def test_auth_not_logged_in_user_cant_view_delete_showcase_page(self):
+        '''
+        A not logged in user can't access the showcase delete page.
+        '''
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/delete/my-showcase', status=302)
+
+    def test_auth_logged_in_user_cant_view_delete_showcase_page(self):
+        '''
+        A logged in user can't access the showcase delete page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/delete/my-showcase', status=401,
+                extra_environ={'REMOTE_USER': str(user['name'])})
+
+    def test_auth_sysadmin_can_view_delete_showcase_page(self):
+        '''
+        A sysadmin can access the showcase delete page.
+        '''
+        app = self._get_test_app()
+        user = factories.Sysadmin()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/delete/my-showcase', status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})
