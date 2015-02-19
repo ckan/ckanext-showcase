@@ -5,6 +5,80 @@ import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
 
+class TestShowcaseShow(helpers.FunctionalTestBase):
+
+    def test_showcase_show_no_args(self):
+        '''
+        Calling showcase show with no args raises a ValidationError.
+        '''
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_show')
+
+    def test_showcase_show_with_id(self):
+        '''
+        Calling showcase show with id arg returns showcase dict.
+        '''
+        my_showcase = factories.Dataset(type='showcase', name='my-showcase')
+
+        showcase_shown = helpers.call_action('ckanext_showcase_show', id=my_showcase['id'])
+
+        nosetools.assert_equal(my_showcase['name'], showcase_shown['name'])
+
+    def test_showcase_show_with_name(self):
+        '''
+        Calling showcase show with name arg returns showcase dict.
+        '''
+        my_showcase = factories.Dataset(type='showcase', name='my-showcase')
+
+        showcase_shown = helpers.call_action('ckanext_showcase_show', id=my_showcase['name'])
+
+        nosetools.assert_equal(my_showcase['id'], showcase_shown['id'])
+
+    def test_showcase_show_with_nonexisting_name(self):
+        '''
+        Calling showcase show with bad name arg returns ObjectNotFound.
+        '''
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        nosetools.assert_raises(toolkit.ObjectNotFound, helpers.call_action,
+                                'ckanext_showcase_show', id='my-bad-name')
+
+    def test_showcase_show_num_datasets_added(self):
+        '''
+        num_datasets property returned with showcase dict.
+        '''
+        my_showcase = factories.Dataset(type='showcase', name='my-showcase')
+
+        showcase_shown = helpers.call_action('ckanext_showcase_show', id=my_showcase['name'])
+
+        nosetools.assert_true('num_datasets' in showcase_shown)
+        nosetools.assert_equal(showcase_shown['num_datasets'], 0)
+
+    def test_showcase_show_num_datasets_correct_value(self):
+        '''
+        num_datasets property has correct value.
+        '''
+
+        sysadmin = factories.User(sysadmin=True)
+
+        my_showcase = factories.Dataset(type='showcase', name='my-showcase')
+        package_one = factories.Dataset()
+        package_two = factories.Dataset()
+
+        context = {'user': sysadmin['name']}
+        # create an association
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_one['id'],
+                            showcase_id=my_showcase['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_two['id'],
+                            showcase_id=my_showcase['id'])
+
+        showcase_shown = helpers.call_action('ckanext_showcase_show', id=my_showcase['name'])
+
+        nosetools.assert_equal(showcase_shown['num_datasets'], 2)
+
+
 class TestShowcasePackageList(helpers.FunctionalTestBase):
 
     '''Tests for ckanext_showcase_package_list'''

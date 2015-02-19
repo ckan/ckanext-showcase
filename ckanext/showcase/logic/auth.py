@@ -16,6 +16,12 @@ def update(context, data_dict):
     return {'success': False}
 
 
+@toolkit.auth_allow_anonymous_access
+def show(context, data_dict):
+    '''All users can access a showcase show'''
+    return {'success': True}
+
+
 def package_association_create(context, data_dict):
     return {'success': False}
 

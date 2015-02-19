@@ -1,11 +1,27 @@
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.navl.dictization_functions import validate
 
-from ckanext.showcase.logic.schema import showcase_package_list_schema, package_showcase_list_schema
+from ckanext.showcase.logic.schema import (showcase_package_list_schema,
+                                           package_showcase_list_schema,
+                                           showcase_show_schema)
 from ckanext.showcase.model import ShowcasePackageAssociation
 
 import logging
 log = logging.getLogger(__name__)
+
+
+def showcase_show(context, data_dict):
+    '''Return the pkg_dict for a showcase (package).
+
+    :param id: the id or name of the showcase
+    :type id: string
+    '''
+
+    toolkit.check_access('ckanext_showcase_show', context, data_dict)
+
+    pkg_dict = toolkit.get_action('package_show')(context, data_dict)
+
+    return pkg_dict
 
 
 def showcase_package_list(context, data_dict):
