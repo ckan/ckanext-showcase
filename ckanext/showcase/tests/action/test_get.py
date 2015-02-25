@@ -78,6 +78,38 @@ class TestShowcaseShow(helpers.FunctionalTestBase):
 
         nosetools.assert_equal(showcase_shown['num_datasets'], 2)
 
+    def test_showcase_show_num_datasets_correct_only_count_active_datsets(self):
+        '''
+        num_datasets property has correct value when some previously
+        associated datasets have been datasets.
+        '''
+        sysadmin = factories.User(sysadmin=True)
+
+        my_showcase = factories.Dataset(type='showcase', name='my-showcase')
+        package_one = factories.Dataset()
+        package_two = factories.Dataset()
+        package_three = factories.Dataset()
+
+        context = {'user': sysadmin['name']}
+        # create the associations
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_one['id'],
+                            showcase_id=my_showcase['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_two['id'],
+                            showcase_id=my_showcase['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_three['id'],
+                            showcase_id=my_showcase['id'])
+
+        # delete the first package
+        helpers.call_action('package_delete', context=context, id=package_one['id'])
+
+        showcase_shown = helpers.call_action('ckanext_showcase_show', id=my_showcase['name'])
+
+        # the num_datasets should only include active datasets
+        nosetools.assert_equal(showcase_shown['num_datasets'], 2)
+
 
 class TestShowcasePackageList(helpers.FunctionalTestBase):
 
@@ -160,6 +192,40 @@ class TestShowcasePackageList(helpers.FunctionalTestBase):
         helpers.call_action('ckanext_showcase_package_association_create',
                             context=context, package_id=package_two['id'],
                             showcase_id=showcase_id)
+
+        pkg_list = helpers.call_action('ckanext_showcase_package_list',
+                                       showcase_id=showcase_id)
+
+        # We've got two items in the pkg_list
+        nosetools.assert_equal(len(pkg_list), 2)
+
+    def test_showcase_package_list_showcase_only_contains_active_datasets(self):
+        '''
+        Calling ckanext_showcase_package_list will only return active datasets
+        (not deleted ones).
+        '''
+        sysadmin = factories.User(sysadmin=True)
+
+        package_one = factories.Dataset()
+        package_two = factories.Dataset()
+        package_three = factories.Dataset()
+        showcase_id = factories.Dataset(type='showcase')['id']
+        context = {'user': sysadmin['name']}
+        # create first association
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_one['id'],
+                            showcase_id=showcase_id)
+        # create second association
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_two['id'],
+                            showcase_id=showcase_id)
+        # create third association
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=package_three['id'],
+                            showcase_id=showcase_id)
+
+        # delete the first package
+        helpers.call_action('package_delete', context=context, id=package_one['id'])
 
         pkg_list = helpers.call_action('ckanext_showcase_package_list',
                                        showcase_id=showcase_id)

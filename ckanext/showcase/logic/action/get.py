@@ -46,10 +46,12 @@ def showcase_package_list(context, data_dict):
 
     pkg_list = []
     if pkg_id_list is not None:
-        # for each package id, get the package dict and append to list
+        # for each package id, get the package dict and append to list if
+        # active
         for pkg_id in pkg_id_list:
             pkg = toolkit.get_action('package_show')(context, {'id': pkg_id})
-            pkg_list.append(pkg)
+            if pkg['state'] == 'active':
+                pkg_list.append(pkg)
 
     return pkg_list
 
