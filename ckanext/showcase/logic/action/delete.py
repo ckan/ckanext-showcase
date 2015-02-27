@@ -12,7 +12,8 @@ log = logging.getLogger(__name__)
 
 
 def showcase_delete(context, data_dict):
-    '''Delete a showcase and its ShowcasePackageAssociation objects.
+    '''Delete a showcase. Showcase delete cascades to
+    ShowcasePackageAssociation objects.
 
     :param id: the id or name of the showcase to delete
     :type id: string
@@ -28,14 +29,6 @@ def showcase_delete(context, data_dict):
 
     toolkit.check_access('ckanext_showcase_delete', context, data_dict)
 
-    # get list of showcase packages associations for this showcase
-    showcase_package_associations = ShowcasePackageAssociation.filter(showcase_id=entity.id)
-
-    # delete each association in turn
-    for association in showcase_package_associations:
-        toolkit.get_action('ckanext_showcase_package_association_delete')(context, {'showcase_id': association.showcase_id,
-                                                                                    'package_id': association.package_id})
-    # now delete the showcase
     entity.purge()
     model.repo.commit()
 

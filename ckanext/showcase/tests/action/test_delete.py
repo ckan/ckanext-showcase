@@ -93,6 +93,64 @@ class TestDeleteShowcase(helpers.FunctionalTestBase):
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
 
 
+class TestDeletePackage(helpers.FunctionalTestBase):
+
+    def test_package_delete_retains_associations(self):
+        '''
+        Deleting a package (setting its status to 'delete') retains associated
+        ShowcasePackageAssociation objects.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        showcase = factories.Dataset(type='showcase', name='my-showcase')
+        dataset_one = factories.Dataset(name='dataset-one')
+        dataset_two = factories.Dataset(name='dataset-two')
+
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset_one['id'],
+                            showcase_id=showcase['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset_two['id'],
+                            showcase_id=showcase['id'])
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 2)
+
+        # delete the first package, should also delete the
+        # ShowcasePackageAssociation associated with it.
+        helpers.call_action('package_delete',
+                            context=context, id=dataset_one['id'])
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 2)
+
+    def test_package_purge_retains_associations(self):
+        '''
+        Purging a package (actually deleting it from the database) deletes
+        associated ShowcasePackageAssociation objects.
+        '''
+        sysadmin = factories.Sysadmin()
+        context = {'user': sysadmin['name']}
+        showcase = factories.Dataset(type='showcase', name='my-showcase')
+        dataset_one = factories.Dataset(name='dataset-one')
+        dataset_two = factories.Dataset(name='dataset-two')
+
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset_one['id'],
+                            showcase_id=showcase['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset_two['id'],
+                            showcase_id=showcase['id'])
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 2)
+
+        # purge the first package, should also delete the
+        # ShowcasePackageAssociation associated with it.
+        pkg = model.Session.query(model.Package).get(dataset_one['id'])
+        pkg.purge()
+        model.repo.commit_and_remove()
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 1)
+
+
 class TestDeleteShowcasePackageAssociation(helpers.FunctionalTestBase):
 
     def test_association_delete_no_args(self):

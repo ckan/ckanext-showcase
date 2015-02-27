@@ -71,15 +71,19 @@ class ShowcasePackageAssociation(DomainObject):
 
 
 def define_showcase_package_association_table():
-        global showcase_package_assocation_table
+    global showcase_package_assocation_table
 
-        showcase_package_assocation_table = Table('showcase_package_association', metadata,
-                                                  Column('package_id', types.UnicodeText,
-                                                         ForeignKey('package.id'),
-                                                         primary_key=True, nullable=False),
-                                                  Column('showcase_id', types.UnicodeText,
-                                                         ForeignKey('package.id'),
-                                                         primary_key=True, nullable=False)
-                                                  )
+    showcase_package_assocation_table = Table('showcase_package_association', metadata,
+                                              Column('package_id', types.UnicodeText,
+                                                     ForeignKey('package.id',
+                                                                ondelete='CASCADE',
+                                                                onupdate='CASCADE'),
+                                                     primary_key=True, nullable=False),
+                                              Column('showcase_id', types.UnicodeText,
+                                                     ForeignKey('package.id',
+                                                                ondelete='CASCADE',
+                                                                onupdate='CASCADE'),
+                                                     primary_key=True, nullable=False)
+                                              )
 
-        mapper(ShowcasePackageAssociation, showcase_package_assocation_table)
+    mapper(ShowcasePackageAssociation, showcase_package_assocation_table)

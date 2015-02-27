@@ -78,7 +78,7 @@ class TestShowcaseShow(helpers.FunctionalTestBase):
 
         nosetools.assert_equal(showcase_shown['num_datasets'], 2)
 
-    def test_showcase_show_num_datasets_correct_only_count_active_datsets(self):
+    def test_showcase_show_num_datasets_correct_only_count_active_datasets(self):
         '''
         num_datasets property has correct value when some previously
         associated datasets have been datasets.
@@ -232,6 +232,11 @@ class TestShowcasePackageList(helpers.FunctionalTestBase):
 
         # We've got two items in the pkg_list
         nosetools.assert_equal(len(pkg_list), 2)
+
+        pkg_list_ids = [pkg['id'] for pkg in pkg_list]
+        nosetools.assert_true(package_two['id'] in pkg_list_ids)
+        nosetools.assert_true(package_three['id'] in pkg_list_ids)
+        nosetools.assert_false(package_one['id'] in pkg_list_ids)
 
     def test_showcase_package_list_package_isnot_a_showcase(self):
         '''
