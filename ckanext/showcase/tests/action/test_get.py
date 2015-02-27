@@ -111,6 +111,41 @@ class TestShowcaseShow(helpers.FunctionalTestBase):
         nosetools.assert_equal(showcase_shown['num_datasets'], 2)
 
 
+class TestShowcaseList(helpers.FunctionalTestBase):
+
+    def test_showcase_list(self):
+        '''Showcase list action returns names of showcases in site.'''
+
+        showcase_one = factories.Dataset(type='showcase')
+        showcase_two = factories.Dataset(type='showcase')
+        showcase_three = factories.Dataset(type='showcase')
+
+        showcase_list = helpers.call_action('ckanext_showcase_list')
+
+        nosetools.assert_equal(len(showcase_list), 3)
+        nosetools.assert_true(sorted(showcase_list) ==
+                              sorted([showcase['name']
+                                     for showcase in [showcase_one,
+                                                      showcase_two,
+                                                      showcase_three]]))
+
+    def test_showcase_list_no_datasets(self):
+        '''
+        Showcase list action doesn't return normal datasets (of type
+        'dataset').
+        '''
+        showcase_one = factories.Dataset(type='showcase')
+        dataset_one = factories.Dataset()
+        dataset_two = factories.Dataset()
+
+        showcase_list = helpers.call_action('ckanext_showcase_list')
+
+        nosetools.assert_equal(len(showcase_list), 1)
+        nosetools.assert_true(showcase_one['name'] in showcase_list)
+        nosetools.assert_true(dataset_one['name'] not in showcase_list)
+        nosetools.assert_true(dataset_two['name'] not in showcase_list)
+
+
 class TestShowcasePackageList(helpers.FunctionalTestBase):
 
     '''Tests for ckanext_showcase_package_list'''

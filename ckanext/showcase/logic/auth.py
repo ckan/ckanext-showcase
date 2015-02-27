@@ -22,6 +22,12 @@ def show(context, data_dict):
     return {'success': True}
 
 
+@toolkit.auth_allow_anonymous_access
+def list(context, data_dict):
+    '''All users can access a showcase list'''
+    return {'success': True}
+
+
 def package_association_create(context, data_dict):
     return {'success': False}
 
