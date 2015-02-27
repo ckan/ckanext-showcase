@@ -57,7 +57,8 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
         '''Creating a new showcase redirects to the add datasets form.'''
         app = self._get_test_app()
         sysadmin = factories.Sysadmin()
-        factories.Dataset(name='my-dataset')
+        # need a dataset for the 'bulk_action.showcase_add' button to show
+        factories.Dataset()
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
@@ -72,6 +73,51 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
 
         # Unique to add_datasets page
         nosetools.assert_true('bulk_action.showcase_add' in create_response)
+        # Requested page is the add_datasets url.
+        nosetools.assert_equal(url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                       action='add_datasets', id='my-showcase'), create_response.request.path)
+
+
+class TestShowcaseEditView(helpers.FunctionalTestBase):
+
+    def test_showcase_edit_form_renders(self):
+        '''
+        Edit form renders in response for ShowcaseController edit action.
+        '''
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        factories.Dataset(name='my-showcase', type='showcase')
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='edit',
+                        id='my-showcase'),
+            extra_environ=env,
+        )
+        nosetools.assert_true('dataset-edit' in response.forms)
+
+    def test_showcase_edit_redirects_to_add_datasets(self):
+        '''Editing a showcase redirects to the showcase details page.'''
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        factories.Dataset(name='my-showcase', type='showcase')
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='edit', id='my-showcase'),
+            extra_environ=env,
+        )
+
+        # edit showcase
+        form = response.forms['dataset-edit']
+        form['name'] = u'my-changed-showcase'
+        edit_response = submit_and_follow(app, form, env, 'save')
+
+        # Requested page is the showcase read url.
+        nosetools.assert_equal(url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                       action='read', id='my-changed-showcase'), edit_response.request.path)
 
 
 class TestDatasetView(helpers.FunctionalTestBase):
