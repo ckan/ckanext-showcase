@@ -1,3 +1,6 @@
+import json
+from nose import tools as nosetools
+
 import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
@@ -131,6 +134,53 @@ class TestShowcaseAuthDetails(helpers.FunctionalTestBase):
         # test for url to edit page
         response.mustcontain("/showcase/edit/my-showcase")
 
+    def test_auth_showcase_show_anon_can_access(self):
+        '''
+        Anon user can request showcase show.
+        '''
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/api/3/action/ckanext_showcase_show?id=my-showcase',
+                           status=200)
+
+        json_response = json.loads(response.body)
+
+        nosetools.assert_true(json_response['success'])
+
+    def test_auth_showcase_show_normal_user_can_access(self):
+        '''
+        Normal logged in user can request showcase show.
+        '''
+        user = factories.User()
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/api/3/action/ckanext_showcase_show?id=my-showcase',
+                           status=200, extra_environ={'REMOTE_USER': str(user['name'])})
+
+        json_response = json.loads(response.body)
+
+        nosetools.assert_true(json_response['success'])
+
+    def test_auth_showcase_show_sysadmin_can_access(self):
+        '''
+        Normal logged in user can request showcase show.
+        '''
+        user = factories.Sysadmin()
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/api/3/action/ckanext_showcase_show?id=my-showcase',
+                           status=200, extra_environ={'REMOTE_USER': str(user['name'])})
+
+        json_response = json.loads(response.body)
+
+        nosetools.assert_true(json_response['success'])
+
 
 class TestShowcaseAuthCreate(helpers.FunctionalTestBase):
 
@@ -158,6 +208,56 @@ class TestShowcaseAuthCreate(helpers.FunctionalTestBase):
         user = factories.Sysadmin()
         app.get("/showcase/new", status=200,
                 extra_environ={'REMOTE_USER': str(user['name'])})
+
+
+class TestShowcaseAuthList(helpers.FunctionalTestBase):
+
+    def test_auth_showcase_list_anon_can_access(self):
+        '''
+        Anon user can request showcase list.
+        '''
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/api/3/action/ckanext_showcase_list',
+                           status=200)
+
+        json_response = json.loads(response.body)
+
+        nosetools.assert_true(json_response['success'])
+
+    def test_auth_showcase_list_normal_user_can_access(self):
+        '''
+        Normal logged in user can request showcase list.
+        '''
+        user = factories.User()
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/api/3/action/ckanext_showcase_list',
+                           status=200, extra_environ={'REMOTE_USER': str(user['name'])})
+
+        json_response = json.loads(response.body)
+
+        nosetools.assert_true(json_response['success'])
+
+    def test_auth_showcase_list_sysadmin_can_access(self):
+        '''
+        Normal logged in user can request showcase list.
+        '''
+        user = factories.Sysadmin()
+        app = self._get_test_app()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        response = app.get('/api/3/action/ckanext_showcase_list',
+                           status=200, extra_environ={'REMOTE_USER': str(user['name'])})
+
+        json_response = json.loads(response.body)
+
+        nosetools.assert_true(json_response['success'])
 
 
 class TestShowcaseAuthEdit(helpers.FunctionalTestBase):

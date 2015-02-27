@@ -1,6 +1,5 @@
 import sqlalchemy
 
-from ckan import logic
 import ckan.plugins.toolkit as toolkit
 from ckan.lib.navl.dictization_functions import validate
 
@@ -15,6 +14,7 @@ _select = sqlalchemy.sql.select
 _and_ = sqlalchemy.and_
 
 
+@toolkit.side_effect_free
 def showcase_show(context, data_dict):
     '''Return the pkg_dict for a showcase (package).
 
@@ -56,6 +56,7 @@ def showcase_list(context, data_dict):
     return [r[0] for r in query.execute()]
 
 
+@toolkit.side_effect_free
 def showcase_package_list(context, data_dict):
     '''List packages associated with a showcase.
 
@@ -88,6 +89,7 @@ def showcase_package_list(context, data_dict):
     return pkg_list
 
 
+@toolkit.side_effect_free
 def package_showcase_list(context, data_dict):
     '''List showcases associated with a package.
 
