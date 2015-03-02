@@ -5,6 +5,7 @@ package        - A package to display.
 item_class     - The class name to use on the list item.
 truncate       - The length to trucate the description to (default: 180)
 truncate_title - The length to truncate the title to (default: 80).
+show_remove    - If True, show the remove button to remove showcase/dataset association.
 
 #}
 {% set truncate = truncate or 180 %}
@@ -41,6 +42,9 @@ truncate_title - The length to truncate the title to (default: 80).
         <span>{{ _('View {name}').format(name=package.title) }}</span>
       </a>
     {% endblock %}
+    {% if show_remove %}
+      <form method="post"><input type="hidden" value="{{ package.id }}" name="remove_showcase_id" /><input value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-small media-edit" title="{{ _('Remove dataset from this showcase') }}"/></form>
+    {% endif %}
   {% endblock %}
 </li>
 {% endblock %}

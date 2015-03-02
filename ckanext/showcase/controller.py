@@ -200,6 +200,7 @@ class ShowcaseController(PackageController):
             abort(401, _('Unauthorized to read package %s') % id)
 
         if request.method == 'POST':
+            # Are we adding the dataset to a showcase?
             new_showcase = request.POST.get('showcase_added')
             if new_showcase:
                 data_dict = {"showcase_id": new_showcase,
@@ -208,6 +209,20 @@ class ShowcaseController(PackageController):
                     get_action('ckanext_showcase_package_association_create')(context, data_dict)
                 except NotFound:
                     abort(404, _('Showcase not found'))
+                else:
+                    h.flash_success(_("The dataset has been added to the showcase."))
+
+            # Are we removing a dataset from a showcase?
+            showcase_to_remove = request.POST.get('remove_showcase_id')
+            if showcase_to_remove:
+                data_dict = {"showcase_id": showcase_to_remove,
+                             "package_id": c.pkg_dict['id']}
+                try:
+                    get_action('ckanext_showcase_package_association_delete')(context, data_dict)
+                except NotFound:
+                    abort(404, _('Showcase not found'))
+                else:
+                    h.flash_success(_("The dataset has been removed from the showcase."))
             redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
                                action='dataset_showcase_list', id=c.pkg_dict['name']))
 

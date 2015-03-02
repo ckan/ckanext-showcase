@@ -244,3 +244,37 @@ class TestDatasetView(helpers.FunctionalTestBase):
         nosetools.assert_equal(showcase_add_response.request.path, "/dataset/showcases/my-dataset")
         # an association is created
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 1)
+
+    def test_dataset_showcase_page_remove_showcase_button_submit(self):
+        '''
+        Submitting 'Remove' form with selected showcase value deletes a sc/pkg
+        association.
+        '''
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        dataset = factories.Dataset(name='my-dataset')
+        showcase_one = factories.Dataset(name='my-first-showcase', type='showcase')
+
+        context = {'user': sysadmin['name']}
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset['id'],
+                            showcase_id=showcase_one['id'])
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 1)
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='dataset_showcase_list', id=dataset['id']),
+            extra_environ=env
+        )
+
+        # Submit the remove form.
+        form = response.forms[1]
+        nosetools.assert_equal(form['remove_showcase_id'].value, showcase_one['id'])
+        showcase_remove_response = submit_and_follow(app, form, env)
+
+        # returns to the correct page
+        nosetools.assert_equal(showcase_remove_response.request.path, "/dataset/showcases/my-dataset")
+        # the association is deleted
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
