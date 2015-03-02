@@ -1,4 +1,5 @@
 import json
+from routes import url_for
 from nose import tools as nosetools
 
 import ckan.new_tests.factories as factories
@@ -363,3 +364,49 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
 
         app.get('/showcase/delete/my-showcase', status=200,
                 extra_environ={'REMOTE_USER': str(user['name'])})
+
+    def test_auth_anon_user_cant_view_addtoshowcase_dropdown_dataset_showcase_list(self):
+        '''
+        An anonymous user can't view the 'Add to showcase' dropdown selector
+        from a datasets showcase list page.
+        '''
+        app = self._get_test_app()
+
+        factories.Dataset(name='my-showcase', type='showcase')
+        factories.Dataset(name='my-dataset')
+
+        showcase_list_response = app.get('/dataset/showcases/my-dataset', status=200)
+
+        nosetools.assert_false('showcase-add' in showcase_list_response.forms)
+
+    def test_auth_normal_user_cant_view_addtoshowcase_dropdown_dataset_showcase_list(self):
+        '''
+        A normal (logged in) user can't view the 'Add to showcase' dropdown
+        selector from a datasets showcase list page.
+        '''
+        user = factories.User()
+        app = self._get_test_app()
+
+        factories.Dataset(name='my-showcase', type='showcase')
+        factories.Dataset(name='my-dataset')
+
+        showcase_list_response = app.get('/dataset/showcases/my-dataset', status=200,
+                                         extra_environ={'REMOTE_USER': str(user['name'])})
+
+        nosetools.assert_false('showcase-add' in showcase_list_response.forms)
+
+    def test_auth_sysadmin_can_view_addtoshowcase_dropdown_dataset_showcase_list(self):
+        '''
+        A sysadmin can view the 'Add to showcase' dropdown selector from a
+        datasets showcase list page.
+        '''
+        user = factories.Sysadmin()
+        app = self._get_test_app()
+
+        factories.Dataset(name='my-showcase', type='showcase')
+        factories.Dataset(name='my-dataset')
+
+        showcase_list_response = app.get('/dataset/showcases/my-dataset', status=200,
+                                         extra_environ={'REMOTE_USER': str(user['name'])})
+
+        nosetools.assert_true('showcase-add' in showcase_list_response.forms)

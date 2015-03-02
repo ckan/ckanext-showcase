@@ -122,9 +122,11 @@ class TestShowcaseList(helpers.FunctionalTestBase):
 
         showcase_list = helpers.call_action('ckanext_showcase_list')
 
+        showcase_list_name_id = [(sc['name'], sc['id']) for sc in showcase_list]
+
         nosetools.assert_equal(len(showcase_list), 3)
-        nosetools.assert_true(sorted(showcase_list) ==
-                              sorted([showcase['name']
+        nosetools.assert_true(sorted(showcase_list_name_id) ==
+                              sorted([(showcase['name'], showcase['id'])
                                      for showcase in [showcase_one,
                                                       showcase_two,
                                                       showcase_three]]))
@@ -140,10 +142,12 @@ class TestShowcaseList(helpers.FunctionalTestBase):
 
         showcase_list = helpers.call_action('ckanext_showcase_list')
 
+        showcase_list_name_id = [(sc['name'], sc['id']) for sc in showcase_list]
+
         nosetools.assert_equal(len(showcase_list), 1)
-        nosetools.assert_true(showcase_one['name'] in showcase_list)
-        nosetools.assert_true(dataset_one['name'] not in showcase_list)
-        nosetools.assert_true(dataset_two['name'] not in showcase_list)
+        nosetools.assert_true((showcase_one['name'], showcase_one['id']) in showcase_list_name_id)
+        nosetools.assert_true((dataset_one['name'], dataset_one['id']) not in showcase_list_name_id)
+        nosetools.assert_true((dataset_two['name'], dataset_two['id']) not in showcase_list_name_id)
 
 
 class TestShowcasePackageList(helpers.FunctionalTestBase):

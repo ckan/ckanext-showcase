@@ -1,6 +1,7 @@
 import sqlalchemy
 
 import ckan.plugins.toolkit as toolkit
+import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib.navl.dictization_functions import validate
 
 from ckanext.showcase.logic.schema import (showcase_package_list_schema,
@@ -32,28 +33,20 @@ def showcase_show(context, data_dict):
 @toolkit.side_effect_free
 def showcase_list(context, data_dict):
     '''Return a list of all showcases in the site.'''
+
     toolkit.check_access('ckanext_showcase_list', context, data_dict)
 
     model = context["model"]
 
-    package_table = model.package_table
-    col = package_table.c.name
-    query = _select([col])
-    query = query.where(_and_(
-        package_table.c.state == 'active',
-        package_table.c.type == 'showcase',
-    ))
-    query = query.order_by(col)
+    q = model.Session.query(model.Package) \
+        .filter(model.Package.type == 'showcase') \
+        .filter(model.Package.state == 'active')
 
-    limit = data_dict.get('limit')
-    if limit:
-        query = query.limit(limit)
+    showcase_list = []
+    for pkg in q.all():
+        showcase_list.append(model_dictize.package_dictize(pkg, context))
 
-    offset = data_dict.get('offset')
-    if offset:
-        query = query.offset(offset)
-
-    return [r[0] for r in query.execute()]
+    return showcase_list
 
 
 @toolkit.side_effect_free

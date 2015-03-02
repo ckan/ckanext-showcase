@@ -176,7 +176,8 @@ class ShowcaseController(PackageController):
 
     def dataset_showcase_list(self, id):
         '''
-        Display a list of showcases a dataset is associated with.
+        Display a list of showcases a dataset is associated with, with an
+        option to add to showcase from a list.
         '''
         context = {'model': model, 'session': model.Session,
                    'user': c.user or c.author, 'for_view': True,
@@ -197,6 +198,25 @@ class ShowcaseController(PackageController):
             abort(404, _('Dataset not found'))
         except logic.NotAuthorized:
             abort(401, _('Unauthorized to read package %s') % id)
+
+        if request.method == 'POST':
+            new_showcase = request.POST.get('showcase_added')
+            if new_showcase:
+                data_dict = {"showcase_id": new_showcase,
+                             "package_id": c.pkg_dict['id']}
+                try:
+                    get_action('ckanext_showcase_package_association_create')(context, data_dict)
+                except NotFound:
+                    abort(404, _('Showcase not found'))
+            redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                               action='dataset_showcase_list', id=c.pkg_dict['name']))
+
+        pkg_showcase_ids = [showcase['id'] for showcase in c.showcase_list]
+        site_showcases = get_action('ckanext_showcase_list')(context, {})
+
+        c.showcase_dropdown = [[showcase['id'], showcase['title']]
+                               for showcase in site_showcases
+                               if showcase['id'] not in pkg_showcase_ids]
 
         return render("package/dataset_showcase_list.html")
 

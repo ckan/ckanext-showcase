@@ -1,8 +1,11 @@
 from routes import url_for
 from nose import tools as nosetools
 
+import ckan.model as model
 import ckan.new_tests.helpers as helpers
 import ckan.new_tests.factories as factories
+
+from ckanext.showcase.model import ShowcasePackageAssociation
 
 import logging
 log = logging.getLogger(__name__)
@@ -181,3 +184,63 @@ class TestDatasetView(helpers.FunctionalTestBase):
         nosetools.assert_true('my-first-showcase' in response)
         nosetools.assert_true('my-second-showcase' in response)
         nosetools.assert_true('my-third-showcase' not in response)
+
+    def test_dataset_showcase_page_add_to_showcase_dropdown_list(self):
+        '''
+        Add to showcase dropdown only lists showcases that aren't already
+        associated with dataset.
+        '''
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        dataset = factories.Dataset(name='my-dataset')
+        showcase_one = factories.Dataset(name='my-first-showcase', type='showcase')
+        showcase_two = factories.Dataset(name='my-second-showcase', type='showcase')
+        showcase_three = factories.Dataset(name='my-third-showcase', type='showcase')
+
+        context = {'user': sysadmin['name']}
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=context, package_id=dataset['id'],
+                            showcase_id=showcase_one['id'])
+
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='dataset_showcase_list', id=dataset['id']),
+            extra_environ={'REMOTE_USER': str(sysadmin['name'])}
+        )
+
+        showcase_add_form = response.forms['showcase-add']
+        showcase_added_options = [value for (value, _) in showcase_add_form['showcase_added'].options]
+        nosetools.assert_true(showcase_one['id'] not in showcase_added_options)
+        nosetools.assert_true(showcase_two['id'] in showcase_added_options)
+        nosetools.assert_true(showcase_three['id'] in showcase_added_options)
+
+    def test_dataset_showcase_page_add_to_showcase_dropdown_submit(self):
+        '''
+        Submitting 'Add to showcase' form with selected showcase value creates
+        a sc/pkg association.
+        '''
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        dataset = factories.Dataset(name='my-dataset')
+        showcase_one = factories.Dataset(name='my-first-showcase', type='showcase')
+        factories.Dataset(name='my-second-showcase', type='showcase')
+        factories.Dataset(name='my-third-showcase', type='showcase')
+
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='dataset_showcase_list', id=dataset['id']),
+            extra_environ=env
+        )
+
+        form = response.forms['showcase-add']
+        form['showcase_added'] = showcase_one['id']
+        showcase_add_response = submit_and_follow(app, form, env)
+
+        # returns to the correct page
+        nosetools.assert_equal(showcase_add_response.request.path, "/dataset/showcases/my-dataset")
+        # an association is created
+        nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 1)
