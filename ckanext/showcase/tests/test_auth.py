@@ -412,9 +412,79 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         nosetools.assert_true('showcase-add' in showcase_list_response.forms)
 
 
+class TestShowcasePackageAssociationCreate(helpers.FunctionalTestBase):
+
+    def test_showcase_package_association_create_no_user(self):
+        '''
+        Calling showcase package association create with no user raises
+        NotAuthorized.
+        '''
+
+        context = {'user': None, 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_package_association_create',
+                                context=context)
+
+    def test_showcase_package_association_create_correct_creds(self):
+        '''
+        Calling showcase package association create by a sysadmin doesn't
+        raise NotAuthorized.
+        '''
+        a_sysadmin = factories.Sysadmin()
+        context = {'user': a_sysadmin['name'], 'model': None}
+        helpers.call_auth('ckanext_showcase_package_association_create',
+                          context=context)
+
+    def test_showcase_package_association_create_unauthorized_creds(self):
+        '''
+        Calling showcase package association create with unauthorized user
+        raises NotAuthorized.
+        '''
+        not_a_sysadmin = factories.User()
+        context = {'user': not_a_sysadmin['name'], 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_package_association_create',
+                                context=context)
+
+
+class TestShowcasePackageAssociationDelete(helpers.FunctionalTestBase):
+
+    def test_showcase_package_association_delete_no_user(self):
+        '''
+        Calling showcase package association create with no user raises
+        NotAuthorized.
+        '''
+
+        context = {'user': None, 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_package_association_delete',
+                                context=context)
+
+    def test_showcase_package_association_delete_correct_creds(self):
+        '''
+        Calling showcase package association create by a sysadmin doesn't
+        raise NotAuthorized.
+        '''
+        a_sysadmin = factories.Sysadmin()
+        context = {'user': a_sysadmin['name'], 'model': None}
+        helpers.call_auth('ckanext_showcase_package_association_delete',
+                          context=context)
+
+    def test_showcase_package_association_delete_unauthorized_creds(self):
+        '''
+        Calling showcase package association create with unauthorized user
+        raises NotAuthorized.
+        '''
+        not_a_sysadmin = factories.User()
+        context = {'user': not_a_sysadmin['name'], 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_package_association_delete',
+                                context=context)
+
+
 class TestShowcaseAdminAddAuth(helpers.FunctionalTestBase):
 
-    def test_showcase_admin_add_no_args(self):
+    def test_showcase_admin_add_no_user(self):
         '''
         Calling showcase admin add with no user raises NotAuthorized.
         '''
