@@ -228,3 +228,14 @@ class TestCreateShowcaseAdmin(helpers.FunctionalTestBase):
 
         nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
         nosetools.assert_equal(ShowcaseAdmin.get_showcase_admin_ids(), [])
+
+    def test_showcase_admin_add_no_args(self):
+        '''
+        Calling ckanext_showcase_admin_add with no args raises ValidationError
+        and no ShowcaseAdmin object is created.
+        '''
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_admin_add', context={})
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
+        nosetools.assert_equal(ShowcaseAdmin.get_showcase_admin_ids(), [])

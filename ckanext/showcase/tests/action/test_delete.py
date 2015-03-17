@@ -5,8 +5,9 @@ import ckan.plugins.toolkit as toolkit
 import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
-from ckanext.showcase.model import ShowcasePackageAssociation
+from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 from ckan.model.package import Package
+from ckan.model.user import User
 
 
 class TestDeleteShowcase(helpers.FunctionalTestBase):
@@ -122,7 +123,7 @@ class TestDeletePackage(helpers.FunctionalTestBase):
 
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 2)
 
-    def test_package_purge_retains_associations(self):
+    def test_package_purge_deletes_associations(self):
         '''
         Purging a package (actually deleting it from the database) deletes
         associated ShowcasePackageAssociation objects.
@@ -255,3 +256,87 @@ class TestDeleteShowcasePackageAssociation(helpers.FunctionalTestBase):
         # showcase still exist
         nosetools.assert_equal(model.Session.query(Package)
                                .filter(Package.type == 'showcase').count(), 1)
+
+
+class TestRemoveShowcaseAdmin(helpers.FunctionalTestBase):
+
+    def test_showcase_admin_remove_deletes_showcase_admin_user(self):
+        '''
+        Calling ckanext_showcase_admin_remove deletes ShowcaseAdmin object.
+        '''
+        user = factories.User()
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
+
+        # There's a ShowcaseAdmin obj
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 1)
+
+        helpers.call_action('ckanext_showcase_admin_remove', context={},
+                            username=user['name'])
+
+        # There's no ShowcaseAdmin obj
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
+        nosetools.assert_equal(ShowcaseAdmin.get_showcase_admin_ids(), [])
+
+    def test_showcase_admin_delete_user_removes_showcase_admin_object(self):
+        '''
+        Deleting a user also deletes the corresponding ShowcaseAdmin object.
+        '''
+        user = factories.User()
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
+
+        # There's a ShowcaseAdmin object
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 1)
+        nosetools.assert_true(user['id'] in ShowcaseAdmin.get_showcase_admin_ids())
+
+        # purge the user, should also delete the ShowcaseAdmin object
+        # associated with it.
+        user_obj = model.Session.query(model.User).get(user['id'])
+        user_obj.purge()
+        model.repo.commit_and_remove()
+
+        # The ShowcaseAdmin has also been removed
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
+        nosetools.assert_equal(ShowcaseAdmin.get_showcase_admin_ids(), [])
+
+    def test_showcase_admin_remove_retains_user(self):
+        '''
+        Deleting a ShowcaseAdmin object doesn't delete the corresponding user.
+        '''
+
+        user = factories.User()
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
+
+        # We have a user
+        user_obj = model.Session.query(model.User).get(user['id'])
+        nosetools.assert_true(user_obj is not None)
+
+        helpers.call_action('ckanext_showcase_admin_remove', context={},
+                            username=user['name'])
+
+        # We still have a user
+        user_obj = model.Session.query(model.User).get(user['id'])
+        nosetools.assert_true(user_obj is not None)
+
+    def test_showcase_admin_remove_with_bad_username(self):
+        '''
+        Calling showcase admin remove with a non-existent user raises
+        ValidationError.
+        '''
+
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_admin_remove', context={},
+                                username='no-one-here')
+
+    def test_showcase_admin_remove_with_no_args(self):
+        '''
+        Calling showcase admin remove with no arg raises ValidationError.
+        '''
+
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_admin_remove', context={})

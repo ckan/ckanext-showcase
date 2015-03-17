@@ -136,3 +136,7 @@ def showcase_admin_add_schema():
         'username': [not_empty, user_name_exists, unicode],
     }
     return schema
+
+
+def showcase_admin_remove_schema():
+    return showcase_admin_add_schema()

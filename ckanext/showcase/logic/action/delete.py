@@ -1,10 +1,12 @@
 import logging
 
 import ckan.plugins.toolkit as toolkit
+from ckan.logic.converters import convert_user_name_or_id_to_id
 import ckan.lib.navl.dictization_functions
 
-from ckanext.showcase.logic.schema import showcase_package_association_delete_schema
-from ckanext.showcase.model import ShowcasePackageAssociation
+from ckanext.showcase.logic.schema import showcase_package_association_delete_schema, showcase_admin_remove_schema
+
+from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 
 validate = ckan.lib.navl.dictization_functions.validate
 
@@ -63,4 +65,33 @@ def showcase_package_association_delete(context, data_dict):
 
     # delete the association
     showcase_package_association.delete()
+    model.repo.commit()
+
+
+def showcase_admin_remove(context, data_dict):
+    '''Remove a user to the list of showcase admins.
+
+    :param username: name of the user to remove from showcase user admin list
+    :type username: string
+    '''
+
+    model = context['model']
+
+    toolkit.check_access('ckanext_showcase_admin_remove', context, data_dict)
+
+    # validate the incoming data_dict
+    validated_data_dict, errors = validate(data_dict, showcase_admin_remove_schema(), context)
+
+    if errors:
+        raise toolkit.ValidationError(errors)
+
+    username = toolkit.get_or_bust(validated_data_dict, 'username')
+    user_id = convert_user_name_or_id_to_id(username, context)
+
+    showcase_admin_to_remove = ShowcaseAdmin.get(user_id=user_id)
+
+    if showcase_admin_to_remove is None:
+        raise toolkit.ValidationError("ShowcaseAdmin with user_id '{0}' doesn't exist.".format(user_id))
+
+    showcase_admin_to_remove.delete()
     model.repo.commit()

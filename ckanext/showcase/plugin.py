@@ -151,6 +151,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'ckanext_showcase_package_list': ckanext.showcase.logic.action.get.showcase_package_list,
             'ckanext_package_showcase_list': ckanext.showcase.logic.action.get.package_showcase_list,
             'ckanext_showcase_admin_add': ckanext.showcase.logic.action.create.showcase_admin_add,
+            'ckanext_showcase_admin_remove': ckanext.showcase.logic.action.delete.showcase_admin_remove,
         }
         return action_functions
 
