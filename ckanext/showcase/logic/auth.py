@@ -46,3 +46,13 @@ def showcase_package_list(context, data_dict):
 def package_showcase_list(context, data_dict):
     '''All users can access a packages's showcase list'''
     return {'success': True}
+
+
+def add_showcase_admin(context, data_dict):
+    '''Only sysadmins can add users to showcase admin list.'''
+    return {'success': False}
+
+
+def remove_showcase_admin(context, data_dict):
+    '''Only sysadmins can remove users from showcase admin list.'''
+    return {'success': False}

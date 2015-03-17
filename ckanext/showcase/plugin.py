@@ -108,7 +108,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'ckanext_showcase_package_association_create': ckanext.showcase.logic.auth.package_association_create,
             'ckanext_showcase_package_association_delete': ckanext.showcase.logic.auth.package_association_delete,
             'ckanext_showcase_package_list': ckanext.showcase.logic.auth.showcase_package_list,
-            'ckanext_package_showcase_list': ckanext.showcase.logic.auth.package_showcase_list
+            'ckanext_package_showcase_list': ckanext.showcase.logic.auth.package_showcase_list,
+            'ckanext_showcase_admin_add': ckanext.showcase.logic.auth.add_showcase_admin,
+            'ckanext_showcase_admin_remove': ckanext.showcase.logic.auth.remove_showcase_admin
         }
 
     # IRoutes
@@ -147,7 +149,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'ckanext_showcase_package_association_create': ckanext.showcase.logic.action.create.showcase_package_association_create,
             'ckanext_showcase_package_association_delete': ckanext.showcase.logic.action.delete.showcase_package_association_delete,
             'ckanext_showcase_package_list': ckanext.showcase.logic.action.get.showcase_package_list,
-            'ckanext_package_showcase_list': ckanext.showcase.logic.action.get.package_showcase_list
+            'ckanext_package_showcase_list': ckanext.showcase.logic.action.get.package_showcase_list,
+            'ckanext_showcase_admin_add': ckanext.showcase.logic.action.create.showcase_admin_add,
         }
         return action_functions
 

@@ -7,6 +7,7 @@ from ckan.lib.navl.validators import (not_empty,
                                       keep_extras)
 from ckan.logic.validators import (package_id_not_changed,
                                    name_validator,
+                                   user_name_exists,
                                    package_name_validator,
                                    tag_string_convert,
                                    ignore_not_package_admin,
@@ -126,5 +127,12 @@ def showcase_package_list_schema():
 def package_showcase_list_schema():
     schema = {
         'package_id': [not_empty, unicode, convert_package_name_or_id_to_id_for_type_dataset]
+    }
+    return schema
+
+
+def showcase_admin_add_schema():
+    schema = {
+        'username': [not_empty, user_name_exists, unicode],
     }
     return schema

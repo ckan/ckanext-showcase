@@ -12,9 +12,11 @@ log = logging.getLogger(__name__)
 
 
 showcase_package_assocation_table = None
+showcase_admin_table = None
 
 
 def setup():
+    # setup showcase_package_assocation_table
     if showcase_package_assocation_table is None:
         define_showcase_package_association_table()
         log.debug('ShowcasePackageAssociation table defined in memory')
@@ -28,8 +30,22 @@ def setup():
     else:
         log.debug('ShowcasePackageAssociation table creation deferred')
 
+    # setup showcase_admin_table
+    if showcase_admin_table is None:
+        define_showcase_admin_table()
+        log.debug('ShowcaseAdmin table defined in memory')
 
-class ShowcasePackageAssociation(DomainObject):
+    if model.user_table.exists():
+        if not showcase_admin_table.exists():
+            showcase_admin_table.create()
+            log.debug('ShowcaseAdmin table create')
+        else:
+            log.debug('ShowcaseAdmin table already exists')
+    else:
+        log.debug('ShowcaseAdmin table creation deferred')
+
+
+class ShowcaseBaseModel(DomainObject):
     @classmethod
     def filter(cls, **kwargs):
         return Session.query(cls).filter_by(**kwargs)
@@ -43,15 +59,18 @@ class ShowcasePackageAssociation(DomainObject):
 
     @classmethod
     def get(cls, **kwargs):
-        pkg = cls.filter(**kwargs).first()
-        return pkg
+        instance = cls.filter(**kwargs).first()
+        return instance
 
     @classmethod
     def create(cls, **kwargs):
-        showcase_package_association = cls(**kwargs)
-        Session.add(showcase_package_association)
+        instance = cls(**kwargs)
+        Session.add(instance)
         Session.commit()
-        return showcase_package_association.as_dict()
+        return instance.as_dict()
+
+
+class ShowcasePackageAssociation(ShowcaseBaseModel):
 
     @classmethod
     def get_package_ids_for_showcase(cls, showcase_id):
@@ -87,3 +106,27 @@ def define_showcase_package_association_table():
                                               )
 
     mapper(ShowcasePackageAssociation, showcase_package_assocation_table)
+
+
+class ShowcaseAdmin(ShowcaseBaseModel):
+
+    @classmethod
+    def get_showcase_admin_ids(cls):
+        '''
+        Return a list of showcase admin user ids.
+        '''
+        id_list = [i for (i, ) in Session.query(cls.user_id).all()]
+        return id_list
+
+
+def define_showcase_admin_table():
+    global showcase_admin_table
+
+    showcase_admin_table = Table('showcase_admin', metadata,
+                                 Column('user_id', types.UnicodeText,
+                                        ForeignKey('user.id',
+                                                   ondelete='CASCADE',
+                                                   onupdate='CASCADE'),
+                                        primary_key=True, nullable=False))
+
+    mapper(ShowcaseAdmin, showcase_admin_table)

@@ -6,7 +6,7 @@ import ckan.plugins.toolkit as toolkit
 import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
-from ckanext.showcase.model import ShowcasePackageAssociation
+from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 
 
 class TestCreateShowcase(helpers.FunctionalTestBase):
@@ -158,3 +158,73 @@ class TestCreateShowcasePackageAssociation(helpers.FunctionalTestBase):
                                 'ckanext_showcase_package_association_create',
                                 context=context, package_id=package_id,
                                 showcase_id=showcase_id)
+
+
+class TestCreateShowcaseAdmin(helpers.FunctionalTestBase):
+
+    def test_showcase_admin_add_creates_showcase_admin_user(self):
+        '''
+        Calling ckanext_showcase_admin_add adds user to showcase admin list.
+        '''
+        user_to_add = factories.User()
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_to_add['name'])
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 1)
+        nosetools.assert_true(user_to_add['id'] in ShowcaseAdmin.get_showcase_admin_ids())
+
+    def test_showcase_admin_add_multiple_users(self):
+        '''
+        Calling ckanext_showcase_admin_add for multiple users correctly adds
+        them to showcase admin list.
+        '''
+        user_to_add = factories.User()
+        second_user_to_add = factories.User()
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_to_add['name'])
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=second_user_to_add['name'])
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 2)
+        nosetools.assert_true(user_to_add['id'] in ShowcaseAdmin.get_showcase_admin_ids())
+        nosetools.assert_true(second_user_to_add['id'] in ShowcaseAdmin.get_showcase_admin_ids())
+
+    def test_showcase_admin_add_existing_user(self):
+        '''
+        Calling ckanext_showcase_admin_add twice for same user raises a
+        ValidationError.
+        '''
+        user_to_add = factories.User()
+
+        # Add once
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_to_add['name'])
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 1)
+
+        # Attempt second add
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_admin_add', context={},
+                                username=user_to_add['name'])
+
+        # Still only one ShowcaseAdmin object.
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 1)
+
+    def test_showcase_admin_add_username_doesnot_exist(self):
+        '''
+        Calling ckanext_showcase_admin_add with non-existent username raises
+        ValidationError and no ShowcaseAdmin object is created.
+        '''
+        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+                                'ckanext_showcase_admin_add', context={},
+                                username='missing')
+
+        nosetools.assert_equal(model.Session.query(ShowcaseAdmin).count(), 0)
+        nosetools.assert_equal(ShowcaseAdmin.get_showcase_admin_ids(), [])

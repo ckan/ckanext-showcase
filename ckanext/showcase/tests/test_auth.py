@@ -1,6 +1,7 @@
 import json
 from nose import tools as nosetools
 
+import ckan.plugins.toolkit as toolkit
 import ckan.new_tests.factories as factories
 import ckan.new_tests.helpers as helpers
 
@@ -409,3 +410,34 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
                                          extra_environ={'REMOTE_USER': str(user['name'])})
 
         nosetools.assert_true('showcase-add' in showcase_list_response.forms)
+
+
+class TestShowcaseAdminAddAuth(helpers.FunctionalTestBase):
+
+    def test_showcase_admin_add_no_args(self):
+        '''
+        Calling showcase admin add with no user raises NotAuthorized.
+        '''
+
+        context = {'user': None, 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_admin_add', context=context)
+
+    def test_showcase_admin_add_correct_creds(self):
+        '''
+        Calling showcase admin add by a sysadmin doesn't raise
+        NotAuthorized.
+        '''
+        a_sysadmin = factories.Sysadmin()
+        context = {'user': a_sysadmin['name'], 'model': None}
+        helpers.call_auth('ckanext_showcase_admin_add', context=context)
+
+    def test_showcase_admin_add_unauthorized_creds(self):
+        '''
+        Calling showcase admin add with unauthorized user raises
+        NotAuthorized.
+        '''
+        not_a_sysadmin = factories.User()
+        context = {'user': not_a_sysadmin['name'], 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_admin_add', context=context)
