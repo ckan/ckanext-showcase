@@ -118,6 +118,13 @@ class ShowcaseAdmin(ShowcaseBaseModel):
         id_list = [i for (i, ) in Session.query(cls.user_id).all()]
         return id_list
 
+    @classmethod
+    def is_user_showcase_admin(cls, user):
+        '''
+        Determine whether passed user is in the showcase admin list.
+        '''
+        return (user.id in cls.get_showcase_admin_ids())
+
 
 def define_showcase_admin_table():
     global showcase_admin_table

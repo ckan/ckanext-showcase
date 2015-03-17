@@ -297,6 +297,22 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         app.get('/showcase/edit/my-showcase', status=200,
                 extra_environ={'REMOTE_USER': str(user['name'])})
 
+    def test_auth_showcase_admin_can_view_edit_showcase_page(self):
+        '''
+        A showcase admin can access the showcase edit page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+
+        # Maker user a showcase admin
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/edit/my-showcase', status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})
+
     def test_auth_anon_user_cant_view_manage_datasets(self):
         '''
         An anon (not logged in) user can't access the showcase manage datasets page.
@@ -331,6 +347,22 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         app.get('/showcase/manage_datasets/my-showcase', status=200,
                 extra_environ={'REMOTE_USER': str(user['name'])})
 
+    def test_auth_showcase_admin_can_view_manage_datasets(self):
+        '''
+        A showcase admin can access the showcase manage datasets page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+
+        # Maker user a showcase admin
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/manage_datasets/my-showcase', status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})
+
     def test_auth_anon_user_cant_view_delete_showcase_page(self):
         '''
         An anon (not logged in) user can't access the showcase delete page.
@@ -359,6 +391,22 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         '''
         app = self._get_test_app()
         user = factories.Sysadmin()
+
+        factories.Dataset(type='showcase', name='my-showcase')
+
+        app.get('/showcase/delete/my-showcase', status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})
+
+    def test_auth_showcase_admin_can_view_delete_showcase_page(self):
+        '''
+        A showcase admin can access the showcase delete page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+
+        # Maker user a showcase admin
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
 
         factories.Dataset(type='showcase', name='my-showcase')
 
@@ -411,6 +459,26 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
 
         nosetools.assert_true('showcase-add' in showcase_list_response.forms)
 
+    def test_auth_showcase_admin_can_view_addtoshowcase_dropdown_dataset_showcase_list(self):
+        '''
+        A showcase admin can view the 'Add to showcase' dropdown selector from
+        a datasets showcase list page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+
+        # Maker user a showcase admin
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user['name'])
+
+        factories.Dataset(name='my-showcase', type='showcase')
+        factories.Dataset(name='my-dataset')
+
+        showcase_list_response = app.get('/dataset/showcases/my-dataset', status=200,
+                                         extra_environ={'REMOTE_USER': str(user['name'])})
+
+        nosetools.assert_true('showcase-add' in showcase_list_response.forms)
+
 
 class TestShowcasePackageAssociationCreate(helpers.FunctionalTestBase):
 
@@ -425,13 +493,28 @@ class TestShowcasePackageAssociationCreate(helpers.FunctionalTestBase):
                                 'ckanext_showcase_package_association_create',
                                 context=context)
 
-    def test_showcase_package_association_create_correct_creds(self):
+    def test_showcase_package_association_create_sysadmin(self):
         '''
         Calling showcase package association create by a sysadmin doesn't
         raise NotAuthorized.
         '''
         a_sysadmin = factories.Sysadmin()
         context = {'user': a_sysadmin['name'], 'model': None}
+        helpers.call_auth('ckanext_showcase_package_association_create',
+                          context=context)
+
+    def test_showcase_package_association_create_showcase_admin(self):
+        '''
+        Calling showcase package association create by a showcase admin
+        doesn't raise NotAuthorized.
+        '''
+        showcase_admin = factories.User()
+
+        # Maker user a showcase admin
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=showcase_admin['name'])
+
+        context = {'user': showcase_admin['name'], 'model': None}
         helpers.call_auth('ckanext_showcase_package_association_create',
                           context=context)
 
@@ -460,13 +543,28 @@ class TestShowcasePackageAssociationDelete(helpers.FunctionalTestBase):
                                 'ckanext_showcase_package_association_delete',
                                 context=context)
 
-    def test_showcase_package_association_delete_correct_creds(self):
+    def test_showcase_package_association_delete_sysadmin(self):
         '''
         Calling showcase package association create by a sysadmin doesn't
         raise NotAuthorized.
         '''
         a_sysadmin = factories.Sysadmin()
         context = {'user': a_sysadmin['name'], 'model': None}
+        helpers.call_auth('ckanext_showcase_package_association_delete',
+                          context=context)
+
+    def test_showcase_package_association_delete_showcase_admin(self):
+        '''
+        Calling showcase package association create by a showcase admin
+        doesn't raise NotAuthorized.
+        '''
+        showcase_admin = factories.User()
+
+        # Maker user a showcase admin
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=showcase_admin['name'])
+
+        context = {'user': showcase_admin['name'], 'model': None}
         helpers.call_auth('ckanext_showcase_package_association_delete',
                           context=context)
 

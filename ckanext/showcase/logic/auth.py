@@ -1,19 +1,43 @@
 import ckan.plugins.toolkit as toolkit
+import ckan.model as model
+
+from ckanext.showcase.model import ShowcaseAdmin
 
 import logging
 log = logging.getLogger(__name__)
 
 
+def _is_showcase_admin(context):
+    '''
+    Determines whether user in context is in the showcase admin list.
+    '''
+    user = context['user']
+    userobj = model.User.get(user)
+    return ShowcaseAdmin.is_user_showcase_admin(userobj)
+
+
 def create(context, data_dict):
-    return {'success': False}
+    '''Create a Showcase.
+
+       Only sysadmin or users listed as Showcase Admins can create a Showcase.
+    '''
+    return {'success': _is_showcase_admin(context)}
 
 
 def delete(context, data_dict):
-    return {'success': False}
+    '''Delete a Showcase.
+
+       Only sysadmin or users listed as Showcase Admins can delete a Showcase.
+    '''
+    return {'success': _is_showcase_admin(context)}
 
 
 def update(context, data_dict):
-    return {'success': False}
+    '''Update a Showcase.
+
+       Only sysadmin or users listed as Showcase Admins can update a Showcase.
+    '''
+    return {'success': _is_showcase_admin(context)}
 
 
 @toolkit.auth_allow_anonymous_access
@@ -29,11 +53,21 @@ def list(context, data_dict):
 
 
 def package_association_create(context, data_dict):
-    return {'success': False}
+    '''Create a package showcase association.
+
+       Only sysadmins or user listed as Showcase Admins can create a
+       package/showcase association.
+    '''
+    return {'success': _is_showcase_admin(context)}
 
 
 def package_association_delete(context, data_dict):
-    return {'success': False}
+    '''Delete a package showcase association.
+
+       Only sysadmins or user listed as Showcase Admins can delete a
+       package/showcase association.
+    '''
+    return {'success': _is_showcase_admin(context)}
 
 
 @toolkit.auth_allow_anonymous_access
