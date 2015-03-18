@@ -134,6 +134,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                       action="add_datasets", ckan_icon="plus-sign")
             m.connect('dataset_showcase_list', '/dataset/showcases/{id}', action='dataset_showcase_list',
                       ckan_icon='picture')
+            m.connect('ckanext_showcase_admins', '/ckan-admin/showcase_admins', action='manage_showcase_admins',
+                      ckan_icon='picture')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map

@@ -280,6 +280,20 @@ class ShowcaseController(PackageController):
 
         return render('showcase/manage_datasets.html')
 
+    def manage_showcase_admins(self):
+        '''
+        A ckan-admin page to manage showcase admin users.
+        '''
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author}
+
+        try:
+            check_access('sysadmin', context, {})
+        except NotAuthorized:
+            abort(401, _('User %r not authorized to view page') % c.user)
+
+        return render('admin/manage_showcase_admins.html')
+
     def add_datasets(self, id):
         '''
         Search for datasets and create associations with showcase.
