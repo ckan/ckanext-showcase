@@ -12,17 +12,25 @@
 ckanext-showcase
 =============
 
-.. Put a description of your extension here:
-   What does it do? What features does it have?
-   Consider including some screenshots or embedding a video!
+Showcase and link to datasets in use. Datasets used in an app, website or
+visualization, or featured in an article, report or blog post can be showcased
+within the CKAN website. Showcases may contain several datasets, helping users
+discover related datasets being used together.
+
+Site sysadmins can promote selected users to become 'Showcase Admins' to help
+create, populate and maintain showcases.
+
+ckanext-showcase is intended to be a more powerful replacement for the
+'Related Item' feature.
 
 
 ------------
 Requirements
 ------------
 
-For example, you might want to mention here which versions of CKAN this
-extension works with.
+Current status: Alpha
+
+Compatible with CKAN 2.3.
 
 
 ------------
@@ -52,17 +60,6 @@ To install ckanext-showcase:
      sudo service apache2 reload
 
 
----------------
-Config Settings
----------------
-
-Document any optional config settings here. For example::
-
-    # The minimum number of hours to wait before re-checking a resource
-    # (optional, default: 24).
-    ckanext.showcase.some_setting = some_default_value
-
-
 ------------------------
 Development Installation
 ------------------------
@@ -82,12 +79,12 @@ Running the Tests
 
 To run the tests, do::
 
-    nosetests --nologcapture --with-pylons=test.ini
+    nosetests --ckan --nologcapture --with-pylons=test.ini
 
 To run the tests and produce a coverage report, first make sure you have
 coverage installed in your virtualenv (``pip install coverage``) then run::
 
-    nosetests --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.showcase --cover-inclusive --cover-erase --cover-tests
+    nosetests --ckan --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.showcase --cover-inclusive --cover-erase --cover-tests
 
 
 ---------------------------------
