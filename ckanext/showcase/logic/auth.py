@@ -90,3 +90,8 @@ def add_showcase_admin(context, data_dict):
 def remove_showcase_admin(context, data_dict):
     '''Only sysadmins can remove users from showcase admin list.'''
     return {'success': False}
+
+
+def showcase_admin_list(context, data_dict):
+    '''Only sysadmins can list showcase admin users.'''
+    return {'success': False}

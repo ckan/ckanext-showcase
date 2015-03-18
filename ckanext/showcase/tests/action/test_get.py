@@ -409,3 +409,60 @@ class TestPackageShowcaseList(helpers.FunctionalTestBase):
         nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
                                 'ckanext_package_showcase_list',
                                 package_id=showcase['id'])
+
+
+class TestShowcaseAdminList(helpers.FunctionalTestBase):
+
+    '''Tests for ckanext_showcase_admin_list'''
+
+    def test_showcase_admin_list_no_showcase_admins(self):
+        '''
+        Calling ckanext_showcase_admin_list on a site that has no showcases
+        admins returns an empty list.
+        '''
+
+        showcase_admin_list = helpers.call_action('ckanext_showcase_admin_list')
+
+        nosetools.assert_equal(showcase_admin_list, [])
+
+    def test_showcase_admin_list_users(self):
+        '''
+        Calling ckanext_showcase_admin_list will return users who are showcase
+        admins.
+        '''
+        user_one = factories.User()
+        user_two = factories.User()
+        user_three = factories.User()
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_one['name'])
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_two['name'])
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_three['name'])
+
+        showcase_admin_list = helpers.call_action('ckanext_showcase_admin_list', context={})
+
+        nosetools.assert_equal(len(showcase_admin_list), 3)
+        for user in [user_one, user_two, user_three]:
+            nosetools.assert_true({'name': user['name'], 'id': user['id']} in showcase_admin_list)
+
+    def test_showcase_admin_only_lists_admin_users(self):
+        '''
+        Calling ckanext_showcase_admin_list will only return users who are
+        showcase admins.
+        '''
+        user_one = factories.User()
+        user_two = factories.User()
+        user_three = factories.User()
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_one['name'])
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_two['name'])
+
+        showcase_admin_list = helpers.call_action('ckanext_showcase_admin_list', context={})
+
+        nosetools.assert_equal(len(showcase_admin_list), 2)
+        # user three isn't in list
+        nosetools.assert_true({'name': user_three['name'], 'id': user_three['id']} not in showcase_admin_list)

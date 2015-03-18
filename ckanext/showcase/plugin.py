@@ -110,7 +110,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'ckanext_showcase_package_list': ckanext.showcase.logic.auth.showcase_package_list,
             'ckanext_package_showcase_list': ckanext.showcase.logic.auth.package_showcase_list,
             'ckanext_showcase_admin_add': ckanext.showcase.logic.auth.add_showcase_admin,
-            'ckanext_showcase_admin_remove': ckanext.showcase.logic.auth.remove_showcase_admin
+            'ckanext_showcase_admin_remove': ckanext.showcase.logic.auth.remove_showcase_admin,
+            'ckanext_showcase_admin_list': ckanext.showcase.logic.auth.showcase_admin_list
         }
 
     # IRoutes
@@ -152,6 +153,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'ckanext_package_showcase_list': ckanext.showcase.logic.action.get.package_showcase_list,
             'ckanext_showcase_admin_add': ckanext.showcase.logic.action.create.showcase_admin_add,
             'ckanext_showcase_admin_remove': ckanext.showcase.logic.action.delete.showcase_admin_remove,
+            'ckanext_showcase_admin_list': ckanext.showcase.logic.action.get.showcase_admin_list,
         }
         return action_functions
 

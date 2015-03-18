@@ -640,3 +640,34 @@ class TestShowcaseAdminRemoveAuth(helpers.FunctionalTestBase):
         context = {'user': not_a_sysadmin['name'], 'model': None}
         nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
                                 'ckanext_showcase_admin_remove', context=context)
+
+
+class TestShowcaseAdminListAuth(helpers.FunctionalTestBase):
+
+    def test_showcase_admin_list_no_user(self):
+        '''
+        Calling showcase admin list with no user raises NotAuthorized.
+        '''
+
+        context = {'user': None, 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_admin_list', context=context)
+
+    def test_showcase_admin_list_correct_creds(self):
+        '''
+        Calling showcase admin list by a sysadmin doesn't raise
+        NotAuthorized.
+        '''
+        a_sysadmin = factories.Sysadmin()
+        context = {'user': a_sysadmin['name'], 'model': None}
+        helpers.call_auth('ckanext_showcase_admin_list', context=context)
+
+    def test_showcase_admin_list_unauthorized_creds(self):
+        '''
+        Calling showcase admin list with unauthorized user raises
+        NotAuthorized.
+        '''
+        not_a_sysadmin = factories.User()
+        context = {'user': not_a_sysadmin['name'], 'model': None}
+        nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
+                                'ckanext_showcase_admin_list', context=context)

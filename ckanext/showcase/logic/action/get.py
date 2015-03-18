@@ -6,7 +6,7 @@ from ckan.lib.navl.dictization_functions import validate
 
 from ckanext.showcase.logic.schema import (showcase_package_list_schema,
                                            package_showcase_list_schema)
-from ckanext.showcase.model import ShowcasePackageAssociation
+from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 
 import logging
 log = logging.getLogger(__name__)
@@ -110,3 +110,31 @@ def package_showcase_list(context, data_dict):
             showcase_list.append(showcase)
 
     return showcase_list
+
+
+@toolkit.side_effect_free
+def showcase_admin_list(context, data_dict):
+    '''
+    Return a list of dicts containing the id and name of all active showcase
+    admin users.
+
+    :rtype: list of dictionaries
+    '''
+
+    toolkit.check_access('ckanext_showcase_admin_list', context, data_dict)
+
+    model = context["model"]
+
+    user_ids = ShowcaseAdmin.get_showcase_admin_ids()
+
+    if user_ids:
+        q = model.Session.query(model.User) \
+            .filter(model.User.state == 'active') \
+            .filter(model.User.id.in_(user_ids))
+
+        showcase_admin_list = []
+        for user in q.all():
+            showcase_admin_list.append({'name': user.name, 'id': user.id})
+        return showcase_admin_list
+
+    return []
