@@ -201,7 +201,7 @@ class TestDeleteShowcasePackageAssociation(helpers.FunctionalTestBase):
     def test_association_delete_attempt_with_non_existent_association(self):
         '''
         Attempting to delete a non-existent association (package ids exist,
-        but aren't associated with each other), will cause a ValidationError.
+        but aren't associated with each other), will cause a NotFound error.
         '''
         sysadmin = factories.User(sysadmin=True)
         package_id = factories.Dataset()['id']
@@ -211,7 +211,7 @@ class TestDeleteShowcasePackageAssociation(helpers.FunctionalTestBase):
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
 
         context = {'user': sysadmin['name']}
-        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+        nosetools.assert_raises(toolkit.ObjectNotFound, helpers.call_action,
                                 'ckanext_showcase_package_association_delete',
                                 context=context, package_id=package_id,
                                 showcase_id=showcase_id)
