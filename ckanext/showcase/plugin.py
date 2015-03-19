@@ -132,10 +132,12 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                       action="manage_datasets", ckan_icon="sitemap")
             m.connect('ckanext_showcase_add_datasets', '/showcase/add_datasets/{id}',
                       action="add_datasets", ckan_icon="plus-sign")
-            m.connect('dataset_showcase_list', '/dataset/showcases/{id}', action='dataset_showcase_list',
-                      ckan_icon='picture')
-            m.connect('ckanext_showcase_admins', '/ckan-admin/showcase_admins', action='manage_showcase_admins',
-                      ckan_icon='picture')
+            m.connect('dataset_showcase_list', '/dataset/showcases/{id}',
+                      action='dataset_showcase_list', ckan_icon='picture')
+            m.connect('ckanext_showcase_admins', '/ckan-admin/showcase_admins',
+                      action='manage_showcase_admins', ckan_icon='picture'),
+            m.connect('ckanext_showcase_admin_remove', '/ckan-admin/showcase_admin_remove',
+                      action='remove_showcase_admin')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map

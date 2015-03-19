@@ -37,27 +37,19 @@
 
   <h3 class="page-heading">{{ _('Showcase Admins') }}</h3>
   <table class="table table-header table-hover table-bordered">
-    <col width="70" />
-    <col width="10" />
     <thead>
       <tr>
         <th scope="col">{{ _('User') }}</th>
-        <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
-      {% for user_id, user, role in c.members %}
+      {% for user_dict in c.showcase_admins %}
       <tr>
         <td class="media">
-          {{ h.linked_user(user_id, maxlength=20) }}
-        </td>
-        <td>
-          {% set locale = h.dump_json({'content': _('Are you sure you want to delete this member?')}) %}
+          {{ h.linked_user(user_dict['id'], maxlength=20) }}
+          {% set locale = h.dump_json({'content': _('Are you sure you want to remove this user from the Showcase Admin list?')}) %}
           <div class="btn-group pull-right">
-            <a class="btn btn-small" href="{% url_for controller='group', action='member_new', id=c.group_dict.id, user=user_id %}" title="{{ _('Edit') }}">
-              <i class="icon-wrench"></i>
-            </a>
-            <a class="btn btn-danger btn-small" href="{% url_for controller='group', action='member_delete', id=c.group_dict.id, user=user_id %}" data-module="confirm-action" data-module-i18n="{{ locale }}" title="{{ _('Delete') }}">{% block delete_button_text %}<i class="icon-remove"></i>{% endblock %}</a>
+            <a class="btn btn-danger btn-small" href="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='remove_showcase_admin', user=user_dict['id'] %}" data-module="confirm-action" data-module-i18n="{{ locale }}" title="{{ _('Remove') }}">{% block delete_button_text %}<i class="icon-remove"></i> {{ _('Remove') }}{% endblock %}</a>
           </div>
         </td>
       </tr>
@@ -70,6 +62,10 @@
 {% block secondary_content %}
   {{ super() }}
   <div class="module module-narrow module-shallow">
-
+    <div class="module-content">
+      {% trans %}
+         <p><strong>Showcase Admin:</strong> Can create and remove showcases. Can add and remove datasets from showcases.</p>
+      {% endtrans %}
+    </div>
   </div>
 {% endblock %}

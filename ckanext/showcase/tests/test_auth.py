@@ -304,7 +304,7 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         app = self._get_test_app()
         user = factories.User()
 
-        # Maker user a showcase admin
+        # Make user a showcase admin
         helpers.call_action('ckanext_showcase_admin_add', context={},
                             username=user['name'])
 
@@ -354,7 +354,7 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         app = self._get_test_app()
         user = factories.User()
 
-        # Maker user a showcase admin
+        # Make user a showcase admin
         helpers.call_action('ckanext_showcase_admin_add', context={},
                             username=user['name'])
 
@@ -404,7 +404,7 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         app = self._get_test_app()
         user = factories.User()
 
-        # Maker user a showcase admin
+        # Make user a showcase admin
         helpers.call_action('ckanext_showcase_admin_add', context={},
                             username=user['name'])
 
@@ -467,7 +467,7 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         app = self._get_test_app()
         user = factories.User()
 
-        # Maker user a showcase admin
+        # Make user a showcase admin
         helpers.call_action('ckanext_showcase_admin_add', context={},
                             username=user['name'])
 
@@ -510,7 +510,7 @@ class TestShowcasePackageAssociationCreate(helpers.FunctionalTestBase):
         '''
         showcase_admin = factories.User()
 
-        # Maker user a showcase admin
+        # Make user a showcase admin
         helpers.call_action('ckanext_showcase_admin_add', context={},
                             username=showcase_admin['name'])
 
@@ -560,7 +560,7 @@ class TestShowcasePackageAssociationDelete(helpers.FunctionalTestBase):
         '''
         showcase_admin = factories.User()
 
-        # Maker user a showcase admin
+        # Make user a showcase admin
         helpers.call_action('ckanext_showcase_admin_add', context={},
                             username=showcase_admin['name'])
 
@@ -671,3 +671,32 @@ class TestShowcaseAdminListAuth(helpers.FunctionalTestBase):
         context = {'user': not_a_sysadmin['name'], 'model': None}
         nosetools.assert_raises(toolkit.NotAuthorized, helpers.call_auth,
                                 'ckanext_showcase_admin_list', context=context)
+
+
+class TestShowcaseAuthManageShowcaseAdmins(helpers.FunctionalTestBase):
+
+    def test_auth_anon_user_cant_view_showcase_admin_manage_page(self):
+        '''
+        An anon (not logged in) user can't access the manage showcase admin
+        page.
+        '''
+        app = self._get_test_app()
+        app.get("/showcase/new", status=302)
+
+    def test_auth_logged_in_user_cant_view_showcase_admin_manage_page(self):
+        '''
+        A logged in user can't access the manage showcase admin page.
+        '''
+        app = self._get_test_app()
+        user = factories.User()
+        app.get("/showcase/new", status=401,
+                extra_environ={'REMOTE_USER': str(user['name'])})
+
+    def test_auth_sysadmin_can_view_showcase_admin_manage_page(self):
+        '''
+        A sysadmin can access the manage showcase admin page.
+        '''
+        app = self._get_test_app()
+        user = factories.Sysadmin()
+        app.get("/showcase/new", status=200,
+                extra_environ={'REMOTE_USER': str(user['name'])})

@@ -79,7 +79,8 @@ def showcase_admin_add(context, data_dict):
     username = toolkit.get_or_bust(validated_data_dict, 'username')
     user_id = convert_user_name_or_id_to_id(username, context)
     if ShowcaseAdmin.exists(user_id=user_id):
-        raise toolkit.ValidationError("ShowcaseAdmin with user_id '{0}' already exists.".format(user_id))
+        raise toolkit.ValidationError("ShowcaseAdmin with user_id '{0}' already exists.".format(user_id),
+                                      error_summary=u"User '{0}' is already a Showcase Admin.".format(username))
 
     # create showcase admin entry
     return ShowcaseAdmin.create(user_id=user_id)

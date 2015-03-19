@@ -61,7 +61,7 @@ def showcase_package_association_delete(context, data_dict):
                                                                   showcase_id=showcase_id)
 
     if showcase_package_association is None:
-        raise toolkit.ValidationError("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' doesn't exist.".format(package_id, showcase_id))
+        raise toolkit.ObjectNotFound("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' doesn't exist.".format(package_id, showcase_id))
 
     # delete the association
     showcase_package_association.delete()
@@ -91,7 +91,7 @@ def showcase_admin_remove(context, data_dict):
     showcase_admin_to_remove = ShowcaseAdmin.get(user_id=user_id)
 
     if showcase_admin_to_remove is None:
-        raise toolkit.ValidationError("ShowcaseAdmin with user_id '{0}' doesn't exist.".format(user_id))
+        raise toolkit.ObjectNotFound("ShowcaseAdmin with user_id '{0}' doesn't exist.".format(user_id))
 
     showcase_admin_to_remove.delete()
     model.repo.commit()

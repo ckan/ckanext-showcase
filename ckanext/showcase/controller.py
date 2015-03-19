@@ -280,20 +280,6 @@ class ShowcaseController(PackageController):
 
         return render('showcase/manage_datasets.html')
 
-    def manage_showcase_admins(self):
-        '''
-        A ckan-admin page to manage showcase admin users.
-        '''
-        context = {'model': model, 'session': model.Session,
-                   'user': c.user or c.author}
-
-        try:
-            check_access('sysadmin', context, {})
-        except NotAuthorized:
-            abort(401, _('User %r not authorized to view page') % c.user)
-
-        return render('admin/manage_showcase_admins.html')
-
     def add_datasets(self, id):
         '''
         Search for datasets and create associations with showcase.
@@ -515,3 +501,72 @@ class ShowcaseController(PackageController):
                                  parameter_name='_%s_limit' % facet
                              ))
             c.search_facets_limits[facet] = limit
+
+    def manage_showcase_admins(self):
+        '''
+        A ckan-admin page to list and add showcase admin users.
+        '''
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author}
+
+        try:
+            check_access('sysadmin', context, {})
+        except NotAuthorized:
+            abort(401, _('User not authorized to view page'))
+
+        # We're trying to add a user to the showcase admins list.
+        if request.method == 'POST' and request.params['username']:
+            username = request.params['username']
+            try:
+                get_action('ckanext_showcase_admin_add')(data_dict={'username': username})
+            except NotAuthorized:
+                abort(401, _('Unauthorized to perform that action'))
+            except NotFound:
+                h.flash_error(_("User not found"))
+            except ValidationError as e:
+                h.flash_notice(e.error_summary)
+                return redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                          action='manage_showcase_admins'))
+            else:
+                h.flash_success(_("The user is now a Showcase Admin"))
+                return redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                          action='manage_showcase_admins'))
+
+        c.showcase_admins = get_action('ckanext_showcase_admin_list')()
+
+        return render('admin/manage_showcase_admins.html')
+
+    def remove_showcase_admin(self):
+        '''
+        Remove a user from the Showcase Admin list.
+        '''
+        context = {'model': model, 'session': model.Session,
+                   'user': c.user or c.author}
+
+        try:
+            check_access('sysadmin', context, {})
+        except NotAuthorized:
+            abort(401, _('User not authorized to view page'))
+
+        if 'cancel' in request.params:
+            h.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
+                          action='manage_showcase_admins')
+
+        user_id = request.params['user']
+        if request.method == 'POST' and user_id:
+            user_id = request.params['user']
+            try:
+                get_action('ckanext_showcase_admin_remove')(data_dict={'username': user_id})
+            except NotAuthorized:
+                abort(401, _('Unauthorized to perform that action'))
+            except NotFound:
+                h.flash_error(_('The user is not a Showcase Admin'))
+            else:
+                h.flash_success(_('The user is no longer a Showcase Admin'))
+
+            return redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                      action='manage_showcase_admins'))
+
+        c.user_dict = get_action('user_show')(data_dict={'id': user_id})
+        c.user_id = user_id
+        return render('admin/confirm_remove_showcase_admin.html')
