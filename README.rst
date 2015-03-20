@@ -14,8 +14,10 @@ ckanext-showcase
 
 Showcase and link to datasets in use. Datasets used in an app, website or
 visualization, or featured in an article, report or blog post can be showcased
-within the CKAN website. Showcases may contain several datasets, helping users
-discover related datasets being used together.
+within the CKAN website. Showcases can include an image, description, tags and
+external link. Showcases may contain several datasets, helping users discover
+related datasets being used together. Showcases can be discovered by searching
+and filtered by tag.
 
 Site sysadmins can promote selected users to become 'Showcase Admins' to help
 create, populate and maintain showcases.
@@ -71,6 +73,54 @@ do::
     cd ckanext-showcase
     python setup.py develop
     pip install -r dev-requirements.txt
+
+
+---
+API
+---
+
+All actions in the Showcase extension are available in the CKAN Action API.
+
+    Showcase actions:
+
+    - create a new showcase (sysadmins and showcase admins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_create -H "Authorization:{YOUR-API-KEY}" -d '{"name": "my-new-showcase"}'
+
+    - delete a showcase (sysadmins and showcase admins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_delete -H "Authorization:{YOUR-API-KEY}" -d '{"name": "my-new-showcase"}'
+
+    - show a showcase
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_show -d '{"id": "my-new-showcase"}'
+
+    - list showcases
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_list -d ''
+
+
+    Dataset actions:
+
+    - add a dataset to a showcase (sysadmins and showcase admins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_package_association_create -H "Authorization:{YOUR-API-KEY}" -d '{"showcase_id": "my-showcase", "package_id": "my-package"}'
+
+    - remove a dataset from a showcase (sysadmins and showcase admins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_package_association_delete -H "Authorization:{YOUR-API-KEY}" -d '{"showcase_id": "my-showcase", "package_id": "my-package"}'
+
+    - list datasets in a showcase
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_package_list -d '{"showcase_id": "my-showcase"}'
+
+    - list showcases featuring a given dataset
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_package_showcase_list -d '{"package_id": "my-package"}'
+
+
+    Showcase admin actions:
+
+    - add showcase admin (sysadmins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_add -H "Authorization:{YOUR-API-KEY}" -d '{"username": "bert"}'
+
+    - remove showcase admin (sysadmins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_remove -H "Authorization:{YOUR-API-KEY}" -d '{"username": "bert"}'
+
+    - list showcase admins (sysadmins only)
+    curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_list -H "Authorization:{YOUR-API-KEY}" -d ''
 
 
 -----------------
