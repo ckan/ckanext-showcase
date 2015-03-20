@@ -222,7 +222,7 @@ class TestCreateShowcaseAdmin(helpers.FunctionalTestBase):
         Calling ckanext_showcase_admin_add with non-existent username raises
         ValidationError and no ShowcaseAdmin object is created.
         '''
-        nosetools.assert_raises(toolkit.ValidationError, helpers.call_action,
+        nosetools.assert_raises(toolkit.ObjectNotFound, helpers.call_action,
                                 'ckanext_showcase_admin_add', context={},
                                 username='missing')
 

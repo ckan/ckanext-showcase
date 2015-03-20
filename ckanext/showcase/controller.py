@@ -522,15 +522,14 @@ class ShowcaseController(PackageController):
             except NotAuthorized:
                 abort(401, _('Unauthorized to perform that action'))
             except NotFound:
-                h.flash_error(_("User not found"))
+                h.flash_error(_("User '{0}' not found.").format(username))
             except ValidationError as e:
                 h.flash_notice(e.error_summary)
-                return redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                          action='manage_showcase_admins'))
             else:
                 h.flash_success(_("The user is now a Showcase Admin"))
-                return redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                          action='manage_showcase_admins'))
+
+            return redirect(h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                      action='manage_showcase_admins'))
 
         c.showcase_admins = get_action('ckanext_showcase_admin_list')()
 

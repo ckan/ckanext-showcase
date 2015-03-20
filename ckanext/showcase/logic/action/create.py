@@ -3,6 +3,7 @@ import logging
 import ckan.lib.uploader as uploader
 import ckan.plugins.toolkit as toolkit
 from ckan.logic.converters import convert_user_name_or_id_to_id
+import ckan.lib.navl.dictization_functions as df
 from ckan.lib.navl.dictization_functions import validate
 
 import ckanext.showcase.logic.converters as showcase_converters
@@ -73,11 +74,15 @@ def showcase_admin_add(context, data_dict):
     # validate the incoming data_dict
     validated_data_dict, errors = validate(data_dict, showcase_admin_add_schema(), context)
 
+    username = toolkit.get_or_bust(validated_data_dict, 'username')
+    try:
+        user_id = convert_user_name_or_id_to_id(username, context)
+    except toolkit.Invalid:
+        raise toolkit.ObjectNotFound
+
     if errors:
         raise toolkit.ValidationError(errors)
 
-    username = toolkit.get_or_bust(validated_data_dict, 'username')
-    user_id = convert_user_name_or_id_to_id(username, context)
     if ShowcaseAdmin.exists(user_id=user_id):
         raise toolkit.ValidationError("ShowcaseAdmin with user_id '{0}' already exists.".format(user_id),
                                       error_summary=u"User '{0}' is already a Showcase Admin.".format(username))
