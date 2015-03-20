@@ -81,7 +81,7 @@ API
 
 All actions in the Showcase extension are available in the CKAN Action API.
 
-    Showcase actions:
+Showcase actions::
 
     - create a new showcase (sysadmins and showcase admins only)
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_create -H "Authorization:{YOUR-API-KEY}" -d '{"name": "my-new-showcase"}'
@@ -96,7 +96,7 @@ All actions in the Showcase extension are available in the CKAN Action API.
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_list -d ''
 
 
-    Dataset actions:
+Dataset actions::
 
     - add a dataset to a showcase (sysadmins and showcase admins only)
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_package_association_create -H "Authorization:{YOUR-API-KEY}" -d '{"showcase_id": "my-showcase", "package_id": "my-package"}'
@@ -111,7 +111,7 @@ All actions in the Showcase extension are available in the CKAN Action API.
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_package_showcase_list -d '{"package_id": "my-package"}'
 
 
-    Showcase admin actions:
+Showcase admin actions::
 
     - add showcase admin (sysadmins only)
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_add -H "Authorization:{YOUR-API-KEY}" -d '{"username": "bert"}'
