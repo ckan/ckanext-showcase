@@ -278,3 +278,76 @@ class TestDatasetView(helpers.FunctionalTestBase):
         nosetools.assert_equal(showcase_remove_response.request.path, "/dataset/showcases/my-dataset")
         # the association is deleted
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
+
+
+class TestShowcaseAdminManageView(helpers.FunctionalTestBase):
+
+    '''Plugin adds a showcase admin management page to ckan-admin section.'''
+
+    def test_ckan_admin_has_showcase_config_tab(self):
+        '''
+        ckan-admin index page has a showcase config tab.
+        '''
+
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='admin', action='index'),
+            extra_environ=env
+        )
+        # response contains link to dataset's showcase list
+        nosetools.assert_true('/ckan-admin/showcase_admins' in response)
+
+    def test_showcase_admin_manage_page_returns_correct_status(self):
+        '''
+        /ckan-admin/showcase_admins can be successfully accessed.
+        '''
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        app.get(url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                            action='manage_showcase_admins'),
+                status=200, extra_environ=env)
+
+    def test_showcase_admin_manage_page_lists_showcase_admins(self):
+        '''
+        Showcase admins are listed on the showcase admin page.
+        '''
+        app = self._get_test_app()
+        user_one = factories.User()
+        user_two = factories.User()
+        user_three = factories.User()
+
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_one['name'])
+        helpers.call_action('ckanext_showcase_admin_add', context={},
+                            username=user_two['name'])
+
+        sysadmin = factories.Sysadmin()
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                       action='manage_showcase_admins'),
+                           status=200, extra_environ=env)
+
+        nosetools.assert_true('/user/{0}'.format(user_one['name']) in response)
+        nosetools.assert_true('/user/{0}'.format(user_two['name']) in response)
+        nosetools.assert_true('/user/{0}'.format(user_three['name']) not in response)
+
+    def test_showcase_admin_manage_page_no_admins_message(self):
+        '''
+        Showcase admins page displays message if no showcase admins present.
+        '''
+        app = self._get_test_app()
+
+        sysadmin = factories.Sysadmin()
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                                       action='manage_showcase_admins'),
+                           status=200, extra_environ=env)
+
+        nosetools.assert_true('There are currently no Showcase Admins' in response)

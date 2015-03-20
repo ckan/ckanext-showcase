@@ -36,6 +36,7 @@
   {% endblock %}
 
   <h3 class="page-heading">{{ _('Showcase Admins') }}</h3>
+  {% if c.showcase_admins %}
   <table class="table table-header table-hover table-bordered">
     <thead>
       <tr>
@@ -56,7 +57,9 @@
       {% endfor %}
     </tbody>
   </table>
-
+  {% else %}
+    <p>{{ _('There are currently no Showcase Admins.') }}</p>
+  {% endif %}
 {% endblock %}
 
 {% block secondary_content %}
