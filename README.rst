@@ -123,6 +123,26 @@ Showcase admin actions::
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_list -H "Authorization:{YOUR-API-KEY}" -d ''
 
 
+----------------------------
+Migrating from Related Items
+----------------------------
+
+If you already have Related Items in your database, you can use the ``showcase
+migrate`` command to create Showcases from Related Items.
+
+From the ``ckanext-showcase`` directory::
+
+    paster showcase migrate -c {path to production.ini}
+
+Note that each Related Item must have a unique title before migration can
+proceed.
+
+The Related Item property ``type`` will become a Showcase tag. The Related Item
+properties ``created``, ``owner_id``, ``view_count``, and ``featured`` have no
+equivalent in Showcases and will not be migrated.
+
+Related Item data is not removed from the database by this command.
+
 -----------------
 Running the Tests
 -----------------
