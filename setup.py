@@ -73,5 +73,8 @@ setup(
     entry_points='''
         [ckan.plugins]
         showcase=ckanext.showcase.plugin:ShowcasePlugin
+
+        [paste.paster_command]
+        showcase=ckanext.showcase.commands.migrate:MigrationCommand
     ''',
 )
