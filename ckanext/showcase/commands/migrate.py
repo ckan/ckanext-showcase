@@ -1,14 +1,7 @@
-import os
-import shutil
-import paste.script
-
-import ckanapi
-
 from ckan import model
 from ckan.lib.cli import CkanCommand
 from ckan.lib.munge import munge_title_to_name
-from ckan.logic import get_action, NotFound
-from pylons import config
+from ckan.logic import get_action
 
 
 import logging
