@@ -3,7 +3,6 @@ import logging
 import ckan.lib.uploader as uploader
 import ckan.plugins.toolkit as toolkit
 from ckan.logic.converters import convert_user_name_or_id_to_id
-import ckan.lib.navl.dictization_functions as df
 from ckan.lib.navl.dictization_functions import validate
 
 import ckanext.showcase.logic.converters as showcase_converters
