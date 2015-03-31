@@ -12,5 +12,11 @@
         datasets in use, to provide further insight, ideas, and inspiration.
       {% endtrans %}
     </p>
+    {% if h.check_access('ckanext_showcase_admin_add') %}
+      <p>
+        Sysadmins can manage Showcase Admins from the
+        <a href="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='manage_showcase_admins' %}">Showcase configuration page</a>.
+      </p>
+    {% endif %}
   </div>
 </div>

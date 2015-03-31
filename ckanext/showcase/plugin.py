@@ -41,7 +41,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def update_config(self, config):
         toolkit.add_template_directory(config, 'templates')
         toolkit.add_public_directory(config, 'public')
-        # toolkit.add_resource('fanstatic', 'showcase')
+        # If ckan is more than 2.3, use the 2.4+ toolkit method
+        if not toolkit.check_ckan_version(max_version='2.3'):
+            toolkit.add_ckan_admin_tab(config, 'ckanext_showcase_admins', 'Showcase Config')
 
     # IConfigurable
 
