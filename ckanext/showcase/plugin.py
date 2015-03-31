@@ -205,3 +205,12 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                    'user': c.user or c.author}
 
         return self._add_to_pkg_dict(context, pkg_dict)
+
+    def before_search(self, search_params):
+        '''
+        Unless the query is already being filtered, exclude datasets of type
+        `showcase`.
+        '''
+        if not search_params.get('fq', False):
+            search_params.update({'fq': '-type:"{0}"'.format(DATASET_TYPE_NAME)})
+        return search_params

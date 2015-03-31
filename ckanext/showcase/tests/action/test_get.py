@@ -466,3 +466,48 @@ class TestShowcaseAdminList(helpers.FunctionalTestBase):
         nosetools.assert_equal(len(showcase_admin_list), 2)
         # user three isn't in list
         nosetools.assert_true({'name': user_three['name'], 'id': user_three['id']} not in showcase_admin_list)
+
+
+class TestPackageSearchBeforeSearch(helpers.FunctionalTestBase):
+
+    '''
+    Extension uses the `before_search` method to alter search parameters.
+    '''
+
+    def test_package_search_no_additional_filters(self):
+        '''
+        Perform package_search with no additional filters should not include
+        showcases.
+        '''
+        factories.Dataset()
+        factories.Dataset()
+        factories.Dataset(type='showcase')
+        factories.Dataset(type='custom')
+
+        search_results = helpers.call_action('package_search', context={})['results']
+
+        types = [result['type'] for result in search_results]
+
+        nosetools.assert_equal(len(search_results), 3)
+        nosetools.assert_true('showcase' not in types)
+        nosetools.assert_true('custom' in types)
+
+    def test_package_search_filter_include_showcase(self):
+        '''
+        package_search filtered to include datasets of type showcase should
+        only include showcases.
+        '''
+        factories.Dataset()
+        factories.Dataset()
+        factories.Dataset(type='showcase')
+        factories.Dataset(type='custom')
+
+        search_results = helpers.call_action('package_search', context={},
+                                             fq='type:showcase')['results']
+
+        types = [result['type'] for result in search_results]
+
+        nosetools.assert_equal(len(search_results), 1)
+        nosetools.assert_true('showcase' in types)
+        nosetools.assert_true('custom' not in types)
+        nosetools.assert_true('dataset' not in types)
