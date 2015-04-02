@@ -1,8 +1,8 @@
 from nose import tools as nosetools
 
 import ckan.plugins.toolkit as toolkit
-import ckan.new_tests.factories as factories
-import ckan.new_tests.helpers as helpers
+import ckan.tests.factories as factories
+import ckan.tests.helpers as helpers
 
 
 class TestShowcaseShow(helpers.FunctionalTestBase):
@@ -503,7 +503,7 @@ class TestPackageSearchBeforeSearch(helpers.FunctionalTestBase):
         factories.Dataset(type='custom')
 
         search_results = helpers.call_action('package_search', context={},
-                                             fq='type:showcase')['results']
+                                             fq='dataset_type:showcase')['results']
 
         types = [result['type'] for result in search_results]
 

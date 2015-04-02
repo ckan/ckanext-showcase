@@ -2,8 +2,8 @@ from nose import tools as nosetools
 
 import ckan.model as model
 import ckan.plugins.toolkit as toolkit
-import ckan.new_tests.factories as factories
-import ckan.new_tests.helpers as helpers
+import ckan.tests.factories as factories
+import ckan.tests.helpers as helpers
 
 from ckanext.showcase.logic.converters import convert_package_name_or_id_to_title_or_name
 
