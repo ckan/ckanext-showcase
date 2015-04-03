@@ -1,0 +1,25 @@
+/* Custom style rules for ckanext-showcase */
+
+.context-info .module-content .smallest {
+    font-size: 13px;
+}
+
+.context-info .module-content .info .btn {
+    margin-top: 18px;
+}
+
+.actions {
+    top: 36px;
+}
+
+.ckanext-showcase-image {
+    margin-bottom: 25px;
+}
+
+.ckanext-showcase-notes {
+    margin-bottom: 25px;
+}
+
+.ckanext-showcase-launch {
+    margin-bottom: 25px;
+}

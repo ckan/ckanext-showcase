@@ -1,7 +1,7 @@
 {#
 Displays a sidebard module with information for given package
 
-pkg    - The package dict that owns the resources.
+pkg    - The showcase package dict that owns the resources.
 
 Example:
 
@@ -17,9 +17,36 @@ Example:
             {% block heading %}
               <h1 class="heading">{{ pkg.title or pkg.name }}</h1>
             {% endblock %}
+            {% if pkg.author %}
+                <span class="smallest">Submitted by</span>
+                <p>{{ pkg.author }}</p>
+            {% endif %}
+            {% if pkg.url %}
+              <div class="info">
+                <a class="btn btn-primary" href="{{ pkg.url }}" target="_blank">
+                  <i class="icon-external-link"></i> {{ _('Launch website') }}
+                </a>
+              </div>
+            {% endif %}
           {% endblock %}
         </div>
       </div>
+    </section>
+
+    <section class="module module-narrow">
+      <h3 class="module-heading"><i class="icon-medium icon-sitemap"></i> {{ _('Datasets in Showcase') }}</h2>
+      {% if c.showcase_pkgs %}
+        <ul class="nav nav-simple">
+        {% for package in c.showcase_pkgs %}
+          {% set truncate = truncate or 180 %}
+          {% set truncate_title = truncate_title or 80 %}
+          {% set title = package.title or package.name %}
+          <li class="nav-item">{{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='package', action='read', id=package.name)) }}</li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p class="module-content empty">There are no Datasetes in this Showcase</p>
+      {% endif %}
     </section>
   {% endif %}
 {% endblock %}
