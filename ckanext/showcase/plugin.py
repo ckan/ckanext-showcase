@@ -208,9 +208,13 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def before_search(self, search_params):
         '''
-        Unless the query is already being filtered, exclude datasets of type
+        Unless the query is already being filtered by this dataset_type
+        (either positively, or negatively), exclude datasets of type
         `showcase`.
         '''
-        if not search_params.get('fq', False):
-            search_params.update({'fq': '-type:"{0}"'.format(DATASET_TYPE_NAME)})
+        fq = search_params.get('fq', '')
+        if 'dataset_type:{0}'.format(DATASET_TYPE_NAME) not in fq:
+            fq = "{0} -dataset_type:{1}".format(search_params.get('fq', ''),
+                                                DATASET_TYPE_NAME)
+            search_params.update({'fq': fq})
         return search_params

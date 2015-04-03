@@ -511,3 +511,32 @@ class TestPackageSearchBeforeSearch(helpers.FunctionalTestBase):
         nosetools.assert_true('showcase' in types)
         nosetools.assert_true('custom' not in types)
         nosetools.assert_true('dataset' not in types)
+
+
+class TestUserShowBeforeSearch(helpers.FunctionalTestBase):
+
+    '''
+    Extension uses the `before_search` method to alter results of user_show
+    (via package_search).
+    '''
+
+    def test_user_show_no_additional_filters(self):
+        '''
+        Perform package_search with no additional filters should not include
+        showcases.
+        '''
+        user = factories.User()
+        factories.Dataset(user=user)
+        factories.Dataset(user=user)
+        factories.Dataset(user=user, type='showcase')
+        factories.Dataset(user=user, type='custom')
+
+        search_results = helpers.call_action('user_show', context={},
+                                             include_datasets=True,
+                                             id=user['name'])['datasets']
+
+        types = [result['type'] for result in search_results]
+
+        nosetools.assert_equal(len(search_results), 3)
+        nosetools.assert_true('showcase' not in types)
+        nosetools.assert_true('custom' in types)
