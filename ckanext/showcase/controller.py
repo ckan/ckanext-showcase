@@ -11,7 +11,7 @@ import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins as p
 from ckan.common import OrderedDict, c, request, _, g
-from ckan.controllers.package import PackageController, search_url, _encode_params
+from ckan.controllers.package import PackageController, url_with_params, _encode_params
 
 from ckanext.showcase.model import ShowcasePackageAssociation
 from ckanext.showcase.plugin import DATASET_TYPE_NAME
@@ -93,9 +93,9 @@ class ShowcaseController(PackageController):
             data_dict['state'] = 'none'
             return self.new(data_dict, errors, error_summary)
 
-        # redirect to add datasets
+        # redirect to manage datasets
         url = h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='add_datasets',
+                        action='manage_datasets',
                         id=pkg_dict['name'])
         redirect(url)
 
@@ -275,35 +275,8 @@ class ShowcaseController(PackageController):
                                 id=id)
                 redirect(url)
 
-        # get showcase packages
-        c.showcase_pkgs = get_action('ckanext_showcase_package_list')(context, {'showcase_id': c.pkg_dict['id']})
-
-        return render('showcase/manage_datasets.html')
-
-    def add_datasets(self, id):
-        '''
-        Search for datasets and create associations with showcase.
-        '''
-
-        context = {'model': model, 'session': model.Session,
-                   'user': c.user or c.author}
-        data_dict = {'id': id}
-
-        try:
-            check_access('ckanext_showcase_update', context)
-        except NotAuthorized:
-            abort(401, _('User %r not authorized to edit %s') % (c.user, id))
-
-        # check if showcase exists
-        try:
-            c.pkg_dict = get_action('package_show')(context, data_dict)
-        except NotFound:
-            abort(404, _('Showcase not found'))
-        except NotAuthorized:
-            abort(401, _('Unauthorized to read showcase %s') % id)
-
         # Are we creating a showcase/dataset association?
-        if request.method == 'POST' and 'bulk_action.showcase_add' in request.params:
+        elif request.method == 'POST' and 'bulk_action.showcase_add' in request.params:
             # Find the datasets to perform the action on, they are prefixed by
             # dataset_ in the form data
             dataset_ids = []
@@ -323,15 +296,22 @@ class ShowcaseController(PackageController):
                 if successful_adds:
                     h.flash_success(_("The dataset{plur} been added to the showcase.".format(plur=" has" if len(successful_adds) == 1 else "s have")))
                 url = h.url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                action='add_datasets',
+                                action='manage_datasets',
                                 id=id)
                 redirect(url)
 
-        self._add_dataset_search(c.pkg_dict['id'])
+        self._add_dataset_search(c.pkg_dict['id'], c.pkg_dict['name'])
 
-        return render('showcase/add_datasets.html')
+        # get showcase packages
+        c.showcase_pkgs = get_action('ckanext_showcase_package_list')(context, {'showcase_id': c.pkg_dict['id']})
 
-    def _add_dataset_search(self, showcase_id):
+        return render('showcase/manage_datasets.html')
+
+    def _search_url(self, params, name):
+        url = h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='manage_datasets', id=name)
+        return url_with_params(url, params)
+
+    def _add_dataset_search(self, showcase_id, showcase_name):
         '''
         Search logic for discovering datasets to add to a showcase.
         '''
@@ -382,7 +362,7 @@ class ShowcaseController(PackageController):
             if fields:
                 sort_string = ', '.join('%s %s' % f for f in fields)
                 params.append(('sort', sort_string))
-            return search_url(params, package_type)
+            return self._search_url(params, showcase_name)
 
         c.sort_by = _sort_by
         if sort_by is None:
@@ -394,7 +374,7 @@ class ShowcaseController(PackageController):
         def pager_url(q=None, page=None):
             params = list(params_nopage)
             params.append(('page', page))
-            return search_url(params, package_type)
+            return self._search_url(params, showcase_name)
 
         c.search_url_params = urlencode(_encode_params(params_nopage))
 

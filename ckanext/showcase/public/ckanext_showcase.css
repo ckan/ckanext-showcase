@@ -32,3 +32,12 @@
 .ckanext-showcase-launch {
     margin-bottom: 25px;
 }
+
+
+td.ckanext_showcase_pagination_footer {
+    padding: 0;
+}
+.ckanext_showcase_pagination_footer .pagination {
+    margin: 0;
+    border-top: none 0;
+}

@@ -56,8 +56,8 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
         )
         nosetools.assert_true('dataset-edit' in response.forms)
 
-    def test_showcase_new_redirects_to_add_datasets(self):
-        '''Creating a new showcase redirects to the add datasets form.'''
+    def test_showcase_new_redirects_to_manage_datasets(self):
+        '''Creating a new showcase redirects to the manage datasets form.'''
         app = self._get_test_app()
         sysadmin = factories.Sysadmin()
         # need a dataset for the 'bulk_action.showcase_add' button to show
@@ -74,11 +74,11 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
         form['name'] = u'my-showcase'
         create_response = submit_and_follow(app, form, env, 'save')
 
-        # Unique to add_datasets page
+        # Unique to manage_datasets page
         nosetools.assert_true('bulk_action.showcase_add' in create_response)
-        # Requested page is the add_datasets url.
+        # Requested page is the manage_datasets url.
         nosetools.assert_equal(url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                       action='add_datasets', id='my-showcase'), create_response.request.path)
+                                       action='manage_datasets', id='my-showcase'), create_response.request.path)
 
 
 class TestShowcaseEditView(helpers.FunctionalTestBase):
@@ -100,7 +100,7 @@ class TestShowcaseEditView(helpers.FunctionalTestBase):
         )
         nosetools.assert_true('dataset-edit' in response.forms)
 
-    def test_showcase_edit_redirects_to_add_datasets(self):
+    def test_showcase_edit_redirects_to_showcase_details(self):
         '''Editing a showcase redirects to the showcase details page.'''
         app = self._get_test_app()
         sysadmin = factories.Sysadmin()
