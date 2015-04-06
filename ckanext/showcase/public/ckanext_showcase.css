@@ -13,6 +13,10 @@
     right: 25px;
 }
 
+.ckanext-showcase-image-container {
+    text-align: center;
+}
+
 .ckanext-showcase-image {
     margin-bottom: 25px;
 }
