@@ -4,6 +4,11 @@
 
 {% block subtitle %}{{ _('Showcases') }}{% endblock %}
 
+{% block styles %}
+  {{ super() }}
+  <link rel="stylesheet" href="/ckanext_showcase.css" />
+{% endblock %}
+
 {% block breadcrumb_content_selected %}{% endblock %}
 
 {% block breadcrumb_content %}
@@ -18,6 +23,14 @@
   {% endif %}
 {% endblock %}
 
+{% block primary %}
+  <div class="primary {% block ckanext_showcase_edit_span  %}span9{% endblock %}">
+    {% block primary_content %}
+      {{ super() }}
+    {% endblock %}
+  </div>
+{% endblock %}
+
 {% block content_action %}
   {% link_for _('View showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='read', id=pkg.name, class_='btn', icon='eye-open' %}
 {% endblock %}
@@ -26,8 +39,4 @@
   {{ h.build_nav_icon('ckanext_showcase_edit', _('Edit showcase'), id=pkg.name) }}
   {{ h.build_nav_icon('ckanext_showcase_manage_datasets', _('Manage datasets'), id=pkg.name) }}
   {{ h.build_nav_icon('ckanext_showcase_add_datasets', _('Add datasets'), id=pkg.name) }}
-{% endblock %}
-
-{% block secondary_content %}
-  {#{% snippet 'showcase/snippets/showcase_info.html', pkg=pkg %}#}
 {% endblock %}

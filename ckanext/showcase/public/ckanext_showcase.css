@@ -13,6 +13,10 @@
     right: 25px;
 }
 
+.ckanext-showcase-edit-wrapper {
+    background-image: none;
+}
+
 .ckanext-showcase-image-container {
     text-align: center;
 }
