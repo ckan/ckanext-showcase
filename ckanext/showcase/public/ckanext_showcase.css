@@ -41,3 +41,7 @@ td.ckanext_showcase_pagination_footer {
     margin: 0;
     border-top: none 0;
 }
+
+.module-narrow .nav-item > a {
+    word-break: break-word;
+}
