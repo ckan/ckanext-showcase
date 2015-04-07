@@ -84,14 +84,14 @@ migration can continue. Please correct and try again:"""
                 else:
                     print('Created Showcase from the Related Item "{0}"'.format(normalized_title))
 
-                # make the showcase_package_association, if needed
-                try:
-                    related_pkg_id = self._get_related_dataset(related['id'])
-                    if related_pkg_id:
-                        get_action('ckanext_showcase_package_association_create')(data_dict={'showcase_id': new_showcase['id'],
-                                                                                             'package_id': related_pkg_id})
-                except Exception as e:
-                    print('There was a problem creating the showcase_package_association for "{0}": {1}'.format(normalized_title, e))
+                    # make the showcase_package_association, if needed
+                    try:
+                        related_pkg_id = self._get_related_dataset(related['id'])
+                        if related_pkg_id:
+                            get_action('ckanext_showcase_package_association_create')(data_dict={'showcase_id': new_showcase['id'],
+                                                                                                 'package_id': related_pkg_id})
+                    except Exception as e:
+                        print('There was a problem creating the showcase_package_association for "{0}": {1}'.format(normalized_title, e))
 
     def _get_related_dataset(self, related_id):
         '''Get the id of a package from related_dataset, if one exists.'''
