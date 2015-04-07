@@ -1,6 +1,6 @@
 from ckan import model
 from ckan.lib.cli import CkanCommand
-from ckan.lib.munge import munge_title_to_name
+from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 from ckan.logic import get_action
 
 
@@ -63,8 +63,9 @@ migration can continue. Please correct and try again:"""
 
         for related in related_items:
             existing_showcase = get_action('package_search')(data_dict={'fq': 'original_related_item_id:{0}'.format(related['id'])})
+            normalized_title = substitute_ascii_equivalents(related['title'])
             if existing_showcase['count'] > 0:
-                print('Showcase for Related Item "{0}" already exists.'.format(related['title']))
+                print('Showcase for Related Item "{0}" already exists.'.format(normalized_title))
             else:
                 data_dict = {
                     'original_related_item_id': related.get('id'),
@@ -79,9 +80,9 @@ migration can continue. Please correct and try again:"""
                 try:
                     new_showcase = get_action('ckanext_showcase_create')(data_dict=data_dict)
                 except Exception as e:
-                    print('There was a problem migrating "{0}": {1}'.format(related['title'], e))
+                    print('There was a problem migrating "{0}": {1}'.format(normalized_title, e))
                 else:
-                    print('Created Showcase from the Related Item "{0}"'.format(related['title']))
+                    print('Created Showcase from the Related Item "{0}"'.format(normalized_title))
 
                 # make the showcase_package_association, if needed
                 try:
@@ -90,7 +91,7 @@ migration can continue. Please correct and try again:"""
                         get_action('ckanext_showcase_package_association_create')(data_dict={'showcase_id': new_showcase['id'],
                                                                                              'package_id': related_pkg_id})
                 except Exception as e:
-                    print('There was a problem creating the showcase_package_association for "{0}": {1}'.format(related['title'], e))
+                    print('There was a problem creating the showcase_package_association for "{0}": {1}'.format(normalized_title, e))
 
     def _get_related_dataset(self, related_id):
         '''Get the id of a package from related_dataset, if one exists.'''
