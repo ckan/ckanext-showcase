@@ -62,7 +62,7 @@ migration can continue. Please correct and try again:"""
             return
 
         for related in related_items:
-            existing_showcase = get_action('package_search')(data_dict={'fq': 'original_related_item_id:{0}'.format(related['id'])})
+            existing_showcase = get_action('package_search')(data_dict={'fq': '+dataset_type:showcase original_related_item_id:{0}'.format(related['id'])})
             normalized_title = substitute_ascii_equivalents(related['title'])
             if existing_showcase['count'] > 0:
                 print('Showcase for Related Item "{0}" already exists.'.format(normalized_title))
