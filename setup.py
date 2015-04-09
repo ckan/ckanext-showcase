@@ -13,8 +13,8 @@ setup(
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
-    # http://packaging.python.org/en/latest/tutorial.html#version
-    version='0.0.1',
+    # https://packaging.python.org/en/latest/distributing.html#version
+    version='1.0.0b1',
 
     description='''A ckan extension to showcase datasets in use''',
     long_description=long_description,
@@ -33,6 +33,8 @@ setup(
     classifiers=[
         # Pick your license as you wish (should match "license" above)
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
+
+        'Development Status :: 4 - Beta',
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
