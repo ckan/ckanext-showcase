@@ -66,6 +66,14 @@
       <p class="ckanext-showcase-image-container"><img src="{{ pkg.image_display_url }}" alt="{{ name }}" class="media-image ckanext-showcase-image"></p>
     {% endif %}
 
+    {% block package_notes %}
+      {% if pkg.showcase_notes_formatted %}
+        <div class="notes embedded-content ckanext-showcase-notes">
+          {{ pkg.showcase_notes_formatted }}
+        </div>
+      {% endif %}
+    {% endblock %}
+
     {% if pkg.url %}
       <p><a class="btn btn-primary ckanext-showcase-launch" href="{{ pkg.url }}" target="_blank"><i class="icon-external-link"></i> {{ _('Launch website') }}</a></p>
     {% endif %}
