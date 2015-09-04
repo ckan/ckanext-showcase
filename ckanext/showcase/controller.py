@@ -1,32 +1,35 @@
 from urllib import urlencode
 import logging
 
-from paste.deploy.converters import asbool
 from pylons import config
 
+from ckan.plugins import toolkit as tk
 import ckan.model as model
 import ckan.lib.base as base
 import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins as p
-from ckan.common import OrderedDict, c, request, _, g
+from ckan.common import OrderedDict, g
 from ckan.controllers.package import PackageController, url_with_params, _encode_params
 
 from ckanext.showcase.model import ShowcasePackageAssociation
 from ckanext.showcase.plugin import DATASET_TYPE_NAME
 
-render = base.render
-abort = base.abort
+_ = tk._
+c = tk.c
+request = tk.request
+render = tk.render
+abort = tk.abort
 redirect = base.redirect
-NotFound = logic.NotFound
-ValidationError = logic.ValidationError
-check_access = logic.check_access
-get_action = logic.get_action
+NotFound = tk.ObjectNotFound
+ValidationError = tk.ValidationError
+check_access = tk.check_access
+get_action = tk.get_action
 tuplize_dict = logic.tuplize_dict
 clean_dict = logic.clean_dict
 parse_params = logic.parse_params
-NotAuthorized = logic.NotAuthorized
+NotAuthorized = tk.NotAuthorized
 
 
 log = logging.getLogger(__name__)
@@ -149,7 +152,7 @@ class ShowcaseController(PackageController):
 
     def delete(self, id):
         if 'cancel' in request.params:
-            h.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
+            tk.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
                           action='edit', id=id)
 
         context = {'model': model, 'session': model.Session,
@@ -164,7 +167,7 @@ class ShowcaseController(PackageController):
             if request.method == 'POST':
                 get_action('ckanext_showcase_delete')(context, {'id': id})
                 h.flash_notice(_('Showcase has been deleted.'))
-                h.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
+                tk.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
                               action='search')
             c.pkg_dict = get_action('package_show')(context, {'id': id})
         except NotAuthorized:
@@ -408,7 +411,7 @@ class ShowcaseController(PackageController):
             else:
                 # Unless changed via config options, don't show non standard
                 # dataset types on the default search page
-                if not asbool(config.get('ckan.search.show_all_types', 'False')):
+                if not tk.asbool(config.get('ckan.search.show_all_types', 'False')):
                     fq += ' +dataset_type:dataset'
 
             # Only search for packages that aren't already associated with the
@@ -528,7 +531,7 @@ class ShowcaseController(PackageController):
             abort(401, _('User not authorized to view page'))
 
         if 'cancel' in request.params:
-            h.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
+            tk.redirect_to(controller='ckanext.showcase.controller:ShowcaseController',
                           action='manage_showcase_admins')
 
         user_id = request.params['user']
