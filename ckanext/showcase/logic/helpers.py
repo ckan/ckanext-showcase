@@ -1,5 +1,5 @@
-import ckan.logic as logic
 import ckan.lib.helpers as h
+from ckan.plugins import toolkit as tk
 
 
 def facet_remove_field(key, value=None, replace=None):
@@ -19,12 +19,12 @@ def get_site_statistics():
     '''
 
     stats = {}
-    stats['showcase_count'] = logic.get_action('package_search')(
+    stats['showcase_count'] = tk.get_action('package_search')(
         {}, {"rows": 1, 'fq': 'dataset_type:showcase'})['count']
-    stats['dataset_count'] = logic.get_action('package_search')(
+    stats['dataset_count'] = tk.get_action('package_search')(
         {}, {"rows": 1, 'fq': '!dataset_type:showcase'})['count']
-    stats['group_count'] = len(logic.get_action('group_list')({}, {}))
+    stats['group_count'] = len(tk.get_action('group_list')({}, {}))
     stats['organization_count'] = len(
-        logic.get_action('organization_list')({}, {}))
+        tk.get_action('organization_list')({}, {}))
 
     return stats

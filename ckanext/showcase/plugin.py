@@ -1,11 +1,10 @@
 import logging
 
-from pylons import c
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
-import ckan.plugins.toolkit as toolkit
-from ckan.common import OrderedDict, _
+from ckan.plugins import toolkit as tk
+from ckan.common import OrderedDict
 from ckan import model as ckan_model
 
 from routes.mapper import SubMapper
@@ -19,6 +18,8 @@ import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
 from ckanext.showcase.model import setup as model_setup
 
+c = tk.c
+_ = tk._
 
 log = logging.getLogger(__name__)
 
@@ -39,11 +40,11 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # IConfigurer
 
     def update_config(self, config):
-        toolkit.add_template_directory(config, 'templates')
-        toolkit.add_public_directory(config, 'public')
+        tk.add_template_directory(config, 'templates')
+        tk.add_public_directory(config, 'public')
         # If ckan is more than 2.3, use the 2.4+ toolkit method
-        if not toolkit.check_ckan_version(max_version='2.3'):
-            toolkit.add_ckan_admin_tab(config, 'ckanext_showcase_admins', 'Showcase Config')
+        if not tk.check_ckan_version(max_version='2.3'):
+            tk.add_ckan_admin_tab(config, 'ckanext_showcase_admins', 'Showcase Config')
 
     # IConfigurable
 
@@ -183,8 +184,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                                  qualified=True)
 
         # Add dataset count
-        pkg_dict[u'num_datasets'] = len(toolkit.get_action('ckanext_showcase_package_list')
-                                                          (context, {'showcase_id': pkg_dict['id']}))
+        pkg_dict[u'num_datasets'] = len(tk.get_action('ckanext_showcase_package_list')
+                                        (context, {'showcase_id': pkg_dict['id']}))
 
         # Rendered notes
         pkg_dict[u'showcase_notes_formatted'] = h.render_markdown(pkg_dict['notes'])

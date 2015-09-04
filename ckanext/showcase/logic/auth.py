@@ -11,7 +11,7 @@ def _is_showcase_admin(context):
     '''
     Determines whether user in context is in the showcase admin list.
     '''
-    user = context['user']
+    user = context.get('user', '')
     userobj = model.User.get(user)
     return ShowcaseAdmin.is_user_showcase_admin(userobj)
 

@@ -1,5 +1,7 @@
-from ckan.lib.navl.dictization_functions import Invalid
-from ckan.common import _
+from ckan.plugins import toolkit as tk
+
+_ = tk._
+Invalid = tk.Invalid
 
 
 def convert_package_name_or_id_to_id_for_type(package_name_or_id, context, package_type='dataset'):
