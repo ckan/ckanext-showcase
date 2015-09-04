@@ -17,6 +17,7 @@ def get_site_statistics():
     Custom stats helper, so we can get the correct number of packages, and a
     count of showcases.
     '''
+
     stats = {}
     stats['showcase_count'] = logic.get_action('package_search')(
         {}, {"rows": 1, 'fq': 'dataset_type:showcase'})['count']
