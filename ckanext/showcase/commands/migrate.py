@@ -62,10 +62,12 @@ migration can continue. Please correct and try again:"""
             return
 
         for related in related_items:
-            existing_showcase = get_action('package_search')(data_dict={'fq': '+dataset_type:showcase original_related_item_id:{0}'.format(related['id'])})
+            existing_showcase = get_action('package_search')(
+                data_dict={'fq': '+dataset_type:showcase original_related_item_id:{0}'.format(related['id'])})
             normalized_title = substitute_ascii_equivalents(related['title'])
             if existing_showcase['count'] > 0:
-                print('Showcase for Related Item "{0}" already exists.'.format(normalized_title))
+                print('Showcase for Related Item "{0}" already exists.'.format(
+                    normalized_title))
             else:
                 data_dict = {
                     'original_related_item_id': related.get('id'),
@@ -78,24 +80,30 @@ migration can continue. Please correct and try again:"""
                 }
                 # make the showcase
                 try:
-                    new_showcase = get_action('ckanext_showcase_create')(data_dict=data_dict)
+                    new_showcase = get_action('ckanext_showcase_create')(
+                        data_dict=data_dict)
                 except Exception as e:
-                    print('There was a problem migrating "{0}": {1}'.format(normalized_title, e))
+                    print('There was a problem migrating "{0}": {1}'.format(
+                        normalized_title, e))
                 else:
                     print('Created Showcase from the Related Item "{0}"'.format(normalized_title))
 
                     # make the showcase_package_association, if needed
                     try:
-                        related_pkg_id = self._get_related_dataset(related['id'])
+                        related_pkg_id = self._get_related_dataset(
+                            related['id'])
                         if related_pkg_id:
-                            get_action('ckanext_showcase_package_association_create')(data_dict={'showcase_id': new_showcase['id'],
-                                                                                                 'package_id': related_pkg_id})
+                            get_action('ckanext_showcase_package_association_create')(
+                                data_dict={'showcase_id': new_showcase['id'],
+                                           'package_id': related_pkg_id})
                     except Exception as e:
-                        print('There was a problem creating the showcase_package_association for "{0}": {1}'.format(normalized_title, e))
+                        print('There was a problem creating the showcase_package_association for "{0}": {1}'.format(
+                            normalized_title, e))
 
     def _get_related_dataset(self, related_id):
         '''Get the id of a package from related_dataset, if one exists.'''
-        related_dataset = model.Session.query(model.RelatedDataset).filter_by(related_id=related_id).first()
+        related_dataset = model.Session.query(model.RelatedDataset).filter_by(
+            related_id=related_id).first()
         if related_dataset:
             return related_dataset.dataset_id
 

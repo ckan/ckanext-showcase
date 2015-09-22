@@ -4,7 +4,8 @@ _ = tk._
 Invalid = tk.Invalid
 
 
-def convert_package_name_or_id_to_id_for_type(package_name_or_id, context, package_type='dataset'):
+def convert_package_name_or_id_to_id_for_type(package_name_or_id,
+                                              context, package_type='dataset'):
     '''
     Return the id for the given package name or id. Only works with packages
     of type package_type.
@@ -29,9 +30,15 @@ def convert_package_name_or_id_to_id_for_type(package_name_or_id, context, packa
     return result.id
 
 
-def convert_package_name_or_id_to_id_for_type_dataset(package_name_or_id, context):
-    return convert_package_name_or_id_to_id_for_type(package_name_or_id, context, package_type='dataset')
+def convert_package_name_or_id_to_id_for_type_dataset(package_name_or_id,
+                                                      context):
+    return convert_package_name_or_id_to_id_for_type(package_name_or_id,
+                                                     context,
+                                                     package_type='dataset')
 
 
-def convert_package_name_or_id_to_id_for_type_showcase(package_name_or_id, context):
-    return convert_package_name_or_id_to_id_for_type(package_name_or_id, context, package_type='showcase')
+def convert_package_name_or_id_to_id_for_type_showcase(package_name_or_id,
+                                                       context):
+    return convert_package_name_or_id_to_id_for_type(package_name_or_id,
+                                                     context,
+                                                     package_type='showcase')

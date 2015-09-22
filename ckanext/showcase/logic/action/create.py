@@ -9,8 +9,10 @@ import ckanext.showcase.logic.converters as showcase_converters
 import ckanext.showcase.logic.schema as showcase_schema
 from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 
-convert_package_name_or_id_to_title_or_name = showcase_converters.convert_package_name_or_id_to_title_or_name
-showcase_package_association_create_schema = showcase_schema.showcase_package_association_create_schema
+convert_package_name_or_id_to_title_or_name = \
+    showcase_converters.convert_package_name_or_id_to_title_or_name
+showcase_package_association_create_schema = \
+    showcase_schema.showcase_package_association_create_schema
 showcase_admin_add_schema = showcase_schema.showcase_admin_add_schema
 
 log = logging.getLogger(__name__)
@@ -43,22 +45,28 @@ def showcase_package_association_create(context, data_dict):
     :type package_id: string
     '''
 
-    toolkit.check_access('ckanext_showcase_package_association_create', context, data_dict)
+    toolkit.check_access('ckanext_showcase_package_association_create',
+                         context, data_dict)
 
     # validate the incoming data_dict
-    validated_data_dict, errors = validate(data_dict, showcase_package_association_create_schema(), context)
+    validated_data_dict, errors = validate(
+        data_dict, showcase_package_association_create_schema(), context)
 
     if errors:
         raise toolkit.ValidationError(errors)
 
-    package_id, showcase_id = toolkit.get_or_bust(validated_data_dict, ['package_id', 'showcase_id'])
+    package_id, showcase_id = toolkit.get_or_bust(validated_data_dict,
+                                                  ['package_id',
+                                                   'showcase_id'])
 
-    if ShowcasePackageAssociation.exists(package_id=package_id, showcase_id=showcase_id):
+    if ShowcasePackageAssociation.exists(package_id=package_id,
+                                         showcase_id=showcase_id):
         raise toolkit.ValidationError("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' already exists.".format(package_id, showcase_id),
                                       error_summary=u"The dataset, {0}, is already in the showcase".format(convert_package_name_or_id_to_title_or_name(package_id, context)))
 
     # create the association
-    return ShowcasePackageAssociation.create(package_id=package_id, showcase_id=showcase_id)
+    return ShowcasePackageAssociation.create(package_id=package_id,
+                                             showcase_id=showcase_id)
 
 
 def showcase_admin_add(context, data_dict):
@@ -71,7 +79,8 @@ def showcase_admin_add(context, data_dict):
     toolkit.check_access('ckanext_showcase_admin_add', context, data_dict)
 
     # validate the incoming data_dict
-    validated_data_dict, errors = validate(data_dict, showcase_admin_add_schema(), context)
+    validated_data_dict, errors = validate(
+        data_dict, showcase_admin_add_schema(), context)
 
     username = toolkit.get_or_bust(validated_data_dict, 'username')
     try:

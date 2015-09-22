@@ -62,13 +62,16 @@ def showcase_package_list(context, data_dict):
     toolkit.check_access('ckanext_showcase_package_list', context, data_dict)
 
     # validate the incoming data_dict
-    validated_data_dict, errors = validate(data_dict, showcase_package_list_schema(), context)
+    validated_data_dict, errors = validate(data_dict,
+                                           showcase_package_list_schema(),
+                                           context)
 
     if errors:
         raise toolkit.ValidationError(errors)
 
     # get a list of package ids associated with showcase id
-    pkg_id_list = ShowcasePackageAssociation.get_package_ids_for_showcase(validated_data_dict['showcase_id'])
+    pkg_id_list = ShowcasePackageAssociation.get_package_ids_for_showcase(
+        validated_data_dict['showcase_id'])
 
     pkg_list = []
     if pkg_id_list is not None:
@@ -95,18 +98,22 @@ def package_showcase_list(context, data_dict):
     toolkit.check_access('ckanext_package_showcase_list', context, data_dict)
 
     # validate the incoming data_dict
-    validated_data_dict, errors = validate(data_dict, package_showcase_list_schema(), context)
+    validated_data_dict, errors = validate(data_dict,
+                                           package_showcase_list_schema(),
+                                           context)
 
     if errors:
         raise toolkit.ValidationError(errors)
 
     # get a list of showcase ids associated with the package id
-    showcase_id_list = ShowcasePackageAssociation.get_showcase_ids_for_package(validated_data_dict['package_id'])
+    showcase_id_list = ShowcasePackageAssociation.get_showcase_ids_for_package(
+        validated_data_dict['package_id'])
 
     showcase_list = []
     if showcase_id_list is not None:
         for showcase_id in showcase_id_list:
-            showcase = toolkit.get_action('package_show')(context, {'id': showcase_id})
+            showcase = toolkit.get_action('package_show')(context,
+                                                          {'id': showcase_id})
             showcase_list.append(showcase)
 
     return showcase_list

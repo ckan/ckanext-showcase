@@ -77,7 +77,9 @@ class ShowcasePackageAssociation(ShowcaseBaseModel):
         '''
         Return a list of package ids associated with the passed showcase_id.
         '''
-        showcase_package_association_list = Session.query(cls.package_id).filter_by(showcase_id=showcase_id).all()
+        showcase_package_association_list = \
+            Session.query(cls.package_id).filter_by(
+                showcase_id=showcase_id).all()
         return showcase_package_association_list
 
     @classmethod
@@ -85,25 +87,28 @@ class ShowcasePackageAssociation(ShowcaseBaseModel):
         '''
         Return a list of showcase ids associated with the passed package_id.
         '''
-        showcase_package_association_list = Session.query(cls.showcase_id).filter_by(package_id=package_id).all()
+        showcase_package_association_list = \
+            Session.query(cls.showcase_id).filter_by(
+                package_id=package_id).all()
         return showcase_package_association_list
 
 
 def define_showcase_package_association_table():
     global showcase_package_assocation_table
 
-    showcase_package_assocation_table = Table('showcase_package_association', metadata,
-                                              Column('package_id', types.UnicodeText,
-                                                     ForeignKey('package.id',
-                                                                ondelete='CASCADE',
-                                                                onupdate='CASCADE'),
-                                                     primary_key=True, nullable=False),
-                                              Column('showcase_id', types.UnicodeText,
-                                                     ForeignKey('package.id',
-                                                                ondelete='CASCADE',
-                                                                onupdate='CASCADE'),
-                                                     primary_key=True, nullable=False)
-                                              )
+    showcase_package_assocation_table = Table(
+        'showcase_package_association', metadata,
+        Column('package_id', types.UnicodeText,
+               ForeignKey('package.id',
+                          ondelete='CASCADE',
+                          onupdate='CASCADE'),
+               primary_key=True, nullable=False),
+        Column('showcase_id', types.UnicodeText,
+               ForeignKey('package.id',
+                          ondelete='CASCADE',
+                          onupdate='CASCADE'),
+               primary_key=True, nullable=False)
+    )
 
     mapper(ShowcasePackageAssociation, showcase_package_assocation_table)
 
