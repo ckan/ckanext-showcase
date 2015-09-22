@@ -2,7 +2,7 @@
 
 <div class="box stats">
   <div class="inner">
-    <h3>{{ _('{0} statistics').format(g.site_title) }}</h3>
+    <h3>{{ _('{site_title} statistics').format(site_title=g.site_title) }}</h3>
     <ul>
       <li>
         <a href="{{ h.url_for(controller='package', action='search') }}">

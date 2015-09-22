@@ -10,7 +10,7 @@ import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins as p
-from ckan.common import OrderedDict, g
+from ckan.common import OrderedDict, g, ungettext
 from ckan.controllers.package import (PackageController,
                                       url_with_params,
                                       _encode_params)
@@ -68,7 +68,8 @@ class ShowcaseController(PackageController):
         try:
             check_access('ckanext_showcase_update', context)
         except NotAuthorized:
-            abort(401, _('User %r not authorized to edit %s') % (c.user, id))
+            abort(401, _('User not authorized to edit {showcase_id}').format(
+                showcase_id=id))
 
         return super(ShowcaseController, self).edit(
             id, data=data, errors=errors, error_summary=error_summary)
@@ -145,7 +146,7 @@ class ShowcaseController(PackageController):
         except NotFound:
             abort(404, _('Showcase not found'))
         except NotAuthorized:
-            abort(401, _('Unauthorized to read showcase %s') % id)
+            abort(401, _('Unauthorized to read showcase'))
 
         # get showcase packages
         c.showcase_pkgs = get_action('ckanext_showcase_package_list')(
@@ -167,7 +168,7 @@ class ShowcaseController(PackageController):
         try:
             check_access('ckanext_showcase_delete', context, {'id': id})
         except NotAuthorized:
-            abort(401, _('Unauthorized to delete showcase %s') % '')
+            abort(401, _('Unauthorized to delete showcase'))
 
         try:
             if request.method == 'POST':
@@ -178,7 +179,7 @@ class ShowcaseController(PackageController):
                     action='search')
             c.pkg_dict = get_action('package_show')(context, {'id': id})
         except NotAuthorized:
-            abort(401, _('Unauthorized to delete showcase %s') % '')
+            abort(401, _('Unauthorized to delete showcase'))
         except NotFound:
             abort(404, _('Showcase not found'))
         return render('showcase/confirm_delete.html',
@@ -208,7 +209,7 @@ class ShowcaseController(PackageController):
         except NotFound:
             abort(404, _('Dataset not found'))
         except logic.NotAuthorized:
-            abort(401, _('Unauthorized to read package %s') % id)
+            abort(401, _('Unauthorized to read package'))
 
         if request.method == 'POST':
             # Are we adding the dataset to a showcase?
@@ -263,7 +264,8 @@ class ShowcaseController(PackageController):
         try:
             check_access('ckanext_showcase_update', context)
         except NotAuthorized:
-            abort(401, _('User %r not authorized to edit %s') % (c.user, id))
+            abort(401, _('User not authorized to edit {showcase_id}').format(
+                showcase_id=id))
 
         # check if showcase exists
         try:
@@ -271,7 +273,7 @@ class ShowcaseController(PackageController):
         except NotFound:
             abort(404, _('Showcase not found'))
         except NotAuthorized:
-            abort(401, _('Unauthorized to read showcase %s') % id)
+            abort(401, _('Unauthorized to read showcase'))
 
         # Are we removing a showcase/dataset association?
         if (request.method == 'POST'
@@ -288,7 +290,9 @@ class ShowcaseController(PackageController):
                         context,
                         {'showcase_id': c.pkg_dict['id'],
                          'package_id': dataset_id})
-                h.flash_success(_("The dataset{plur} been removed from the showcase.".format(plur=" has" if len(dataset_ids) == 1 else "s have")))
+                h.flash_success(ungettext("The dataset has been removed from the showcase.",
+                                          "The datasets have been removed from the showcase.",
+                                          len(dataset_ids)))
                 url = h.url_for(
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='manage_datasets', id=id)
@@ -316,7 +320,9 @@ class ShowcaseController(PackageController):
                     else:
                         successful_adds.append(dataset_id)
                 if successful_adds:
-                    h.flash_success(_("The dataset{plur} been added to the showcase.".format(plur=" has" if len(successful_adds) == 1 else "s have")))
+                    h.flash_success(ungettext("The dataset has been added to the showcase.",
+                                              "The datasets have been added to the showcase.",
+                                              len(successful_adds)))
                 url = h.url_for(
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='manage_datasets', id=id)
@@ -503,8 +509,7 @@ class ShowcaseController(PackageController):
                 limit = int(request.params.get('_%s_limit' % facet,
                                                g.facets_default_number))
             except ValueError:
-                abort(400, _('Parameter "{parameter_name}" is not '
-                             'an integer').format(
+                abort(400, _("Parameter '{parameter_name}' is not an integer").format(
                                  parameter_name='_%s_limit' % facet
                              ))
             c.search_facets_limits[facet] = limit
@@ -530,7 +535,8 @@ class ShowcaseController(PackageController):
             except NotAuthorized:
                 abort(401, _('Unauthorized to perform that action'))
             except NotFound:
-                h.flash_error(_("User '{0}' not found.").format(username))
+                h.flash_error(_("User '{user_name}' not found.").format(
+                    user_name=username))
             except ValidationError as e:
                 h.flash_notice(e.error_summary)
             else:

@@ -14,7 +14,7 @@
     </form>
   {% endif %}
 
-  <h2>{% block page_heading %}{{ _('Showcases featuring {dataset}').format(dataset=h.dataset_display_name(c.pkg_dict)) }}{% endblock %}</h2>
+  <h2>{% block page_heading %}{{ _('Showcases featuring {dataset_name}').format(dataset_name=h.dataset_display_name(c.pkg_dict)) }}{% endblock %}</h2>
   {% block showcase_list %}
     {% if c.showcase_list %}
       {% snippet "showcase/snippets/showcase_list.html", packages=c.showcase_list, pkg_id=c.pkg_dict.name, show_remove=h.check_access('ckanext_showcase_update') %}

@@ -8,7 +8,7 @@
   <section class="module span6 offset3">
     <div class="module-content">
       {% block form %}
-        <p>{{ _('Are you sure you want to delete showcase - {name}?').format(name=c.pkg_dict.name) }}</p>
+        <p>{{ _('Are you sure you want to delete showcase - {showcase_name}?').format(showcase_name=c.pkg_dict.name) }}</p>
         <p class="form-actions">
           <form action="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='delete', id=c.pkg_dict.name %}" method="post">
             <button class="btn" type="submit" name="cancel" >{{ _('Cancel') }}</button>

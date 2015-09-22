@@ -76,7 +76,18 @@ setup(
         [ckan.plugins]
         showcase=ckanext.showcase.plugin:ShowcasePlugin
 
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
+
         [paste.paster_command]
         showcase=ckanext.showcase.commands.migrate:MigrationCommand
     ''',
+
+    message_extractors={
+        'ckanext': [
+            ('**.py', 'python', None),
+            ('**.js', 'javascript', None),
+            ('**/templates/**.html', 'ckan', None),
+        ],
+    }
 )
