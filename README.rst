@@ -5,12 +5,12 @@
 .. image:: https://travis-ci.org/ckan/ckanext-showcase.svg?branch=master
     :target: https://travis-ci.org/ckan/ckanext-showcase
 
-.. image:: https://coveralls.io/repos/ckan/ckanext-showcase/badge.png?branch=master
-  :target: https://coveralls.io/r/ckan/ckanext-showcase?branch=master
+.. image:: https://coveralls.io/repos/ckan/ckanext-showcase/badge.svg
+  :target: https://coveralls.io/r/ckan/ckanext-showcase
 
-=============
+================
 ckanext-showcase
-=============
+================
 
 Showcase and link to datasets in use. Datasets used in an app, website or
 visualization, or featured in an article, report or blog post can be showcased
@@ -30,9 +30,8 @@ ckanext-showcase is intended to be a more powerful replacement for the
 Requirements
 ------------
 
-Current status: Beta
 
-Compatible with CKAN 2.3.
+Compatible with CKAN 2.3+.
 
 
 ------------
@@ -157,9 +156,9 @@ coverage installed in your virtualenv (``pip install coverage``) then run::
     nosetests --ckan --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.showcase --cover-inclusive --cover-erase --cover-tests
 
 
----------------------------------
+------------------------------------
 Registering ckanext-showcase on PyPI
----------------------------------
+------------------------------------
 
 ckanext-showcase should be availabe on PyPI as
 https://pypi.python.org/pypi/ckanext-showcase. If that link doesn't work, then
@@ -186,9 +185,9 @@ steps:
        git push --tags
 
 
-----------------------------------------
+-------------------------------------------
 Releasing a New Version of ckanext-showcase
-----------------------------------------
+-------------------------------------------
 
 ckanext-showcase is availabe on PyPI as https://pypi.python.org/pypi/ckanext-showcase.
 To publish a new version to PyPI follow these steps:
