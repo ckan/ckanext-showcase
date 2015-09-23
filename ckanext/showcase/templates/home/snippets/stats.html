@@ -7,25 +7,25 @@
       <li>
         <a href="{{ h.url_for(controller='package', action='search') }}">
           <b>{{ h.SI_number_span(stats.dataset_count) }}</b>
-          {{ _('dataset') if stats.dataset_count == 1 else _('datasets') }}
+          {{ ungettext('dataset', 'datasets', stats.dataset_count) }}
         </a>
       </li>
       <li>
         <a href="{{ h.url_for(controller='organization', action='index') }}">
           <b>{{ h.SI_number_span(stats.organization_count) }}</b>
-          {{ _('organization') if stats.organization_count == 1 else _('organizations') }}
+          {{ ungettext('organization', 'organizations', stats.organization_count) }}
         </a>
       </li>
       <li>
         <a href="{{ h.url_for(controller='group', action='index') }}">
           <b>{{ h.SI_number_span(stats.group_count) }}</b>
-          {{ _('group') if stats.group_count == 1 else _('groups') }}
+          {{ ungettext('group', 'groups', stats.group_count) }}
         </a>
       </li>
       <li>
         <a href="{{ h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='search') }}">
           <b>{{ h.SI_number_span(stats.showcase_count) }}</b>
-          {{ _('showcase') if stats.showcase_count == 1 else _('showcases') }}
+          {{ ungettext('showcase', 'showcases', stats.showcase_count) }}
         </a>
       </li>
     </ul>

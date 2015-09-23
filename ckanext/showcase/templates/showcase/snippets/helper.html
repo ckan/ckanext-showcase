@@ -5,17 +5,11 @@
   </h2>
   <div class="module-content">
     <p>
-      {% trans %}
-        Datasets have been used to build apps, websites and visualizations.
-        They've been featured in articles, and written about in news reports
-        and blog posts. Showcases collect together the best examples of
-        datasets in use, to provide further insight, ideas, and inspiration.
-      {% endtrans %}
+      {% trans %}Datasets have been used to build apps, websites and visualizations. They've been featured in articles, and written about in news reports and blog posts. Showcases collect together the best examples of datasets in use, to provide further insight, ideas, and inspiration.{% endtrans %}
     </p>
     {% if h.check_access('ckanext_showcase_admin_add') %}
       <p>
-        Sysadmins can manage Showcase Admins from the
-        <a href="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='manage_showcase_admins' %}">Showcase configuration page</a>.
+        {% trans url=h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='manage_showcase_admins') %}Sysadmins can manage Showcase Admins from the <a href='{{ url }}'>Showcase configuration page</a>.{% endtrans %}
       </p>
     {% endif %}
   </div>

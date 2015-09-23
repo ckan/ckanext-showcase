@@ -18,7 +18,7 @@ Example:
               <h1 class="heading">{{ pkg.title or pkg.name }}</h1>
             {% endblock %}
             {% if pkg.author %}
-                <span class="smallest">Submitted by</span>
+                <span class="smallest">{{_('Submitted by')}}</span>
                 <p>{{ pkg.author }}</p>
             {% endif %}
             {% if pkg.url %}
@@ -44,7 +44,7 @@ Example:
         {% endfor %}
         </ul>
       {% else %}
-        <p class="module-content empty">There are no Datasets in this Showcase</p>
+        <p class="module-content empty">{{_('There are no Datasets in this Showcase')}}</p>
       {% endif %}
     </section>
   {% endif %}
