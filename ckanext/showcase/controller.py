@@ -290,9 +290,11 @@ class ShowcaseController(PackageController):
                         context,
                         {'showcase_id': c.pkg_dict['id'],
                          'package_id': dataset_id})
-                h.flash_success(ungettext("The dataset has been removed from the showcase.",
-                                          "The datasets have been removed from the showcase.",
-                                          len(dataset_ids)))
+                h.flash_success(
+                    ungettext(
+                        "The dataset has been removed from the showcase.",
+                        "The datasets have been removed from the showcase.",
+                        len(dataset_ids)))
                 url = h.url_for(
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='manage_datasets', id=id)
@@ -320,9 +322,11 @@ class ShowcaseController(PackageController):
                     else:
                         successful_adds.append(dataset_id)
                 if successful_adds:
-                    h.flash_success(ungettext("The dataset has been added to the showcase.",
-                                              "The datasets have been added to the showcase.",
-                                              len(successful_adds)))
+                    h.flash_success(
+                        ungettext(
+                            "The dataset has been added to the showcase.",
+                            "The datasets have been added to the showcase.",
+                            len(successful_adds)))
                 url = h.url_for(
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='manage_datasets', id=id)
