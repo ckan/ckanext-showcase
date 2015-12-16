@@ -30,7 +30,7 @@ cd ckan
 paster db init -c test-core.ini
 cd -
 
-echo "Installing ckanext-ckanext-showcase and its requirements..."
+echo "Installing ckanext-showcase and its requirements..."
 python setup.py develop
 pip install -r dev-requirements.txt
 

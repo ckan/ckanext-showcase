@@ -2,8 +2,8 @@ import json
 from nose import tools as nosetools
 
 import ckan.plugins.toolkit as toolkit
-import ckan.tests.factories as factories
-import ckan.tests.helpers as helpers
+import ckan.new_tests.factories as factories
+import ckan.new_tests.helpers as helpers
 
 
 class TestShowcaseAuthIndex(helpers.FunctionalTestBase):

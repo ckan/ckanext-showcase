@@ -1,9 +1,11 @@
 from routes import url_for
 from nose import tools as nosetools
+from nose import SkipTest
 
+from ckan.plugins import toolkit as tk
 import ckan.model as model
-import ckan.tests.helpers as helpers
-import ckan.tests.factories as factories
+import ckan.new_tests.helpers as helpers
+import ckan.new_tests.factories as factories
 
 from ckanext.showcase.model import ShowcasePackageAssociation
 
@@ -288,6 +290,8 @@ class TestShowcaseAdminManageView(helpers.FunctionalTestBase):
         '''
         ckan-admin index page has a showcase config tab.
         '''
+        if not tk.check_ckan_version(min_version='2.4'):
+            raise SkipTest('Showcase config tab only available for CKAN 2.4+')
 
         app = self._get_test_app()
         sysadmin = factories.Sysadmin()
