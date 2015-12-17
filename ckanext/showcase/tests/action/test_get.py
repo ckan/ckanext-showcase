@@ -1,4 +1,5 @@
 from nose import tools as nosetools
+from nose import SkipTest
 
 import ckan.plugins.toolkit as toolkit
 import ckan.new_tests.factories as factories
@@ -513,31 +514,33 @@ class TestPackageSearchBeforeSearch(helpers.FunctionalTestBase):
         nosetools.assert_true('dataset' not in types)
 
 
-# Needs ckan/ckan#2380 to be merged
-# class TestUserShowBeforeSearch(helpers.FunctionalTestBase):
+class TestUserShowBeforeSearch(helpers.FunctionalTestBase):
 
-#     '''
-#     Extension uses the `before_search` method to alter results of user_show
-#     (via package_search).
-#     '''
+    '''
+    Extension uses the `before_search` method to alter results of user_show
+    (via package_search).
+    '''
 
-#     def test_user_show_no_additional_filters(self):
-#         '''
-#         Perform package_search with no additional filters should not include
-#         showcases.
-#         '''
-#         user = factories.User()
-#         factories.Dataset(user=user)
-#         factories.Dataset(user=user)
-#         factories.Dataset(user=user, type='showcase')
-#         factories.Dataset(user=user, type='custom')
+    def test_user_show_no_additional_filters(self):
+        '''
+        Perform package_search with no additional filters should not include
+        showcases.
+        '''
+        if not toolkit.check_ckan_version(min_version='2.4'):
+            raise SkipTest('Filtering out showcases requires CKAN 2.4+ (ckan/ckan/issues/2380)')
 
-#         search_results = helpers.call_action('user_show', context={},
-#                                              include_datasets=True,
-#                                              id=user['name'])['datasets']
+        user = factories.User()
+        factories.Dataset(user=user)
+        factories.Dataset(user=user)
+        factories.Dataset(user=user, type='showcase')
+        factories.Dataset(user=user, type='custom')
 
-#         types = [result['type'] for result in search_results]
+        search_results = helpers.call_action('user_show', context={},
+                                             include_datasets=True,
+                                             id=user['name'])['datasets']
 
-#         nosetools.assert_equal(len(search_results), 3)
-#         nosetools.assert_true('showcase' not in types)
-#         nosetools.assert_true('custom' in types)
+        types = [result['type'] for result in search_results]
+
+        nosetools.assert_equal(len(search_results), 3)
+        nosetools.assert_true('showcase' not in types)
+        nosetools.assert_true('custom' in types)
