@@ -9,7 +9,14 @@ log = logging.getLogger(__name__)
 
 def showcase_update(context, data_dict):
 
-    upload = uploader.Upload('showcase', data_dict['image_url'])
+    # If get_uploader is available (introduced for IUploader in CKAN 2.5), use
+    # it, otherwise use the default uploader.
+    # https://github.com/ckan/ckan/pull/2510
+    try:
+        upload = uploader.get_uploader('showcase', data_dict['image_url'])
+    except AttributeError:
+        upload = uploader.Upload('showcase', data_dict['image_url'])
+
     upload.update_data_dict(data_dict, 'image_url',
                             'image_upload', 'clear_upload')
 

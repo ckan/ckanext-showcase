@@ -24,7 +24,14 @@ def showcase_create(context, data_dict):
     # force type to 'showcase'
     data_dict['type'] = 'showcase'
 
-    upload = uploader.Upload('showcase')
+    # If get_uploader is available (introduced for IUploader in CKAN 2.5), use
+    # it, otherwise use the default uploader.
+    # https://github.com/ckan/ckan/pull/2510
+    try:
+        upload = uploader.get_uploader('showcase')
+    except AttributeError:
+        upload = uploader.Upload('showcase')
+
     upload.update_data_dict(data_dict, 'image_url',
                             'image_upload', 'clear_upload')
 
