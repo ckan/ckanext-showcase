@@ -15,7 +15,7 @@ then
     git checkout release-v2.3
 elif [ $CKANVERSION == '2.4.0']
 then
-    get checkout release-v2.4.0
+    git checkout release-v2.4.0
 else
     git checkout master
 fi
