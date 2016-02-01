@@ -10,10 +10,10 @@ sudo apt-get install postgresql-$PGVERSION solr-jetty libcommons-fileupload-java
 echo "Installing CKAN and its Python dependencies..."
 git clone https://github.com/ckan/ckan
 cd ckan
-if [ $CKANVERSION == '2.3']
+if [ $CKANVERSION == '2.3' ]
 then
     git checkout release-v2.3
-elif [ $CKANVERSION == '2.4.0']
+elif [ $CKANVERSION == '2.4.0' ]
 then
     git checkout release-v2.4.0
 else
