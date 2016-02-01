@@ -2,8 +2,15 @@ from nose import tools as nosetools
 from nose import SkipTest
 
 from ckan.plugins import toolkit as tk
-import ckan.new_tests.helpers as helpers
-import ckan.new_tests.factories as factories
+try:
+    import ckan.tests.factories as factories
+except ImportError:  # for ckan <= 2.3
+    import ckan.new_tests.factories as factories
+
+try:
+    import ckan.tests.helpers as helpers
+except ImportError:  # for ckan <= 2.3
+    import ckan.new_tests.helpers as helpers
 
 import ckanext.showcase.logic.helpers as showcase_helpers
 
