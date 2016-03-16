@@ -220,12 +220,12 @@ See: "Internationalizing strings in extensions" : http://docs.ckan.org/en/latest
 
 1. Install babel
 
-> pip install Babel
+       pip install Babel
 
 2. Init Catalog for your language
 
-> python setup.py init_catalog -l es
+       python setup.py init_catalog -l es
 
 3. Compile your language catalog ( You can force pybabel compile to compile messages marked as fuzzy with the -f)
 
-> python setup.py compile_catalog -f -l es
+       python setup.py compile_catalog -f -l es
