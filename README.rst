@@ -210,3 +210,22 @@ To publish a new version to PyPI follow these steps:
 
        git tag 0.0.2
        git push --tags
+
+
+-------------------------------------------
+i18n
+-------------------------------------------
+
+See: "Internationalizing strings in extensions" : http://docs.ckan.org/en/latest/extensions/translating-extensions.html
+
+1. Install babel
+
+> pip install Babel
+
+2. Init Catalog for your language
+
+> python setup.py init_catalog -l es
+
+3. Compile your language catalog ( You can force pybabel compile to compile messages marked as fuzzy with the -f)
+
+> python setup.py compile_catalog -f -l es
