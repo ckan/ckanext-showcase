@@ -142,7 +142,7 @@ msgstr ""
 #: ckanext/showcase/templates/showcase/search.html:4
 #: ckanext/showcase/templates/showcase/search.html:7
 msgid "Showcases"
-msgstr "Destacados"
+msgstr ""
 
 #: ckanext/showcase/templates/header.html:9
 msgid "About"
@@ -234,8 +234,8 @@ msgstr[1] ""
 #: ckanext/showcase/templates/home/snippets/stats.html:28
 msgid "showcase"
 msgid_plural "showcases"
-msgstr[0] "Destacado"
-msgstr[1] "Destacados"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ckanext/showcase/templates/package/dataset_showcase_list.html:13
 msgid "Associate this showcase with this dataset"
@@ -508,7 +508,7 @@ msgstr[1] ""
 
 #: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:8
 msgid "No showcases found for '{query}'"
-msgstr "No se encontraron destacados para '{query}'"
+msgstr ""
 
 #: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:9
 msgid "{number} showcase found"
@@ -519,3 +519,4 @@ msgstr[1] ""
 #: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:10
 msgid "No showcases found"
 msgstr ""
+
