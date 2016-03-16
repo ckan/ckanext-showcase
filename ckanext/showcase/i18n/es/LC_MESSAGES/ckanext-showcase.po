@@ -20,7 +20,7 @@ msgstr ""
 
 #: ckanext/showcase/controller.py:56
 msgid "Unauthorized to create a package"
-msgstr "No tiene permisos para crear paqueges"
+msgstr "No tiene permisos para crear paquetes"
 
 #: ckanext/showcase/controller.py:71 ckanext/showcase/controller.py:267
 msgid "User not authorized to edit {showcase_id}"
