@@ -39,6 +39,6 @@ pip install -r dev-requirements.txt
 
 echo "Moving test.ini into a subdir..."
 mkdir subdir
-mv test.ini subdir
+mv test-travis.ini subdir
 
 echo "travis-build.bash is done."
