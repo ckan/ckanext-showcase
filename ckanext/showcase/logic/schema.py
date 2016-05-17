@@ -45,7 +45,7 @@ def showcase_base_schema():
         'image_url': [toolkit.get_validator('ignore_missing'),
                       toolkit.get_converter('convert_to_extras')],
         'original_related_item_id': [
-            toolkit.get_converter('ignore_missing'),
+            toolkit.get_validator('ignore_missing'),
             toolkit.get_converter('convert_to_extras')]
     }
     return schema
@@ -104,11 +104,11 @@ def showcase_show_schema():
     schema['tracking_summary'] = []
 
     schema.update({
-        'image_url': [toolkit.get_converter('convert_from_extras'),
-                      toolkit.get_validator('ignore_missing')],
+        'image_url': [toolkit.get_validator('ignore_missing'),
+                      toolkit.get_converter('convert_from_extras')],
         'original_related_item_id': [
-            toolkit.get_converter('convert_from_extras'),
-            toolkit.get_validator('ignore_missing')],
+            toolkit.get_validator('ignore_missing'),
+            toolkit.get_converter('convert_from_extras')],
     })
 
     return schema
