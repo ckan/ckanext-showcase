@@ -52,11 +52,15 @@ To install ckanext-showcase:
 
      pip install ckanext-showcase
 
-3. Add ``showcase`` to the ``ckan.plugins`` setting in your CKAN
+3. Run the ``init`` command to initialize the plugin and make all necessary changes to the database::
+
+     paster --plugin=ckanext-showcase showcase init -c {path to production.ini}
+
+4. Add ``showcase`` to the ``ckan.plugins`` setting in your CKAN
    config file (by default the config file is located at
    ``/etc/ckan/default/production.ini``).
 
-4. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
+5. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
 
      sudo service apache2 reload
 
