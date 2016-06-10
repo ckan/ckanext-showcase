@@ -134,7 +134,11 @@ From the ``ckanext-showcase`` directory::
     paster showcase migrate -c {path to production.ini}
 
 Note that each Related Item must have a unique title before migration can
-proceed.
+proceed. If you prefer resolving duplicates as showcases, you can use the force
+option to migrate them anyways. Duplicate Relations will be created as
+'duplicate_' + original_related_title + '_' + hash
+
+    paster showcase migrate -c {path to production.ini} force
 
 The Related Item property ``type`` will become a Showcase tag. The Related Item
 properties ``created``, ``owner_id``, ``view_count``, and ``featured`` have no
