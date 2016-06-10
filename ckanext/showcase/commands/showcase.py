@@ -3,16 +3,21 @@ from ckan.lib.cli import CkanCommand
 from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 from ckan.logic import get_action
 
+from ckanext.showcase.model import setup as model_setup
+
 
 import logging
 log = logging.getLogger(__name__)
 
 
-class MigrationCommand(CkanCommand):
+class ShowcaseCommand(CkanCommand):
     '''
-    CKAN 'Related Items' to 'Showcase' migration command.
+    Commands for showcase extension
 
     Usage::
+
+        paster showcase init -c <path to config file>
+            - Initialize the extension, create tables
 
         paster showcase migrate -c <path to config file>
             - Migrate Related Items to Showcases
@@ -35,10 +40,14 @@ class MigrationCommand(CkanCommand):
 
         if cmd == 'migrate':
             self.migrate()
-        elif cmd == 'make_related':
-            self.make_related()
+        elif cmd == 'init':
+            self.init()
         else:
             print('Command "{0}" not recognized'.format(cmd))
+
+    def init(self):
+        print "Setup all tables"
+        model_setup()
 
     def migrate(self):
         '''

@@ -27,6 +27,7 @@ cd -
 
 echo "Installing ckanext-showcase and its requirements..."
 python setup.py develop
+paster showcase init -c ckan/test-core.ini
 pip install -r dev-requirements.txt
 
 echo "Moving test.ini into a subdir..."

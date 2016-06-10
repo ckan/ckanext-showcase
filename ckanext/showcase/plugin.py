@@ -18,7 +18,6 @@ import ckanext.showcase.logic.action.update
 import ckanext.showcase.logic.action.get
 import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
-from ckanext.showcase.model import setup as model_setup
 
 c = tk.c
 _ = tk._
@@ -29,7 +28,6 @@ DATASET_TYPE_NAME = 'showcase'
 
 
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
-    plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IFacets, inherit=True)
@@ -53,11 +51,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         if tk.check_ckan_version(min_version='2.4'):
             tk.add_ckan_admin_tab(config, 'ckanext_showcase_admins',
                                   'Showcase Config')
-
-    # IConfigurable
-
-    def configure(self, config):
-        model_setup()
 
     # IDatasetForm
 
