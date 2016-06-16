@@ -50,8 +50,7 @@ class MigrationCommand(CkanCommand):
         '''
         # determine wether migration should ignore duplicates
         try:
-            if self.args[1] == 'force':
-                force = True
+            force = (self.args[1] == 'force')
         except IndexError:
             force = False
 
