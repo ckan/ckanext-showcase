@@ -18,13 +18,21 @@ class MigrationCommand(CkanCommand):
         paster showcase migrate -c <path to config file>
             - Migrate Related Items to Showcases
 
-        paster showcase migrate -c <path to config file> [force]
-            - Migrate Related Items to Showcases and ignore duplicates
+        paster showcase migrate -c <path to config file> [--allow-duplicates]
+            - Migrate Related Items to Showcases and allow duplicates
 
     Must be run from the ckanext-showcase directory.
     '''
     summary = __doc__.split('\n')[0]
     usage = __doc__
+
+    def __init__(self,name):
+        super(CkanCommand, self).__init__(name)
+
+        self.parser.add_option('--allow-duplicates', dest='allow_duplicates',
+                            default=False, help='''Use this option to allow duplicate relations
+                            to be migrated. Showcases will be created as
+                            'duplicate_related-name_package-name_uid'.''', action='store_true')
 
     def command(self):
         '''
@@ -41,6 +49,8 @@ class MigrationCommand(CkanCommand):
             self.migrate()
         elif cmd == 'make_related':
             self.make_related()
+        elif cmd == 'delete':
+            self.delete()
         else:
             print('Command "{0}" not recognized'.format(cmd))
 
@@ -48,11 +58,8 @@ class MigrationCommand(CkanCommand):
         '''
 
         '''
-        # determine wether migration should ignore duplicates
-        try:
-            force = (self.args[1] == 'force')
-        except IndexError:
-            force = False
+        # determine whether migration should allow duplicates
+        allow_duplicates = self.options.allow_duplicates
 
         related_items = get_action('related_list')(data_dict={})
 
@@ -61,7 +68,7 @@ class MigrationCommand(CkanCommand):
         related_titles = [i['title'] for i in related_items]
         # make a list of duplicate titles
         duplicate_titles = self._find_duplicates(related_titles)
-        if duplicate_titles and force == False:
+        if duplicate_titles and allow_duplicates == False:
             print(
                 """All Related Items must have unique titles before migration. The following
 Related Item titles are used more than once and need to be corrected before
@@ -79,7 +86,7 @@ migration can continue. Please correct and try again:"""
                 print('Showcase for Related Item "{0}" already exists.'.format(
                     normalized_title))
             else:
-                showcase_title = self._gen_new_title(related.get('title'))
+                showcase_title = self._gen_new_title(related.get('title'), related['id'])
                 data_dict = {
                     'original_related_item_id': related.get('id'),
                     'title': showcase_title,
@@ -132,11 +139,11 @@ migration can continue. Please correct and try again:"""
         '''
         return list(set(x for x in lst if lst.count(x) >= 2))
 
-    def _gen_new_title(self, title):
+    def _gen_new_title(self, title, related_id):
         name = munge_title_to_name(title)
         pkg_obj = model.Session.query(model.Package).filter_by(name=name).first()
         if pkg_obj:
             title.replace('duplicate_', '')
-            return 'duplicate_' + title + '_' + str(uuid.uuid4())[:3]
+            return 'duplicate_' + title + '_' + self._get_related_dataset(related_id) + '_' + str(uuid.uuid4())[:3]
         else:
             return title
