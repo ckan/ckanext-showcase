@@ -363,3 +363,19 @@ class TestShowcaseAdminManageView(ShowcaseFunctionalTestBase):
                            status=200, extra_environ=env)
 
         nosetools.assert_true('There are currently no Showcase Admins' in response)
+
+
+class TestSearch(helpers.FunctionalTestBase):
+
+    def test_search_with_nonascii_filter_query(self):
+        '''
+        Searching with non-ASCII filter queries works.
+
+        See https://github.com/ckan/ckanext-showcase/issues/34.
+        '''
+        app = self._get_test_app()
+        tag = u'\xe4\xf6\xfc'
+        dataset = factories.Dataset(tags=[{'name': tag, 'state': 'active'}])
+        result = helpers.call_action('package_search', fq='tags:' + tag)
+        nosetools.assert_equals(result['count'], 1)
+
