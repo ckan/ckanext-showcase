@@ -2,7 +2,6 @@ from ckan import model
 from ckan.lib.cli import CkanCommand
 from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 from ckan.logic import get_action
-import uuid
 
 
 import logging
@@ -32,7 +31,7 @@ class MigrationCommand(CkanCommand):
         self.parser.add_option('--allow-duplicates', dest='allow_duplicates',
                             default=False, help='''Use this option to allow duplicate relations
                             to be migrated. Showcases will be created as
-                            'duplicate_related-name_package-name_uid'.''', action='store_true')
+                            'duplicate_related-name_package-name'.''', action='store_true')
 
     def command(self):
         '''
@@ -144,6 +143,6 @@ migration can continue. Please correct and try again:"""
         pkg_obj = model.Session.query(model.Package).filter_by(name=name).first()
         if pkg_obj:
             title.replace('duplicate_', '')
-            return 'duplicate_' + title + '_' + self._get_related_dataset(related_id) + '_' + str(uuid.uuid4())[:3]
+            return 'duplicate_' + title + '_' + related_id
         else:
             return title
