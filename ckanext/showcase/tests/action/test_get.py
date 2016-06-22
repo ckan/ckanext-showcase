@@ -12,8 +12,10 @@ try:
 except ImportError:  # for ckan <= 2.3
     import ckan.new_tests.helpers as helpers
 
+from ckanext.showcase.tests import ShowcaseFunctionalTestBase
 
-class TestShowcaseShow(helpers.FunctionalTestBase):
+
+class TestShowcaseShow(ShowcaseFunctionalTestBase):
 
     def test_showcase_show_no_args(self):
         '''
@@ -119,7 +121,7 @@ class TestShowcaseShow(helpers.FunctionalTestBase):
         nosetools.assert_equal(showcase_shown['num_datasets'], 2)
 
 
-class TestShowcaseList(helpers.FunctionalTestBase):
+class TestShowcaseList(ShowcaseFunctionalTestBase):
 
     def test_showcase_list(self):
         '''Showcase list action returns names of showcases in site.'''
@@ -158,7 +160,7 @@ class TestShowcaseList(helpers.FunctionalTestBase):
         nosetools.assert_true((dataset_two['name'], dataset_two['id']) not in showcase_list_name_id)
 
 
-class TestShowcasePackageList(helpers.FunctionalTestBase):
+class TestShowcasePackageList(ShowcaseFunctionalTestBase):
 
     '''Tests for ckanext_showcase_package_list'''
 
@@ -308,7 +310,7 @@ class TestShowcasePackageList(helpers.FunctionalTestBase):
                                 showcase_id=package['id'])
 
 
-class TestPackageShowcaseList(helpers.FunctionalTestBase):
+class TestPackageShowcaseList(ShowcaseFunctionalTestBase):
 
     '''Tests for ckanext_package_showcase_list'''
 
@@ -419,7 +421,7 @@ class TestPackageShowcaseList(helpers.FunctionalTestBase):
                                 package_id=showcase['id'])
 
 
-class TestShowcaseAdminList(helpers.FunctionalTestBase):
+class TestShowcaseAdminList(ShowcaseFunctionalTestBase):
 
     '''Tests for ckanext_showcase_admin_list'''
 
@@ -476,7 +478,7 @@ class TestShowcaseAdminList(helpers.FunctionalTestBase):
         nosetools.assert_true({'name': user_three['name'], 'id': user_three['id']} not in showcase_admin_list)
 
 
-class TestPackageSearchBeforeSearch(helpers.FunctionalTestBase):
+class TestPackageSearchBeforeSearch(ShowcaseFunctionalTestBase):
 
     '''
     Extension uses the `before_search` method to alter search parameters.
@@ -521,7 +523,7 @@ class TestPackageSearchBeforeSearch(helpers.FunctionalTestBase):
         nosetools.assert_true('dataset' not in types)
 
 
-class TestUserShowBeforeSearch(helpers.FunctionalTestBase):
+class TestUserShowBeforeSearch(ShowcaseFunctionalTestBase):
 
     '''
     Extension uses the `before_search` method to alter results of user_show

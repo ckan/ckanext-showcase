@@ -13,9 +13,10 @@ except ImportError:  # for ckan <= 2.3
     import ckan.new_tests.helpers as helpers
 
 import ckanext.showcase.logic.helpers as showcase_helpers
+from ckanext.showcase.tests import ShowcaseFunctionalTestBase
 
 
-class TestGetSiteStatistics(helpers.FunctionalTestBase):
+class TestGetSiteStatistics(ShowcaseFunctionalTestBase):
 
     def test_dataset_count_no_datasets(self):
         '''

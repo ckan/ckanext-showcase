@@ -13,9 +13,10 @@ except ImportError:  # for ckan <= 2.3
     import ckan.new_tests.helpers as helpers
 
 from ckanext.showcase.logic.converters import convert_package_name_or_id_to_title_or_name
+from ckanext.showcase.tests import ShowcaseFunctionalTestBase
 
 
-class TestNameOrIdToTitleConverter(helpers.FunctionalTestBase):
+class TestNameOrIdToTitleConverter(ShowcaseFunctionalTestBase):
 
     def test_name_to_title(self):
         '''
