@@ -29,9 +29,10 @@ class MigrationCommand(CkanCommand):
         super(CkanCommand, self).__init__(name)
 
         self.parser.add_option('--allow-duplicates', dest='allow_duplicates',
-                            default=False, help='''Use this option to allow duplicate relations
-                            to be migrated. Showcases will be created as
-                            'duplicate_related-name_package-name'.''', action='store_true')
+                            default=False, help='''Use this option to allow
+                            related items with duplicate titles to be migrated.
+                            Duplicate showcases will be created as
+                            'duplicate_<related-name>_<related-id>'.''', action='store_true')
 
     def command(self):
         '''
@@ -48,8 +49,6 @@ class MigrationCommand(CkanCommand):
             self.migrate()
         elif cmd == 'make_related':
             self.make_related()
-        elif cmd == 'delete':
-            self.delete()
         else:
             print('Command "{0}" not recognized'.format(cmd))
 
