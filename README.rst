@@ -33,6 +33,11 @@ Requirements
 
 Compatible with CKAN 2.3+.
 
+N.B. The ``migrate`` command, detailed below, requires the Related Item models
+and actions, which have been removed in CKAN 2.6. If you wish to migrate your
+Related Items, please first upgrade CKAN to 2.5, do the migration, then
+continue upgrading to CKAN 2.6+.
+
 
 ------------
 Installation
