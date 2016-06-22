@@ -17,10 +17,22 @@ class MigrationCommand(CkanCommand):
         paster showcase migrate -c <path to config file>
             - Migrate Related Items to Showcases
 
+        paster showcase migrate -c <path to config file> [--allow-duplicates]
+            - Migrate Related Items to Showcases and allow duplicates
+
     Must be run from the ckanext-showcase directory.
     '''
     summary = __doc__.split('\n')[0]
     usage = __doc__
+
+    def __init__(self,name):
+        super(CkanCommand, self).__init__(name)
+
+        self.parser.add_option('--allow-duplicates', dest='allow_duplicates',
+                            default=False, help='''Use this option to allow
+                            related items with duplicate titles to be migrated.
+                            Duplicate showcases will be created as
+                            'duplicate_<related-name>_<related-id>'.''', action='store_true')
 
     def command(self):
         '''
@@ -44,6 +56,9 @@ class MigrationCommand(CkanCommand):
         '''
 
         '''
+        # determine whether migration should allow duplicates
+        allow_duplicates = self.options.allow_duplicates
+
         related_items = get_action('related_list')(data_dict={})
 
         # preflight:
@@ -51,7 +66,7 @@ class MigrationCommand(CkanCommand):
         related_titles = [i['title'] for i in related_items]
         # make a list of duplicate titles
         duplicate_titles = self._find_duplicates(related_titles)
-        if duplicate_titles:
+        if duplicate_titles and allow_duplicates == False:
             print(
                 """All Related Items must have unique titles before migration. The following
 Related Item titles are used more than once and need to be corrected before
@@ -69,10 +84,11 @@ migration can continue. Please correct and try again:"""
                 print('Showcase for Related Item "{0}" already exists.'.format(
                     normalized_title))
             else:
+                showcase_title = self._gen_new_title(related.get('title'), related['id'])
                 data_dict = {
                     'original_related_item_id': related.get('id'),
-                    'title': related.get('title'),
-                    'name': munge_title_to_name(related.get('title')),
+                    'title': showcase_title,
+                    'name': munge_title_to_name(showcase_title),
                     'notes': related.get('description'),
                     'image_url': related.get('image_url'),
                     'url': related.get('url'),
@@ -120,3 +136,12 @@ migration can continue. Please correct and try again:"""
         ['two', 'three']
         '''
         return list(set(x for x in lst if lst.count(x) >= 2))
+
+    def _gen_new_title(self, title, related_id):
+        name = munge_title_to_name(title)
+        pkg_obj = model.Session.query(model.Package).filter_by(name=name).first()
+        if pkg_obj:
+            title.replace('duplicate_', '')
+            return 'duplicate_' + title + '_' + related_id
+        else:
+            return title
