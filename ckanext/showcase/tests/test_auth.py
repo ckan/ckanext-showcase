@@ -12,8 +12,10 @@ try:
 except ImportError:  # for ckan <= 2.3
     import ckan.new_tests.helpers as helpers
 
+from ckanext.showcase.tests import ShowcaseFunctionalTestBase
 
-class TestShowcaseAuthIndex(helpers.FunctionalTestBase):
+
+class TestShowcaseAuthIndex(ShowcaseFunctionalTestBase):
 
     def test_auth_anon_user_can_view_showcase_index(self):
         '''An anon (not logged in) user can view the Showcases index.'''
@@ -73,7 +75,7 @@ class TestShowcaseAuthIndex(helpers.FunctionalTestBase):
         response.mustcontain("/showcase/new")
 
 
-class TestShowcaseAuthDetails(helpers.FunctionalTestBase):
+class TestShowcaseAuthDetails(ShowcaseFunctionalTestBase):
     def test_auth_anon_user_can_view_showcase_details(self):
         '''
         An anon (not logged in) user can view an individual Showcase details page.
@@ -190,7 +192,7 @@ class TestShowcaseAuthDetails(helpers.FunctionalTestBase):
         nosetools.assert_true(json_response['success'])
 
 
-class TestShowcaseAuthCreate(helpers.FunctionalTestBase):
+class TestShowcaseAuthCreate(ShowcaseFunctionalTestBase):
 
     def test_auth_anon_user_cant_view_create_showcase(self):
         '''
@@ -218,7 +220,7 @@ class TestShowcaseAuthCreate(helpers.FunctionalTestBase):
                 extra_environ={'REMOTE_USER': str(user['name'])})
 
 
-class TestShowcaseAuthList(helpers.FunctionalTestBase):
+class TestShowcaseAuthList(ShowcaseFunctionalTestBase):
 
     def test_auth_showcase_list_anon_can_access(self):
         '''
@@ -268,7 +270,7 @@ class TestShowcaseAuthList(helpers.FunctionalTestBase):
         nosetools.assert_true(json_response['success'])
 
 
-class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
+class TestShowcaseAuthEdit(ShowcaseFunctionalTestBase):
 
     def test_auth_anon_user_cant_view_edit_showcase_page(self):
         '''
@@ -487,7 +489,7 @@ class TestShowcaseAuthEdit(helpers.FunctionalTestBase):
         nosetools.assert_true('showcase-add' in showcase_list_response.forms)
 
 
-class TestShowcasePackageAssociationCreate(helpers.FunctionalTestBase):
+class TestShowcasePackageAssociationCreate(ShowcaseFunctionalTestBase):
 
     def test_showcase_package_association_create_no_user(self):
         '''
@@ -537,7 +539,7 @@ class TestShowcasePackageAssociationCreate(helpers.FunctionalTestBase):
                                 context=context)
 
 
-class TestShowcasePackageAssociationDelete(helpers.FunctionalTestBase):
+class TestShowcasePackageAssociationDelete(ShowcaseFunctionalTestBase):
 
     def test_showcase_package_association_delete_no_user(self):
         '''
@@ -587,7 +589,7 @@ class TestShowcasePackageAssociationDelete(helpers.FunctionalTestBase):
                                 context=context)
 
 
-class TestShowcaseAdminAddAuth(helpers.FunctionalTestBase):
+class TestShowcaseAdminAddAuth(ShowcaseFunctionalTestBase):
 
     def test_showcase_admin_add_no_user(self):
         '''
@@ -618,7 +620,7 @@ class TestShowcaseAdminAddAuth(helpers.FunctionalTestBase):
                                 'ckanext_showcase_admin_add', context=context)
 
 
-class TestShowcaseAdminRemoveAuth(helpers.FunctionalTestBase):
+class TestShowcaseAdminRemoveAuth(ShowcaseFunctionalTestBase):
 
     def test_showcase_admin_remove_no_user(self):
         '''
@@ -649,7 +651,7 @@ class TestShowcaseAdminRemoveAuth(helpers.FunctionalTestBase):
                                 'ckanext_showcase_admin_remove', context=context)
 
 
-class TestShowcaseAdminListAuth(helpers.FunctionalTestBase):
+class TestShowcaseAdminListAuth(ShowcaseFunctionalTestBase):
 
     def test_showcase_admin_list_no_user(self):
         '''
@@ -680,7 +682,7 @@ class TestShowcaseAdminListAuth(helpers.FunctionalTestBase):
                                 'ckanext_showcase_admin_list', context=context)
 
 
-class TestShowcaseAuthManageShowcaseAdmins(helpers.FunctionalTestBase):
+class TestShowcaseAuthManageShowcaseAdmins(ShowcaseFunctionalTestBase):
 
     def test_auth_anon_user_cant_view_showcase_admin_manage_page(self):
         '''

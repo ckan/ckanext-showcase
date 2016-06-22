@@ -15,6 +15,7 @@ except ImportError:  # for ckan <= 2.3
     import ckan.new_tests.helpers as helpers
 
 from ckanext.showcase.model import ShowcasePackageAssociation
+from ckanext.showcase.tests import ShowcaseFunctionalTestBase
 
 import logging
 log = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ log = logging.getLogger(__name__)
 submit_and_follow = helpers.submit_and_follow
 
 
-class TestShowcaseIndex(helpers.FunctionalTestBase):
+class TestShowcaseIndex(ShowcaseFunctionalTestBase):
 
     def test_showcases_redirects_to_showcase(self):
         '''/showcases redirects to /showcase.'''
@@ -52,7 +53,7 @@ class TestShowcaseIndex(helpers.FunctionalTestBase):
         response.mustcontain("my-showcase")
 
 
-class TestShowcaseNewView(helpers.FunctionalTestBase):
+class TestShowcaseNewView(ShowcaseFunctionalTestBase):
 
     def test_showcase_create_form_renders(self):
         app = self._get_test_app()
@@ -90,7 +91,7 @@ class TestShowcaseNewView(helpers.FunctionalTestBase):
                                        action='manage_datasets', id='my-showcase'), create_response.request.path)
 
 
-class TestShowcaseEditView(helpers.FunctionalTestBase):
+class TestShowcaseEditView(ShowcaseFunctionalTestBase):
 
     def test_showcase_edit_form_renders(self):
         '''
@@ -132,7 +133,7 @@ class TestShowcaseEditView(helpers.FunctionalTestBase):
                                        action='read', id='my-changed-showcase'), edit_response.request.path)
 
 
-class TestDatasetView(helpers.FunctionalTestBase):
+class TestDatasetView(ShowcaseFunctionalTestBase):
 
     '''Plugin adds a new showcases view for datasets.'''
 
@@ -289,7 +290,7 @@ class TestDatasetView(helpers.FunctionalTestBase):
         nosetools.assert_equal(model.Session.query(ShowcasePackageAssociation).count(), 0)
 
 
-class TestShowcaseAdminManageView(helpers.FunctionalTestBase):
+class TestShowcaseAdminManageView(ShowcaseFunctionalTestBase):
 
     '''Plugin adds a showcase admin management page to ckan-admin section.'''
 
