@@ -358,7 +358,11 @@ class ShowcaseController(PackageController):
         # unicode format (decoded from utf8)
         q = c.q = request.params.get('q', u'')
         c.query_error = False
-        page = self._get_page_number(request.params)
+        try:
+            page = self._get_page_number(request.params)
+        except AttributeError:
+            # in CKAN >= 2.5 _get_page_number has been moved
+            page = h.get_page_number(request.params)
 
         limit = g.datasets_per_page
 
