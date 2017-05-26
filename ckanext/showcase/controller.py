@@ -5,7 +5,6 @@ from pylons import config
 
 from ckan.plugins import toolkit as tk
 import ckan.model as model
-import ckan.lib.base as base
 import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
@@ -23,7 +22,7 @@ c = tk.c
 request = tk.request
 render = tk.render
 abort = tk.abort
-redirect = base.redirect
+redirect = tk.redirect_to
 NotFound = tk.ObjectNotFound
 ValidationError = tk.ValidationError
 check_access = tk.check_access
