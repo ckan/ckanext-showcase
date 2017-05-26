@@ -5,7 +5,6 @@ from pylons import config
 
 from ckan.plugins import toolkit as tk
 import ckan.model as model
-import ckan.lib.base as base
 import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
@@ -23,7 +22,7 @@ c = tk.c
 request = tk.request
 render = tk.render
 abort = tk.abort
-redirect = base.redirect
+redirect = tk.redirect_to
 NotFound = tk.ObjectNotFound
 ValidationError = tk.ValidationError
 check_access = tk.check_access
@@ -364,7 +363,7 @@ class ShowcaseController(PackageController):
             # in CKAN >= 2.5 _get_page_number has been moved
             page = h.get_page_number(request.params)
 
-        limit = g.datasets_per_page
+        limit = int(config.get('ckan.datasets_per_page', 20))
 
         # most search operations should reset the page counter:
         params_nopage = [(k, v) for k, v in request.params.items()
