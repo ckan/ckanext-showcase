@@ -363,7 +363,7 @@ class ShowcaseController(PackageController):
             # in CKAN >= 2.5 _get_page_number has been moved
             page = h.get_page_number(request.params)
 
-        limit = g.datasets_per_page
+        limit = int(config.get('ckan.datasets_per_page', 20))
 
         # most search operations should reset the page counter:
         params_nopage = [(k, v) for k, v in request.params.items()
