@@ -103,7 +103,7 @@ class ShowcaseController(PackageController):
         url = h.url_for(
             controller='ckanext.showcase.controller:ShowcaseController',
             action='manage_datasets', id=pkg_dict['name'])
-        redirect(url)
+        redirect_to(url)
 
     def _save_edit(self, name_or_id, context, package_type=None):
         '''
@@ -127,7 +127,7 @@ class ShowcaseController(PackageController):
         url = h.url_for(
             controller='ckanext.showcase.controller:ShowcaseController',
             action='read', id=pkg['name'])
-        redirect(url)
+        redirect_to(url)
 
     def read(self, id, format='html'):
         '''
@@ -238,7 +238,7 @@ class ShowcaseController(PackageController):
                 else:
                     h.flash_success(
                         _("The dataset has been removed from the showcase."))
-            redirect(h.url_for(
+            redirect_to(h.url_for(
                 controller='ckanext.showcase.controller:ShowcaseController',
                 action='dataset_showcase_list', id=c.pkg_dict['name']))
 
@@ -297,7 +297,7 @@ class ShowcaseController(PackageController):
                 url = h.url_for(
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='manage_datasets', id=id)
-                redirect(url)
+                redirect_to(url)
 
         # Are we creating a showcase/dataset association?
         elif (request.method == 'POST'
@@ -329,7 +329,7 @@ class ShowcaseController(PackageController):
                 url = h.url_for(
                     controller='ckanext.showcase.controller:ShowcaseController',
                     action='manage_datasets', id=id)
-                redirect(url)
+                redirect_to(url)
 
         self._add_dataset_search(c.pkg_dict['id'], c.pkg_dict['name'])
 
@@ -469,7 +469,7 @@ class ShowcaseController(PackageController):
                     'license_id': _('Licenses'),
                     }
 
-            for facet in g.facets:
+            for facet in h.facets():
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -514,7 +514,7 @@ class ShowcaseController(PackageController):
         for facet in c.search_facets.keys():
             try:
                 limit = int(request.params.get('_%s_limit' % facet,
-                                               g.facets_default_number))
+                                               int(config.get('search.facets.default', 10))))
             except ValueError:
                 abort(400, _("Parameter '{parameter_name}' is not an integer").format(
                                  parameter_name='_%s_limit' % facet
@@ -549,7 +549,7 @@ class ShowcaseController(PackageController):
             else:
                 h.flash_success(_("The user is now a Showcase Admin"))
 
-            return redirect(h.url_for(
+            return redirect_to(h.url_for(
                 controller='ckanext.showcase.controller:ShowcaseController',
                 action='manage_showcase_admins'))
 
@@ -587,7 +587,7 @@ class ShowcaseController(PackageController):
             else:
                 h.flash_success(_('The user is no longer a Showcase Admin'))
 
-            return redirect(h.url_for(
+            return redirect_to(h.url_for(
                 controller='ckanext.showcase.controller:ShowcaseController',
                 action='manage_showcase_admins'))
 
