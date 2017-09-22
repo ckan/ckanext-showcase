@@ -85,7 +85,7 @@ def showcase_package_list(context, data_dict):
                 if pkg['state'] == 'active':
                     pkg_list.append(pkg)
             except NotAuthorized:
-                log.error(
+                log.debug(
                     'Not authorized to access Package with ID: ' + str(pkg_id))
     return pkg_list
 
