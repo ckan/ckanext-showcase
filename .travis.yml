@@ -2,13 +2,15 @@ language: python
 python:
     - "2.7"
 env:
-    - PGVERSION=9.1 CKAN_BRANCH=master
-    - PGVERSION=9.1 CKAN_BRANCH=release-v2.3-latest
-    - PGVERSION=9.1 CKAN_BRANCH=release-v2.4-latest
-    - PGVERSION=9.1 CKAN_BRANCH=release-v2.5-latest
+    - CKAN_BRANCH=master
+    - CKAN_BRANCH=release-v2.3-latest
+    - CKAN_BRANCH=release-v2.4-latest
+    - CKAN_BRANCH=release-v2.5-latest
 install:
     - bash bin/travis-build.bash
     - pip install coveralls -U
+services:
+    - postgresql
 script: sh bin/travis-run.sh
 after_success:
     - coveralls
