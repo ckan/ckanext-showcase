@@ -117,15 +117,9 @@ def package_showcase_list(context, data_dict):
     showcase_list = []
     if showcase_id_list is not None:
         for showcase_id in showcase_id_list:
-            try:
-                showcase = toolkit.get_action('package_show')(
-                    context,
-                    {'id': showcase_id}
-                )
-                showcase_list.append(showcase)
-            except NotAuthorized:
-                log.error('Not authorized to access Package with ID: '
-                          + str(showcase_id))
+            showcase = toolkit.get_action('package_show')(context,
+                                                          {'id': showcase_id})
+            showcase_list.append(showcase)
     return showcase_list
 
 
