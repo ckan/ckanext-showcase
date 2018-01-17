@@ -120,6 +120,50 @@ class TestShowcaseShow(ShowcaseFunctionalTestBase):
         # the num_datasets should only include active datasets
         nosetools.assert_equal(showcase_shown['num_datasets'], 2)
 
+    def test_showcase_anon_user_can_see_package_list_when_showcase_association_was_deleted(self):
+        '''
+        When a showcase is deleted, the remaining associations with formerly associated
+        packages or showcases can still be displayed.
+        '''
+        app = self._get_test_app()
+
+        sysadmin = factories.User(sysadmin=True)
+
+        showcase_one = factories.Dataset(type='showcase', name='showcase-one')
+        showcase_two = factories.Dataset(type='showcase', name='showcase-two')
+        package_one = factories.Dataset()
+        package_two = factories.Dataset()
+
+        admin_context = {'user': sysadmin['name']}
+
+        # create the associations
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=admin_context, package_id=package_one['id'],
+                            showcase_id=showcase_one['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=admin_context, package_id=package_one['id'],
+                            showcase_id=showcase_two['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=admin_context, package_id=package_two['id'],
+                            showcase_id=showcase_one['id'])
+        helpers.call_action('ckanext_showcase_package_association_create',
+                            context=admin_context, package_id=package_two['id'],
+                            showcase_id=showcase_two['id'])
+
+        # delete one of the associated showcases
+        helpers.call_action('package_delete', context=admin_context,
+                            id=showcase_two['id'])
+
+        # the anon user can still see the associated packages of remaining showcase
+        associated_packages = helpers.call_action(
+            'ckanext_showcase_package_list',
+            showcase_id=showcase_one['id'])
+
+        nosetools.assert_equal(len(associated_packages), 2)
+
+        # overview of packages can still be seen
+        app.get("/dataset", status=200)
+
 
 class TestShowcaseList(ShowcaseFunctionalTestBase):
 
