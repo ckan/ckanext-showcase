@@ -120,7 +120,6 @@ def package_showcase_list(context, data_dict):
             showcase = toolkit.get_action('package_show')(context,
                                                           {'id': showcase_id})
             showcase_list.append(showcase)
-
     return showcase_list
 
 

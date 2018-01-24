@@ -1,4 +1,4 @@
-from routes import url_for
+from ckan.lib.helpers import url_for
 from nose import tools as nosetools
 from nose import SkipTest
 
