@@ -469,7 +469,7 @@ class ShowcaseController(PackageController):
                     'license_id': _('Licenses'),
                     }
 
-            for facet in g.facets:
+            for facet in h.facets():
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -514,7 +514,7 @@ class ShowcaseController(PackageController):
         for facet in c.search_facets.keys():
             try:
                 limit = int(request.params.get('_%s_limit' % facet,
-                                               g.facets_default_number))
+                                               int(config.get('search.facets.default', 10))))
             except ValueError:
                 abort(400, _("Parameter '{parameter_name}' is not an integer").format(
                                  parameter_name='_%s_limit' % facet
