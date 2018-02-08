@@ -9,7 +9,7 @@ import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
 import ckan.plugins as p
-from ckan.common import OrderedDict, g, ungettext
+from ckan.common import OrderedDict, ungettext
 from ckan.controllers.package import (PackageController,
                                       url_with_params,
                                       _encode_params)
@@ -469,7 +469,15 @@ class ShowcaseController(PackageController):
                     'license_id': _('Licenses'),
                     }
 
-            for facet in g.facets:
+            # for CKAN-Versions that do not provide the facets-method from
+            # helper-context, import facets from ckan.common
+            if hasattr(h, 'facets'):
+                current_facets = h.facets()
+            else:
+                from ckan.common import g
+                current_facets = g.facets
+
+            for facet in current_facets:
                 if facet in default_facet_titles:
                     facets[facet] = default_facet_titles[facet]
                 else:
@@ -514,7 +522,7 @@ class ShowcaseController(PackageController):
         for facet in c.search_facets.keys():
             try:
                 limit = int(request.params.get('_%s_limit' % facet,
-                                               g.facets_default_number))
+                                               int(config.get('search.facets.default', 10))))
             except ValueError:
                 abort(400, _("Parameter '{parameter_name}' is not an integer").format(
                                  parameter_name='_%s_limit' % facet
