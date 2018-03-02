@@ -24,7 +24,7 @@ Example:
             {% if pkg.url %}
               <div class="info">
                 <a class="btn btn-primary" href="{{ pkg.url }}" target="_blank">
-                  <i class="icon-external-link"></i> {{ _('Launch website') }}
+                  <i class="fa fa-external-link icon-external-link"></i> {{ _('Launch website') }}
                 </a>
               </div>
             {% endif %}
@@ -34,7 +34,7 @@ Example:
     </section>
 
     <section class="module module-narrow">
-      <h3 class="module-heading"><i class="icon-medium icon-sitemap"></i> {{ _('Datasets in Showcase') }}</h2>
+      <h3 class="module-heading"><i class="fa fa-sitemap icon-medium icon-sitemap"></i> {{ _('Datasets in Showcase') }}</h2>
       {% if showcase_pkgs %}
         <ul class="nav nav-simple">
         {% for package in showcase_pkgs %}
