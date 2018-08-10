@@ -223,6 +223,21 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         # Rendered notes
         pkg_dict[u'showcase_notes_formatted'] = \
             h.render_markdown(pkg_dict['notes'])
+
+        # Add embedded elements
+        pkg_dict['embedded_elements'] = showcase_helpers.search_emdedded_elements(
+            pkg_dict['notes'])
+
+        # Add embedded datasets
+        pkg_dict['embedded_datasets'] = []
+        for element in pkg_dict['embedded_elements']:
+            if element['type'] == 'dataset':
+                dataset = tk.get_action('package_show')(context, {'id': element['dataset']})
+                pkg_dict['embedded_datasets'].append({
+                    'name': dataset['name'],
+                    'title': dataset['title'],
+                })
+
         return pkg_dict
 
     def after_show(self, context, pkg_dict):
@@ -240,6 +255,11 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                    'user': c.user or c.author}
 
         return self._add_to_pkg_dict(context, pkg_dict)
+
+    def before_index(self, pkg_dict):
+        # Remove internal non-indexable fields
+        pkg_dict.pop('embedded_elements', None)
+        pkg_dict.pop('embedded_datasets', None)
 
     def before_search(self, search_params):
         '''
