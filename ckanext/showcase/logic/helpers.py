@@ -1,3 +1,4 @@
+import re
 import ckan.lib.helpers as h
 from ckan.plugins import toolkit as tk
 
@@ -29,3 +30,20 @@ def get_site_statistics():
         tk.get_action('organization_list')({}, {}))
 
     return stats
+
+
+def search_emdedded_elements(text):
+    elements = []
+
+    # Datasets
+    PATTERN = r'\[ckan::dataset/([^/]+)/resource/([^/]+)/view/([^/]+)\]'
+    matches = re.findall(PATTERN, text)
+    for match in matches:
+        elements.append({
+            'type': 'dataset',
+            'dataset': match[0],
+            'resource': match[1],
+            'view': match[2],
+        })
+
+    return elements
