@@ -1,6 +1,8 @@
 import re
+import logging
 import ckan.lib.helpers as h
 from ckan.plugins import toolkit as tk
+log = logging.getLogger(__name__)
 
 
 def facet_remove_field(key, value=None, replace=None):
@@ -36,8 +38,8 @@ def search_emdedded_elements(text):
     elements = []
 
     # Datasets
-    PATTERN = r'\[ckan::dataset/([^/]+)/resource/([^/]+)/view/([^/]+)\]'
-    matches = re.findall(PATTERN, text)
+    PATTERN = r'%s/dataset/([\w-]+)/resource/([\w-]+)/view/([\w-]+)'
+    matches = re.findall(PATTERN % re.escape(tk.config.get('ckan.site_url')), text)
     for match in matches:
         elements.append({
             'type': 'dataset',
