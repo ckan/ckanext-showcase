@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block primary %}
-  <div class="primary {% block ckanext_showcase_edit_span %}span9{% endblock %}">
+  <div class="primary {% block ckanext_showcase_edit_span %}span9 col-xs-12{% endblock %}">
     {% block primary_content %}
       <article class="module">
         {% block page_header %}
@@ -39,7 +39,6 @@
             <ul class="nav nav-tabs">
               {% block content_primary_nav %}
                 {{ h.build_nav_icon('ckanext_showcase_edit', _('Edit showcase'), id=pkg.name) }}
-                {{ h.build_nav_icon('ckanext_showcase_manage_datasets', _('Manage datasets'), id=pkg.name) }}
               {% endblock %}
             </ul>
           </header>

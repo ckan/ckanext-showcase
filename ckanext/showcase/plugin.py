@@ -215,14 +215,31 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                                          pkg_dict.get('image_url')),
                                  qualified=True)
 
-        # Add dataset count
-        pkg_dict[u'num_datasets'] = len(
-            tk.get_action('ckanext_showcase_package_list')(
-                context, {'showcase_id': pkg_dict['id']}))
-
         # Rendered notes
         pkg_dict[u'showcase_notes_formatted'] = \
-            h.render_markdown(pkg_dict['notes'])
+            h.render_markdown(pkg_dict['notes'], allow_html=True)
+
+        # Add embedded elements
+        pkg_dict['embedded_elements'] = showcase_helpers.search_emdedded_elements(
+            pkg_dict['notes'])
+
+        # Add embedded datasets
+        dataset_ids = set()
+        pkg_dict['embedded_datasets'] = []
+        for element in pkg_dict['embedded_elements']:
+            if element['type'] == 'dataset':
+                if element['dataset'] in dataset_ids:
+                    continue
+                dataset_ids.add(element['dataset'])
+                dataset = tk.get_action('package_show')(context, {'id': element['dataset']})
+                pkg_dict['embedded_datasets'].append({
+                    'name': dataset['name'],
+                    'title': dataset['title'],
+                })
+
+        # Add dataset count
+        pkg_dict['num_datasets'] = len(pkg_dict['embedded_datasets'])
+
         return pkg_dict
 
     def after_show(self, context, pkg_dict):
@@ -240,6 +257,15 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                    'user': c.user or c.author}
 
         return self._add_to_pkg_dict(context, pkg_dict)
+
+    def before_index(self, pkg_dict):
+        # Remove showcase non-indexable fields
+        if pkg_dict['type'] == 'showcase':
+            pkg_dict.pop('showcase_notes_formatted', None)
+            pkg_dict.pop('embedded_elements', None)
+            pkg_dict.pop('embedded_datasets', None)
+            pkg_dict.pop('num_datasets', None)
+        return pkg_dict
 
     def before_search(self, search_params):
         '''

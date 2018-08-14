@@ -80,8 +80,7 @@ class ShowcaseController(PackageController):
 
     def _save_new(self, context, package_type=None):
         '''
-        The showcase is created then redirects to the manage_dataset page to
-        associated packages with the new showcase.
+        The showcase is created then redirects to the showcase read page.
         '''
 
         data_dict = clean_dict(dict_fns.unflatten(
@@ -99,10 +98,10 @@ class ShowcaseController(PackageController):
             data_dict['state'] = 'none'
             return self.new(data_dict, errors, error_summary)
 
-        # redirect to manage datasets
+        # redirect to showcase details page
         url = h.url_for(
             controller='ckanext.showcase.controller:ShowcaseController',
-            action='manage_datasets', id=pkg_dict['name'])
+            action='read', id=pkg_dict['name'])
         redirect(url)
 
     def _save_edit(self, name_or_id, context, package_type=None):
