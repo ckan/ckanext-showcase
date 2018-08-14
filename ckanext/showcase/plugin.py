@@ -224,9 +224,13 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             pkg_dict['notes'])
 
         # Add embedded datasets
+        dataset_ids = set()
         pkg_dict['embedded_datasets'] = []
         for element in pkg_dict['embedded_elements']:
             if element['type'] == 'dataset':
+                if element['dataset'] in dataset_ids:
+                    continue
+                dataset_ids.add(element['dataset'])
                 dataset = tk.get_action('package_show')(context, {'id': element['dataset']})
                 pkg_dict['embedded_datasets'].append({
                     'name': dataset['name'],
