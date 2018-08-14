@@ -222,7 +222,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
         # Rendered notes
         pkg_dict[u'showcase_notes_formatted'] = \
-            h.render_markdown(pkg_dict['notes'])
+            h.render_markdown(pkg_dict['notes'], allow_html=True)
 
         # Add embedded elements
         pkg_dict['embedded_elements'] = showcase_helpers.search_emdedded_elements(
