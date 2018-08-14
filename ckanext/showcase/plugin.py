@@ -215,11 +215,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                                          pkg_dict.get('image_url')),
                                  qualified=True)
 
-        # Add dataset count
-        pkg_dict[u'num_datasets'] = len(
-            tk.get_action('ckanext_showcase_package_list')(
-                context, {'showcase_id': pkg_dict['id']}))
-
         # Rendered notes
         pkg_dict[u'showcase_notes_formatted'] = \
             h.render_markdown(pkg_dict['notes'], allow_html=True)
@@ -237,6 +232,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                     'name': dataset['name'],
                     'title': dataset['title'],
                 })
+
+        # Add dataset count
+        pkg_dict['num_datasets'] = len(pkg_dict['embedded_datasets'])
 
         return pkg_dict
 
@@ -258,8 +256,10 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     def before_index(self, pkg_dict):
         # Remove internal non-indexable fields
+        pkg_dict.pop('showcase_notes_formatted', None)
         pkg_dict.pop('embedded_elements', None)
         pkg_dict.pop('embedded_datasets', None)
+        pkg_dict.pop('num_datasets', None)
 
     def before_search(self, search_params):
         '''
