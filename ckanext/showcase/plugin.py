@@ -255,11 +255,13 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         return self._add_to_pkg_dict(context, pkg_dict)
 
     def before_index(self, pkg_dict):
-        # Remove internal non-indexable fields
-        pkg_dict.pop('showcase_notes_formatted', None)
-        pkg_dict.pop('embedded_elements', None)
-        pkg_dict.pop('embedded_datasets', None)
-        pkg_dict.pop('num_datasets', None)
+        # Remove showcase non-indexable fields
+        if pkg_dict['type'] == 'showcase':
+            pkg_dict.pop('showcase_notes_formatted', None)
+            pkg_dict.pop('embedded_elements', None)
+            pkg_dict.pop('embedded_datasets', None)
+            pkg_dict.pop('num_datasets', None)
+        return pkg_dict
 
     def before_search(self, search_params):
         '''

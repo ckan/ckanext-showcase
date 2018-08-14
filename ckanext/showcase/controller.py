@@ -101,7 +101,7 @@ class ShowcaseController(PackageController):
         # redirect to showcase details page
         url = h.url_for(
             controller='ckanext.showcase.controller:ShowcaseController',
-            action='read', id=pkg['name'])
+            action='read', id=pkg_dict['name'])
         redirect(url)
 
     def _save_edit(self, name_or_id, context, package_type=None):
