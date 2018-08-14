@@ -26,6 +26,13 @@
 
       {% block package_basic_fields_description %}
         {{ form.markdown('notes', id='field-notes', label=_('Description'), placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
+        <!-- TODO: move to fanstatic -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+        <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+        <script>
+            let editor = new SimpleMDE({element: document.getElementById("field-notes")});
+            document.querySelector("span.editor-info-block").style.display = 'none';
+        </script>
       {% endblock %}
 
       {% block package_basic_fields_tags %}
