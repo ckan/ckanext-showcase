@@ -11,7 +11,8 @@ from ckan.logic.validators import (package_id_not_changed,
                                    package_name_validator,
                                    tag_string_convert,
                                    ignore_not_package_admin,
-                                   no_http)
+                                   no_http,
+                                   boolean_validator)
 from ckan.logic.schema import (default_tags_schema,
                                default_extras_schema,
                                default_resource_schema)
@@ -29,6 +30,7 @@ def showcase_base_schema():
         'title': [if_empty_same_as("name"), unicode],
         'author': [ignore_missing, unicode],
         'author_email': [ignore_missing, unicode],
+        'allow_commenting': [unicode],
         'notes': [ignore_missing, unicode],
         'url': [ignore_missing, unicode],
         'state': [ignore_not_package_admin, ignore_missing],
@@ -91,6 +93,7 @@ def showcase_show_schema():
     # None).
     schema['author'] = []
     schema['author_email'] = []
+    schema['allow_commenting'] = []
     schema['notes'] = []
     schema['url'] = []
 
