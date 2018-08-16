@@ -1,4 +1,6 @@
+import logging
 import ckan.plugins.toolkit as toolkit
+from ckan.common import config
 from ckan.lib.navl.validators import (not_empty,
                                       empty,
                                       if_empty_same_as,
@@ -19,6 +21,8 @@ from ckan.logic.schema import (default_tags_schema,
 from ckanext.showcase.logic.validators import (
     convert_package_name_or_id_to_id_for_type_dataset,
     convert_package_name_or_id_to_id_for_type_showcase)
+
+log = logging.getLogger(__name__)
 
 
 def showcase_base_schema():
@@ -42,12 +46,23 @@ def showcase_base_schema():
         'extras': default_extras_schema(),
         'save': [ignore],
         'return_to': [ignore],
-        'image_url': [toolkit.get_validator('ignore_missing'),
-                      toolkit.get_converter('convert_to_extras')],
-        'original_related_item_id': [
-            toolkit.get_validator('ignore_missing'),
-            toolkit.get_converter('convert_to_extras')]
     }
+
+    # Extras
+    schema['image_url'] = [
+        toolkit.get_validator('ignore_missing'),
+        toolkit.get_converter('convert_to_extras')]
+    schema['original_related_item_id'] = [
+        toolkit.get_validator('ignore_missing'),
+        toolkit.get_converter('convert_to_extras')]
+
+    # Extras (conditional)
+    if config.get('disqus.name'):
+        schema['allow_commenting'] = [
+            toolkit.get_validator('ignore_missing'),
+            toolkit.get_validator('boolean_validator'),
+            toolkit.get_converter('convert_to_extras')]
+
     return schema
 
 
@@ -103,13 +118,20 @@ def showcase_show_schema():
     schema['revision_id'] = []
     schema['tracking_summary'] = []
 
-    schema.update({
-        'image_url': [toolkit.get_converter('convert_from_extras'),
-                      toolkit.get_validator('ignore_missing')],
-        'original_related_item_id': [
+    # Extras
+    schema['image_url'] = [
+        toolkit.get_converter('convert_from_extras'),
+        toolkit.get_validator('ignore_missing')]
+    schema['original_related_item_id'] = [
+        toolkit.get_converter('convert_from_extras'),
+        toolkit.get_validator('ignore_missing')]
+
+    # Extras (conditional)
+    if config.get('disqus.name'):
+        schema['allow_commenting'] = [
             toolkit.get_converter('convert_from_extras'),
+            toolkit.get_validator('boolean_validator'),
             toolkit.get_validator('ignore_missing')]
-    })
 
     return schema
 
