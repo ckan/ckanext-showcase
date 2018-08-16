@@ -11,8 +11,7 @@ from ckan.logic.validators import (package_id_not_changed,
                                    package_name_validator,
                                    tag_string_convert,
                                    ignore_not_package_admin,
-                                   no_http,
-                                   boolean_validator)
+                                   no_http)
 from ckan.logic.schema import (default_tags_schema,
                                default_extras_schema,
                                default_resource_schema)
@@ -30,7 +29,6 @@ def showcase_base_schema():
         'title': [if_empty_same_as("name"), unicode],
         'author': [ignore_missing, unicode],
         'author_email': [ignore_missing, unicode],
-        'allow_commenting': [unicode],
         'notes': [ignore_missing, unicode],
         'url': [ignore_missing, unicode],
         'state': [ignore_not_package_admin, ignore_missing],
@@ -48,7 +46,11 @@ def showcase_base_schema():
                       toolkit.get_converter('convert_to_extras')],
         'original_related_item_id': [
             toolkit.get_validator('ignore_missing'),
-            toolkit.get_converter('convert_to_extras')]
+            toolkit.get_converter('convert_to_extras')],
+        'allow_commenting': [
+            toolkit.get_validator('ignore_missing'),
+            toolkit.get_validator('boolean_validator'),
+            toolkit.get_converter('convert_to_extras')],
     }
     return schema
 
@@ -93,7 +95,6 @@ def showcase_show_schema():
     # None).
     schema['author'] = []
     schema['author_email'] = []
-    schema['allow_commenting'] = []
     schema['notes'] = []
     schema['url'] = []
 
@@ -111,7 +112,11 @@ def showcase_show_schema():
                       toolkit.get_validator('ignore_missing')],
         'original_related_item_id': [
             toolkit.get_converter('convert_from_extras'),
-            toolkit.get_validator('ignore_missing')]
+            toolkit.get_validator('ignore_missing')],
+        'allow_commenting': [
+            toolkit.get_converter('convert_from_extras'),
+            toolkit.get_validator('boolean_validator'),
+            toolkit.get_validator('ignore_missing')],
     })
 
     return schema

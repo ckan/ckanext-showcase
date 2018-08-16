@@ -87,6 +87,9 @@
   {% block package_search_results_list %}
   {% endblock %}
 
+  {% block disqus_comments %}
+    {{ h.disqus_comments() }}
+  {% endblock %}
 {% endblock %}
 
 {% block secondary_content %}
