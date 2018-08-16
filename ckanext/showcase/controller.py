@@ -54,6 +54,9 @@ class ShowcaseController(PackageController):
         except NotAuthorized:
             abort(401, _('Unauthorized to create a package'))
 
+        # get discuss name
+        c.disqus_name = config.get('disqus.name')
+
         return super(ShowcaseController, self).new(data=data, errors=errors,
                                                    error_summary=error_summary)
 
@@ -69,6 +72,9 @@ class ShowcaseController(PackageController):
         except NotAuthorized:
             abort(401, _('User not authorized to edit {showcase_id}').format(
                 showcase_id=id))
+
+        # get discuss name
+        c.disqus_name = config.get('disqus.name')
 
         return super(ShowcaseController, self).edit(
             id, data=data, errors=errors, error_summary=error_summary)
@@ -149,6 +155,9 @@ class ShowcaseController(PackageController):
         # get showcase packages
         c.showcase_pkgs = get_action('ckanext_showcase_package_list')(
             context, {'showcase_id': c.pkg_dict['id']})
+
+        # get discuss name
+        c.disqus_name = config.get('disqus.name')
 
         package_type = DATASET_TYPE_NAME
         return render(self._read_template(package_type),

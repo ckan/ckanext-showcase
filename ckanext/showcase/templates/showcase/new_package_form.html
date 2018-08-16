@@ -51,7 +51,9 @@
     {% endblock %}
 
     {% block package_metadata_allow_commenting %}
-      {{ form.select('allow_commenting', label='Allow commenting', id='field-allow_commenting', options=[{'text':'Yes', 'value': True},{'text': 'No', 'value': False}], selected=data.allow_commenting, error=errors.allow_commenting) }}
+      {% if c.disqus_name %}
+        {{ form.select('allow_commenting', label='Allow commenting', id='field-allow_commenting', options=[{'text':'Yes', 'value': True},{'text': 'No', 'value': False}], selected=data.allow_commenting, error=errors.allow_commenting) }}
+      {% endif %}
     {% endblock %}
   {% endblock %}
 

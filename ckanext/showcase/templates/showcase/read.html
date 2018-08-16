@@ -88,7 +88,9 @@
   {% endblock %}
 
   {% block disqus_comments %}
-    {{ h.disqus_comments() }}
+    {% if c.disqus_name and pkg.allow_commenting %}
+      {{ h.disqus_comments() }}
+    {% endif %}
   {% endblock %}
 {% endblock %}
 
