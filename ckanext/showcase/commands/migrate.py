@@ -3,8 +3,8 @@ from ckan.lib.cli import CkanCommand
 from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 from ckan.logic import get_action
 
-
 import logging
+
 log = logging.getLogger(__name__)
 
 
@@ -25,11 +25,11 @@ class MigrationCommand(CkanCommand):
     summary = __doc__.split('\n')[0]
     usage = __doc__
 
-    def __init__(self,name):
+    def __init__(self, name):
         super(CkanCommand, self).__init__(name)
 
         self.parser.add_option('--allow-duplicates', dest='allow_duplicates',
-                            default=False, help='''Use this option to allow
+                               default=False, help='''Use this option to allow
                             related items with duplicate titles to be migrated.
                             Duplicate showcases will be created as
                             'duplicate_<related-name>_<related-id>'.''', action='store_true')
@@ -66,7 +66,7 @@ class MigrationCommand(CkanCommand):
         related_titles = [i['title'] for i in related_items]
         # make a list of duplicate titles
         duplicate_titles = self._find_duplicates(related_titles)
-        if duplicate_titles and allow_duplicates == False:
+        if duplicate_titles and allow_duplicates is False:
             print(
                 """All Related Items must have unique titles before migration. The following
 Related Item titles are used more than once and need to be corrected before

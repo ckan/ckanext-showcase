@@ -67,7 +67,9 @@ def showcase_package_association_delete(context, data_dict):
         package_id=package_id, showcase_id=showcase_id)
 
     if showcase_package_association is None:
-        raise toolkit.ObjectNotFound("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' doesn't exist.".format(package_id, showcase_id))
+        raise toolkit.ObjectNotFound(
+            "ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' doesn't exist.".format(package_id,
+                                                                                                           showcase_id))
 
     # delete the association
     showcase_package_association.delete()

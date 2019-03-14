@@ -4,6 +4,7 @@ from nose import SkipTest
 
 from ckan.plugins import toolkit as tk
 import ckan.model as model
+
 try:
     import ckan.tests.factories as factories
 except ImportError:  # for ckan <= 2.3
@@ -18,6 +19,7 @@ from ckanext.showcase.model import ShowcasePackageAssociation
 from ckanext.showcase.tests import ShowcaseFunctionalTestBase
 
 import logging
+
 log = logging.getLogger(__name__)
 
 submit_and_follow = helpers.submit_and_follow
@@ -134,7 +136,6 @@ class TestShowcaseEditView(ShowcaseFunctionalTestBase):
 
 
 class TestDatasetView(ShowcaseFunctionalTestBase):
-
     '''Plugin adds a new showcases view for datasets.'''
 
     def test_dataset_read_has_showcases_tab(self):
@@ -291,7 +292,6 @@ class TestDatasetView(ShowcaseFunctionalTestBase):
 
 
 class TestShowcaseAdminManageView(ShowcaseFunctionalTestBase):
-
     '''Plugin adds a showcase admin management page to ckan-admin section.'''
 
     def test_ckan_admin_has_showcase_config_tab(self):
@@ -373,9 +373,8 @@ class TestSearch(helpers.FunctionalTestBase):
 
         See https://github.com/ckan/ckanext-showcase/issues/34.
         '''
-        app = self._get_test_app()
+        self._get_test_app()
         tag = u'\xe4\xf6\xfc'
-        dataset = factories.Dataset(tags=[{'name': tag, 'state': 'active'}])
+        factories.Dataset(tags=[{'name': tag, 'state': 'active'}])
         result = helpers.call_action('package_search', fq='tags:' + tag)
         nosetools.assert_equals(result['count'], 1)
-
