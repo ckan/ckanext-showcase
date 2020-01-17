@@ -1,12 +1,12 @@
 {% extends 'page.html' %}
 
-{% set pkg = c.pkg_dict %}
+{% set pkg = pkg_dict or c.pkg_dict  %}
 
 {% block subtitle %}{{ _('Showcases') }}{% endblock %}
 
 {% block styles %}
-  {{ super() }}
-  <link rel="stylesheet" href="{{ g.site_url }}/ckanext_showcase.css" />
+    {{ super() }}
+    <link rel="stylesheet" href="{{ g.site_url }}/ckanext_showcase.css" />
 {% endblock %}
 
 {% block breadcrumb_content_selected %}{% endblock %}
@@ -14,11 +14,11 @@
 {% block breadcrumb_content %}
   {% if pkg %}
     {% set showcase = pkg.title or pkg.name %}
-    <li>{% link_for _('Showcases'), controller='ckanext.showcase.controller:ShowcaseController', action='search' %}</li>
-    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), controller='ckanext.showcase.controller:ShowcaseController', action='read', id=pkg.name %}</li>
-    <li class="active">{% link_for _('Edit'), controller='ckanext.showcase.controller:ShowcaseController', action='edit', id=pkg.name %}</li>
+    <li>{% link_for _('Showcases'), named_route='showcase_index' %}</li>
+    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route='showcase_read', id=pkg.name %}</li>
+    <li class="active">{% link_for _('Edit'), named_route='showcase_edit', id=pkg.name %}</li>
   {% else %}
-    <li>{% link_for _('Showcases'), controller='ckanext.showcase.controller:ShowcaseController', action='search' %}</li>
+    <li>{% link_for _('Showcases'), named_route='showcase_index' %}</li>
     <li class="active"><a href="">{{ _('Create Showcase') }}</a></li>
   {% endif %}
 {% endblock %}
@@ -32,14 +32,14 @@
             {% if self.content_action() | trim %}
               <div class="content_action">
                 {% block content_action %}
-                  {% link_for _('View showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='read', id=pkg.name, class_='btn', icon='eye-open' %}
+                  {% link_for _('View showcase'), named_route='showcase_read', id=pkg.name, class_='btn', icon='eye-open' %}
                 {% endblock %}
               </div>
             {% endif %}
             <ul class="nav nav-tabs">
               {% block content_primary_nav %}
-                {{ h.build_nav_icon('ckanext_showcase_edit', _('Edit showcase'), id=pkg.name) }}
-                {{ h.build_nav_icon('ckanext_showcase_manage_datasets', _('Manage datasets'), id=pkg.name) }}
+                {{ h.build_nav_icon('showcase_edit', _('Edit showcase'), id=pkg.name) }}
+                {{ h.build_nav_icon('showcase_manage_datasets', _('Manage datasets'), id=pkg.name) }}
               {% endblock %}
             </ul>
           </header>

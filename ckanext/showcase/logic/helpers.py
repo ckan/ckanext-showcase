@@ -9,8 +9,7 @@ def facet_remove_field(key, value=None, replace=None):
     '''
     return h.remove_url_param(
         key, value=value, replace=replace,
-        controller='ckanext.showcase.controller:ShowcaseController',
-        action='search')
+        alternative_url=h.url_for('showcase_index'))
 
 
 def get_site_statistics():

@@ -4,13 +4,13 @@
 {% block subtitle %}{{ _("Showcases") }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li class="active">{{ h.nav_link(_('Showcases'), controller='ckanext.showcase.controller:ShowcaseController', action='search', highlight_actions = 'new index') }}</li>
+  <li class="active">{{ h.nav_link(_('Showcases'), named_route='showcase_index', highlight_actions = 'new index') }}</li>
 {% endblock %}
 
 {% block page_primary_action %}
   {% if h.check_access('ckanext_showcase_create') %}
     <div class="page_primary_action">
-      {% link_for _('Add Showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='new', class_='btn btn-primary', icon='plus-sign-alt' %}
+      {% link_for _('Add Showcase'), named_route='showcase_new', class_='btn btn-primary', icon='plus-sign-alt' %}
     </div>
   {% endif %}
 {% endblock %}

@@ -61,7 +61,7 @@ class TestShowcaseNewView(ShowcaseFunctionalTestBase):
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController', action='new'),
+            url=url_for('showcase_new'),
             extra_environ=env,
         )
         nosetools.assert_true('dataset-edit' in response.forms)
@@ -75,7 +75,7 @@ class TestShowcaseNewView(ShowcaseFunctionalTestBase):
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController', action='new'),
+            url=url_for('showcase_new'),
             extra_environ=env,
         )
 
@@ -87,8 +87,7 @@ class TestShowcaseNewView(ShowcaseFunctionalTestBase):
         # Unique to manage_datasets page
         nosetools.assert_true('bulk_action.showcase_add' in create_response)
         # Requested page is the manage_datasets url.
-        nosetools.assert_equal(url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                       action='manage_datasets', id='my-showcase'), create_response.request.path)
+        nosetools.assert_equal(url_for('showcase_manage_datasets', id='my-showcase'), create_response.request.path)
 
 
 class TestShowcaseEditView(ShowcaseFunctionalTestBase):
@@ -103,8 +102,7 @@ class TestShowcaseEditView(ShowcaseFunctionalTestBase):
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='edit',
+            url=url_for('showcase_edit',
                         id='my-showcase'),
             extra_environ=env,
         )
@@ -118,8 +116,7 @@ class TestShowcaseEditView(ShowcaseFunctionalTestBase):
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='edit', id='my-showcase'),
+            url=url_for('showcase_edit', id='my-showcase'),
             extra_environ=env,
         )
 
@@ -129,8 +126,7 @@ class TestShowcaseEditView(ShowcaseFunctionalTestBase):
         edit_response = submit_and_follow(app, form, env, 'save')
 
         # Requested page is the showcase read url.
-        nosetools.assert_equal(url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                       action='read', id='my-changed-showcase'), edit_response.request.path)
+        nosetools.assert_equal(url_for('showcase_read', id='my-changed-showcase'), edit_response.request.path)
 
 
 class TestDatasetView(ShowcaseFunctionalTestBase):
@@ -159,8 +155,7 @@ class TestDatasetView(ShowcaseFunctionalTestBase):
         dataset = factories.Dataset(name='my-dataset')
 
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='dataset_showcase_list', id=dataset['id'])
+            url=url_for('showcase_dataset_showcase_list', id=dataset['id'])
         )
 
         nosetools.assert_equal(len(response.html.select('ul.media-grid li.media-item')), 0)
@@ -186,8 +181,7 @@ class TestDatasetView(ShowcaseFunctionalTestBase):
                             showcase_id=showcase_two['id'])
 
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='dataset_showcase_list', id=dataset['id'])
+            url=url_for('showcase_dataset_showcase_list', id=dataset['id'])
         )
 
         nosetools.assert_equal(len(response.html.select('li.media-item')), 2)
@@ -213,8 +207,7 @@ class TestDatasetView(ShowcaseFunctionalTestBase):
                             showcase_id=showcase_one['id'])
 
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='dataset_showcase_list', id=dataset['id']),
+            url=url_for('showcase_dataset_showcase_list', id=dataset['id']),
             extra_environ={'REMOTE_USER': str(sysadmin['name'])}
         )
 
@@ -241,8 +234,7 @@ class TestDatasetView(ShowcaseFunctionalTestBase):
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
 
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='dataset_showcase_list', id=dataset['id']),
+            url=url_for('showcase_dataset_showcase_list', id=dataset['id']),
             extra_environ=env
         )
 
@@ -274,8 +266,7 @@ class TestDatasetView(ShowcaseFunctionalTestBase):
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                        action='dataset_showcase_list', id=dataset['id']),
+            url=url_for('showcase_dataset_showcase_list', id=dataset['id']),
             extra_environ=env
         )
 
@@ -320,8 +311,7 @@ class TestShowcaseAdminManageView(ShowcaseFunctionalTestBase):
         sysadmin = factories.Sysadmin()
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
-        app.get(url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                            action='manage_showcase_admins'),
+        app.get(url=url_for('showcase_admins'),
                 status=200, extra_environ=env)
 
     def test_showcase_admin_manage_page_lists_showcase_admins(self):
@@ -341,8 +331,7 @@ class TestShowcaseAdminManageView(ShowcaseFunctionalTestBase):
         sysadmin = factories.Sysadmin()
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
-        response = app.get(url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                       action='manage_showcase_admins'),
+        response = app.get(url=url_for('showcase_admins'),
                            status=200, extra_environ=env)
 
         nosetools.assert_true('/user/{0}'.format(user_one['name']) in response)
@@ -358,8 +347,7 @@ class TestShowcaseAdminManageView(ShowcaseFunctionalTestBase):
         sysadmin = factories.Sysadmin()
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
-        response = app.get(url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
-                                       action='manage_showcase_admins'),
+        response = app.get(url=url_for('showcase_admins'),
                            status=200, extra_environ=env)
 
         nosetools.assert_true('There are currently no Showcase Admins' in response)
@@ -378,4 +366,3 @@ class TestSearch(helpers.FunctionalTestBase):
         dataset = factories.Dataset(tags=[{'name': tag, 'state': 'active'}])
         result = helpers.call_action('package_search', fq='tags:' + tag)
         nosetools.assert_equals(result['count'], 1)
-
