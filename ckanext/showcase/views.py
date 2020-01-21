@@ -27,6 +27,11 @@ class CreateView(dataset.CreateView):
         data_dict = dataset.clean_dict(
             dataset.dict_fns.unflatten(
                 dataset.tuplize_dict(dataset.parse_params(tk.request.form))))
+        data_dict.update(
+            dataset.clean_dict(
+                dataset.dict_fns.unflatten(
+                    dataset.tuplize_dict(dataset.parse_params(
+                        tk.request.files)))))
         context = self._prepare()
         data_dict['type'] = utils.DATASET_TYPE_NAME
         context['message'] = data_dict.get('log_message', '')
@@ -58,10 +63,38 @@ def delete(id):
 def read(id):
     return utils.read_view(id)
 
+class EditView(dataset.EditView):
+    def get(self, id, data=None, errors=None, error_summary=None):
+        utils.check_new_view_auth()
+        return super(EditView, self).get(utils.DATASET_TYPE_NAME, id, data,
+                                           errors, error_summary)
 
-def edit(id):
-    utils.check_edit_view_auth(id)
-    return dataset.EditView.as_view('edit')(utils.DATASET_TYPE_NAME, id)
+    def post(self, id):
+        context = self._prepare(id)
+        utils.check_edit_view_auth(id)
+
+        data_dict = dataset.clean_dict(
+            dataset.dict_fns.unflatten(
+                dataset.tuplize_dict(dataset.parse_params(tk.request.form))))
+        data_dict.update(
+            dataset.clean_dict(
+                dataset.dict_fns.unflatten(
+                    dataset.tuplize_dict(dataset.parse_params(
+                        tk.request.files)))))
+
+        data_dict['id'] = id
+        try:
+            pkg = tk.get_action('ckanext_showcase_update')(context, data_dict)
+        except tk.ValidationError as e:
+            errors = e.error_dict
+            error_summary = e.error_summary
+            return self.get(id, data_dict, errors, error_summary)
+
+        tk.c.pkg_dict = pkg
+
+        # redirect to showcase details page
+        url = h.url_for('showcase_read', id=pkg['name'])
+        return h.redirect_to(url)
 
 
 def dataset_showcase_list(id):
@@ -83,7 +116,7 @@ showcase.add_url_rule('/showcase/delete/<id>',
                       methods=(u'GET', u'POST'))
 showcase.add_url_rule('/showcase/<id>', view_func=read)
 showcase.add_url_rule('/showcase/edit/<id>',
-                      view_func=edit,
+                      view_func=EditView.as_view('edit'),
                       methods=(u'GET', u'POST'))
 showcase.add_url_rule('/showcase/manage_datasets/<id>',
                       view_func=manage_datasets,
