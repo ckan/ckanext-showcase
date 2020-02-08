@@ -75,18 +75,19 @@ def showcase_package_list(context, data_dict):
         validated_data_dict['showcase_id'])
 
     pkg_list = []
-    if pkg_id_list is not None:
+    if pkg_id_list:
         # for each package id, get the package dict and append to list if
         # active
+        id_list = []
         for pkg_id in pkg_id_list:
-            try:
-                pkg = toolkit.get_action('package_show')(context,
-                                                         {'id': pkg_id})
-                if pkg['state'] == 'active':
-                    pkg_list.append(pkg)
-            except NotAuthorized:
-                log.debug(
-                    'Not authorized to access Package with ID: ' + str(pkg_id))
+            id_list.append(pkg_id[0])
+
+        q = ' OR '.join(id_list)
+        pkg_list = toolkit.get_action('package_search')(
+            context,
+            {'q': q, 'rows': 100})
+        pkg_list = pkg_list['results']
+
     return pkg_list
 
 
@@ -116,16 +117,18 @@ def package_showcase_list(context, data_dict):
 
     showcase_list = []
     if showcase_id_list is not None:
+        # for each package id, get the package dict and append to list if
+        # active
+        id_list = []
         for showcase_id in showcase_id_list:
-            try:
-                showcase = toolkit.get_action('package_show')(
-                    context,
-                    {'id': showcase_id}
-                )
-                showcase_list.append(showcase)
-            except NotAuthorized:
-                log.debug('Not authorized to access Package with ID: '
-                          + str(showcase_id))
+            id_list.append(pkg_id[0])
+
+        q = ' OR '.join(id_list)
+        showcase_list = toolkit.get_action('package_search')(
+            context,
+            {'q': q, 'rows': 100})
+        showcase_list = pkg_list['results']
+
     return showcase_list
 
 
