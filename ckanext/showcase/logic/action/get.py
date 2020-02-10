@@ -121,13 +121,13 @@ def package_showcase_list(context, data_dict):
         # active
         id_list = []
         for showcase_id in showcase_id_list:
-            id_list.append(pkg_id[0])
+            id_list.append(showcase_id[0])
 
         q = ' OR '.join(id_list)
         showcase_list = toolkit.get_action('package_search')(
             context,
             {'q': q, 'rows': 100})
-        showcase_list = pkg_list['results']
+        showcase_list = showcase_list['results']
 
     return showcase_list
 
