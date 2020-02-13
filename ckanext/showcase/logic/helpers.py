@@ -21,7 +21,7 @@ def get_site_statistics():
 
     stats = {}
     stats['showcase_count'] = tk.get_action('package_search')(
-        {}, {"rows": 1, 'fq': 'dataset_type:showcase'})['count']
+        {}, {"rows": 1, 'fq': '+dataset_type:showcase'})['count']
     stats['dataset_count'] = tk.get_action('package_search')(
         {}, {"rows": 1, 'fq': '!dataset_type:showcase'})['count']
     stats['group_count'] = len(tk.get_action('group_list')({}, {}))
