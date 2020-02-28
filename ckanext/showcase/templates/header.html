@@ -1,11 +1,14 @@
 {% ckan_extends %}
 
+{% set about_route = 'home.about' if h.ckan_version() > '2.8' else 'about' %}
+
+
 {% block header_site_navigation_tabs %}
   {{ h.build_nav_main(
     ('search', _('Datasets')),
     ('organizations_index', _('Organizations')),
     ('group_index', _('Groups')),
     ('ckanext_showcase_index', _('Showcases')),
-    ('about', _('About'))
+    (about_route, _('About'))
   ) }}
 {% endblock %}
