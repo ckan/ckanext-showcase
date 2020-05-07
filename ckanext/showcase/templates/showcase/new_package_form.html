@@ -25,7 +25,19 @@
       {% endblock %}
 
       {% block package_basic_fields_description %}
-        {{ form.markdown('notes', id='field-notes', label=_('Description'), placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
+        {% set editor = h.get_wysiwyg_editor() %}
+        {% if editor == 'ckeditor' %}
+          {% resource 'showcase/vendor/ckeditor.js' %}
+          {% resource 'showcase/js/showcase-ckeditor.js' %}
+          <div class="form-group control-full">
+            <label class="control-label" for="editor">{{ _('Content') }}</label>
+            <div class="controls">
+              <textarea id="editor" name="notes" data-module="showcase-ckeditor"> {{ data.notes }} </textarea>
+            </div>
+          </div>
+        {% else %}
+          {{ form.markdown('notes', id='field-notes', label=_('Description'), placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes) }}
+        {% endif %}
       {% endblock %}
 
       {% block package_basic_fields_tags %}
