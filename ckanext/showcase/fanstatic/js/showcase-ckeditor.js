@@ -21,7 +21,7 @@ ckan.module('showcase-ckeditor', function ($) {
                 '|',
                 'bulletedList', 'numberedList',
                 '|',
-                'horizontalline', 'link', 'imageUpload', 'blockQuote', 'undo', 'redo'
+                'horizontalline', 'link', 'blockQuote', 'undo', 'redo'
             ]
 
         config.image = {
