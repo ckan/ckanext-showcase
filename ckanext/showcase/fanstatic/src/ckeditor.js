@@ -65,15 +65,4 @@ ClassicEditor.builtinPlugins = [
     Markdown
 ];
 
-ClassicEditor.defaultConfig = {
-    image: {
-        toolbar: [
-            'imageStyle:full',
-            'imageStyle:side',
-            '|',
-            'imageTextAlternative'
-        ]
-    }
-};
-
 window.ClassicEditor=ClassicEditor;

@@ -24,6 +24,15 @@ ckan.module('showcase-ckeditor', function ($) {
                 'horizontalline', 'link', 'imageUpload', 'blockQuote', 'undo', 'redo'
             ]
 
+        config.image = {
+            toolbar: [
+                'imageTextAlternative',
+                '|',
+                'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight'
+            ],
+            styles: ['alignLeft', 'full', 'alignRight']
+        }
+
         config.language = 'en'
 
         ClassicEditor
