@@ -2,8 +2,21 @@ import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classicedi
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+
+// ckeditor5-basic-styles
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+
+import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
+
 import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
@@ -30,6 +43,14 @@ ClassicEditor.builtinPlugins = [
     AutoformatPlugin,
     BoldPlugin,
     ItalicPlugin,
+    Underline,
+    Strikethrough,
+    Code,
+    Subscript,
+    Superscript,
+    Indent,
+    IndentBlock,
+    HorizontalLine,
     BlockQuotePlugin,
     EasyImagePlugin,
     HeadingPlugin,
@@ -45,21 +66,6 @@ ClassicEditor.builtinPlugins = [
 ];
 
 ClassicEditor.defaultConfig = {
-    toolbar: {
-        items: [
-            'heading',
-            '|',
-            'bold',
-            'italic',
-            'link',
-            'bulletedList',
-            'numberedList',
-            'imageUpload',
-            'blockQuote',
-            'undo',
-            'redo'
-        ]
-    },
     image: {
         toolbar: [
             'imageStyle:full',
@@ -67,8 +73,7 @@ ClassicEditor.defaultConfig = {
             '|',
             'imageTextAlternative'
         ]
-    },
-    language: 'en'
+    }
 };
 
 window.ClassicEditor=ClassicEditor;

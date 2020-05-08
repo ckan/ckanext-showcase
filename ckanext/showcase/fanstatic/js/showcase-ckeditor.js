@@ -11,8 +11,26 @@ ckan.module('showcase-ckeditor', function ($) {
     },
 
     _onReady: function(){
+        var config = {};
+        config.toolbar = [
+                'heading',
+                '|',
+                'bold', 'italic','underline', 'code',
+                '|',
+                'outdent', 'indent',
+                '|',
+                'bulletedList', 'numberedList',
+                '|',
+                'horizontalline', 'link', 'imageUpload', 'blockQuote', 'undo', 'redo'
+            ]
+
+        config.language = 'en'
+
         ClassicEditor
-        .create( document.querySelector('#editor'))
+        .create(
+            document.querySelector('#editor'),
+            config
+            )
         .catch( error => {
             console.error( error.stack );
         } );
