@@ -18,7 +18,6 @@ import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 
 import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
@@ -52,7 +51,6 @@ ClassicEditor.builtinPlugins = [
     IndentBlock,
     HorizontalLine,
     BlockQuotePlugin,
-    EasyImagePlugin,
     HeadingPlugin,
     ImagePlugin,
     ImageCaptionPlugin,
