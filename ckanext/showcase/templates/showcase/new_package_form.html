@@ -27,7 +27,7 @@
       {% block package_basic_fields_description %}
         {% set editor = h.get_wysiwyg_editor() %}
         {% if editor == 'ckeditor' %}
-          {% resource 'showcase/vendor/ckeditor.js' %}
+          {% resource 'showcase/dist/ckeditor.js' %}
           {% resource 'showcase/js/showcase-ckeditor.js' %}
           <div class="form-group control-full">
             <label class="control-label" for="editor">{{ _('Content') }}</label>

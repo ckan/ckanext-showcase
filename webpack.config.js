@@ -9,10 +9,7 @@ module.exports = {
         "index": path.resolve(__dirname, assetPath, 'src/ckeditor.js'),
       },
     plugins: [
-        new CKEditorWebpackPlugin( {
-            // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
-            language: 'pl'
-        } )
+        new CKEditorWebpackPlugin({language: 'en'})
     ],
     output: {
         path: path.resolve(__dirname, assetPath, 'dist'),

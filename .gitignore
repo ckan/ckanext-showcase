@@ -1,6 +1,7 @@
 .ropeproject
 node_modules
 bower_components
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -14,7 +15,6 @@ __pycache__/
 env/
 build/
 develop-eggs/
-dist/
 sdist/
 *.egg-info/
 .installed.cfg
