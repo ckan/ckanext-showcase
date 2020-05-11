@@ -151,6 +151,14 @@ equivalent in Showcases and will not be migrated.
 
 Related Item data is not removed from the database by this command.
 
+---------------------
+Configuration
+---------------------
+
+If you want to use the WYSIWYG editor instead of Markdown to write the content of the showcase::
+
+    ckanext.showcase.editor = ckeditor
+
 -----------------
 Running the Tests
 -----------------
