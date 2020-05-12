@@ -80,7 +80,7 @@ do::
 
 
 The extension contains a custom build of CKEditor to allow using a WYSIWYG editor
-to write the content of the showcase. I has been built using `webpack` and the
+to write the content of the showcase. It has been built using `webpack` and the
 repository contains all the files needed to edit and customize it if needed::
 
     npm install
