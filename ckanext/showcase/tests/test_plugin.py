@@ -379,3 +379,35 @@ class TestSearch(helpers.FunctionalTestBase):
         result = helpers.call_action('package_search', fq='tags:' + tag)
         nosetools.assert_equals(result['count'], 1)
 
+
+class TestCKEditor(helpers.FunctionalTestBase):
+
+    @helpers.change_config('ckanext.showcase.editor', 'ckeditor')
+    def test_rich_text_editor_is_shown_when_configured(self):
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        factories.Dataset(name='my-showcase', type='showcase')
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='edit',
+                        id='my-showcase'),
+            extra_environ=env,
+        )
+        nosetools.assert_in('<textarea id="editor"', response.ubody)
+
+
+    def test_rich_text_editor_is_not_shown_when_not_configured(self):
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        factories.Dataset(name='my-showcase', type='showcase')
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='edit',
+                        id='my-showcase'),
+            extra_environ=env,
+        )
+        nosetools.assert_not_in('<textarea id="editor"', response.ubody)

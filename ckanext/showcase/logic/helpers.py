@@ -29,3 +29,7 @@ def get_site_statistics():
         tk.get_action('organization_list')({}, {}))
 
     return stats
+
+
+def get_wysiwyg_editor():
+    return tk.config.get('ckanext.showcase.editor', '')

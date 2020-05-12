@@ -71,3 +71,8 @@ class TestGetSiteStatistics(ShowcaseFunctionalTestBase):
         stats = showcase_helpers.get_site_statistics()
         nosetools.assert_equal(stats['dataset_count'], 10)
         nosetools.assert_equal(stats['showcase_count'], 5)
+
+
+@helpers.change_config('ckanext.showcase.editor', 'custom-editor')
+def test_get_wysiwyg_editor():
+    nosetools.assert_equals(showcase_helpers.get_wysiwyg_editor(), 'custom-editor')
