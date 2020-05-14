@@ -79,6 +79,20 @@ do::
     pip install -r dev-requirements.txt
 
 
+The extension contains a custom build of CKEditor to allow using a WYSIWYG editor
+to write the content of the showcase. It has been built using `webpack` and the
+repository contains all the files needed to edit and customize it if needed::
+
+    npm install
+    npx webpack --config webpack.config.js
+
+The webpack will use as entrypoint a file located in `ckanext/showcase/fanstatic/src/ckeditor.js`,
+create a build and save it to `ckanext/showcase/fanstatic/dist/ckeditor.js`
+
+More info on how to build CKEditor from source:
+https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source
+
+
 ---
 API
 ---
@@ -150,6 +164,14 @@ properties ``created``, ``owner_id``, ``view_count``, and ``featured`` have no
 equivalent in Showcases and will not be migrated.
 
 Related Item data is not removed from the database by this command.
+
+---------------------
+Configuration
+---------------------
+
+If you want to use the WYSIWYG editor instead of Markdown to write the content of the showcase::
+
+    ckanext.showcase.editor = ckeditor
 
 -----------------
 Running the Tests
