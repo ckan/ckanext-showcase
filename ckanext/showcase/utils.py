@@ -76,7 +76,7 @@ def read_view(id):
     # check if showcase exists
     try:
         c.pkg_dict = tk.get_action('package_show')(context, data_dict)
-    except tk.NotFound:
+    except tk.ObjectNotFound:
         return tk.abort(404, _('Showcase not found'))
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read showcase'))
@@ -112,9 +112,9 @@ def manage_datasets_view(id):
     # check if showcase exists
     try:
         tk.c.pkg_dict = tk.get_action('package_show')(context, data_dict)
-    except NotFound:
+    except tk.ObjectNotFound:
         return tk.abort(404, _('Showcase not found'))
-    except NotAuthorized:
+    except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read showcase'))
 
     # Are we removing a showcase/dataset association?
@@ -518,7 +518,7 @@ def delete_view(id):
         c.pkg_dict = tk.get_action('package_show')(context, {'id': id})
     except tk.NotAuthorized:
         tk.abort(401, _('Unauthorized to delete showcase'))
-    except tk.NotFound:
+    except tk.ObjectNotFound:
         tk.abort(404, _('Showcase not found'))
     return tk.render('showcase/confirm_delete.html',
                      extra_vars={'dataset_type': DATASET_TYPE_NAME})
@@ -536,7 +536,7 @@ def dataset_showcase_list(id):
 
     try:
         tk.check_access('package_show', context, data_dict)
-    except tk.NotFound:
+    except tk.ObjectNotFound:
         return tk.abort(404, _('Dataset not found'))
     except tk.NotAuthorized:
         return tk.abort(401, _('Not authorized to see this page'))
@@ -547,7 +547,7 @@ def dataset_showcase_list(id):
             context, {
                 'package_id': c.pkg_dict['id']
             })
-    except tk.NotFound:
+    except tk.ObjectNotFound:
         return tk.abort(404, _('Dataset not found'))
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read package'))
@@ -566,7 +566,7 @@ def dataset_showcase_list(id):
             try:
                 tk.get_action('ckanext_showcase_package_association_create')(
                     context, data_dict)
-            except NotFound:
+            except tk.ObjectNotFound:
                 return tk.abort(404, _('Showcase not found'))
             else:
                 h.flash_success(
@@ -582,7 +582,7 @@ def dataset_showcase_list(id):
             try:
                 tk.get_action('ckanext_showcase_package_association_delete')(
                     context, data_dict)
-            except tk.NotFound:
+            except tk.ObjectNotFound:
                 return tk.abort(404, _('Showcase not found'))
             else:
                 h.flash_success(
@@ -610,7 +610,7 @@ def manage_showcase_admins():
 
     try:
         tk.check_access('sysadmin', context, {})
-    except NotAuthorized:
+    except tk.NotAuthorized:
         return tk.abort(401, _('User not authorized to view page'))
 
     form_data = tk.request.form if tk.check_ckan_version(
@@ -625,7 +625,7 @@ def manage_showcase_admins():
             })
         except tk.NotAuthorized:
             abort(401, _('Unauthorized to perform that action'))
-        except tk.NotFound:
+        except tk.ObjectNotFound:
             h.flash_error(
                 _("User '{user_name}' not found.").format(user_name=username))
         except tk.ValidationError as e:
@@ -670,7 +670,7 @@ def remove_showcase_admin():
             })
         except tk.NotAuthorized:
             return tk.abort(401, _('Unauthorized to perform that action'))
-        except tk.NotFound:
+        except tk.ObjectNotFound:
             h.flash_error(_('The user is not a Showcase Admin'))
         else:
             h.flash_success(_('The user is no longer a Showcase Admin'))

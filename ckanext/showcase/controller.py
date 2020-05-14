@@ -1,21 +1,14 @@
-from urllib import urlencode
 import logging
 
-from collections import OrderedDict
-from ckantoolkit import config
 
 from ckan.plugins import toolkit as tk
-import ckan.model as model
 import ckan.lib.helpers as h
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.logic as logic
-import ckan.plugins as p
-from ckan.common import ungettext
-from ckan.controllers.package import (PackageController, url_with_params,
-                                      _encode_params)
+from ckan.controllers.package import (PackageController)
 
-from ckanext.showcase.model import ShowcasePackageAssociation
-import ckanext.showcase.utils
+
+from ckanext.showcase import utils
 from ckanext.showcase.utils import DATASET_TYPE_NAME
 
 _ = tk._
