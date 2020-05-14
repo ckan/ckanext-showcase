@@ -74,6 +74,5 @@ sed -i -e 's/use = config:..\/ckan\/test-core.ini/use = config:..\/ckan\/test-co
 echo "Moving test.ini into a subdir..."
 mkdir subdir
 mv test.ini subdir
-mv test_subclass.ini subdir
 
 echo "travis-build.bash is done."
