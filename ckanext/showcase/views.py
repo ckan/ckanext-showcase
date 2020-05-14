@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Blueprint, make_response
+from flask import Blueprint
 
 import ckantoolkit as tk
 
@@ -63,11 +63,12 @@ def delete(id):
 def read(id):
     return utils.read_view(id)
 
+
 class EditView(dataset.EditView):
     def get(self, id, data=None, errors=None, error_summary=None):
         utils.check_new_view_auth()
         return super(EditView, self).get(utils.DATASET_TYPE_NAME, id, data,
-                                           errors, error_summary)
+                                         errors, error_summary)
 
     def post(self, id):
         context = self._prepare(id)

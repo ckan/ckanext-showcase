@@ -1,0 +1,9 @@
+ckeditor:
+  filter: rjsmin
+  output: ckanext-showcase/%(version)s_ckeditor.json
+  extra:
+    preload:
+      - base/main
+  contents:
+    - dist/ckeditor.js
+    - js/showcase-ckeditor.js

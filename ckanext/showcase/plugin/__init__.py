@@ -17,11 +17,8 @@ import ckantoolkit as tk
 
 
 import ckanext.showcase.utils as utils
-import ckanext.showcase.logic.auth
-import ckanext.showcase.logic.action.create
-import ckanext.showcase.logic.action.delete
-import ckanext.showcase.logic.action.update
-import ckanext.showcase.logic.action.get
+from ckanext.showcase.logic import auth, action
+
 import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
 from ckanext.showcase.model import setup as model_setup
@@ -39,7 +36,8 @@ log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = utils.DATASET_TYPE_NAME
 
 
-class ShowcasePlugin(MixinPlugin, plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
+class ShowcasePlugin(
+        MixinPlugin, plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
@@ -139,58 +137,12 @@ class ShowcasePlugin(MixinPlugin, plugins.SingletonPlugin, lib_plugins.DefaultDa
     # IAuthFunctions
 
     def get_auth_functions(self):
-        return {
-            'ckanext_showcase_create': ckanext.showcase.logic.auth.create,
-            'ckanext_showcase_update': ckanext.showcase.logic.auth.update,
-            'ckanext_showcase_delete': ckanext.showcase.logic.auth.delete,
-            'ckanext_showcase_show': ckanext.showcase.logic.auth.show,
-            'ckanext_showcase_list': ckanext.showcase.logic.auth.list,
-            'ckanext_showcase_package_association_create':
-                ckanext.showcase.logic.auth.package_association_create,
-            'ckanext_showcase_package_association_delete':
-                ckanext.showcase.logic.auth.package_association_delete,
-            'ckanext_showcase_package_list':
-                ckanext.showcase.logic.auth.showcase_package_list,
-            'ckanext_package_showcase_list':
-                ckanext.showcase.logic.auth.package_showcase_list,
-            'ckanext_showcase_admin_add':
-                ckanext.showcase.logic.auth.add_showcase_admin,
-            'ckanext_showcase_admin_remove':
-                ckanext.showcase.logic.auth.remove_showcase_admin,
-            'ckanext_showcase_admin_list':
-                ckanext.showcase.logic.auth.showcase_admin_list
-        }
+        return auth.get_auth_functions()
 
     # IActions
 
     def get_actions(self):
-        action_functions = {
-            'ckanext_showcase_create':
-                ckanext.showcase.logic.action.create.showcase_create,
-            'ckanext_showcase_update':
-                ckanext.showcase.logic.action.update.showcase_update,
-            'ckanext_showcase_delete':
-                ckanext.showcase.logic.action.delete.showcase_delete,
-            'ckanext_showcase_show':
-                ckanext.showcase.logic.action.get.showcase_show,
-            'ckanext_showcase_list':
-                ckanext.showcase.logic.action.get.showcase_list,
-            'ckanext_showcase_package_association_create':
-                ckanext.showcase.logic.action.create.showcase_package_association_create,
-            'ckanext_showcase_package_association_delete':
-                ckanext.showcase.logic.action.delete.showcase_package_association_delete,
-            'ckanext_showcase_package_list':
-                ckanext.showcase.logic.action.get.showcase_package_list,
-            'ckanext_package_showcase_list':
-                ckanext.showcase.logic.action.get.package_showcase_list,
-            'ckanext_showcase_admin_add':
-                ckanext.showcase.logic.action.create.showcase_admin_add,
-            'ckanext_showcase_admin_remove':
-                ckanext.showcase.logic.action.delete.showcase_admin_remove,
-            'ckanext_showcase_admin_list':
-                ckanext.showcase.logic.action.get.showcase_admin_list,
-        }
-        return action_functions
+        return action.get_actions()
 
     # IPackageController
 

@@ -5,7 +5,7 @@ import ckan.plugins as p
 
 
 class MixinPlugin(p.SingletonPlugin):
-    p.implements(p.IRoutes)
+    p.implements(p.IRoutes, inherit=True)
 
     # IRoutes
 
@@ -13,7 +13,9 @@ class MixinPlugin(p.SingletonPlugin):
         # These named routes are used for custom dataset forms which will use
         # the names below based on the dataset.type ('dataset' is the default
         # type)
-        with SubMapper(map, controller='ckanext.showcase.controller:ShowcaseController') as m:
+        with SubMapper(
+                map, controller='ckanext.showcase.controller:ShowcaseController'
+        ) as m:
             m.connect('showcase_index', '/showcase', action='search',
                       highlight_actions='index search')
             m.connect('showcase_new', '/showcase/new', action='new')

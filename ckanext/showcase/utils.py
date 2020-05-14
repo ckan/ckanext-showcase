@@ -507,7 +507,7 @@ def delete_view(id):
 
     try:
         tk.check_access('ckanext_showcase_delete', context, {'id': id})
-    except NotAuthorized:
+    except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to delete showcase'))
 
     try:
