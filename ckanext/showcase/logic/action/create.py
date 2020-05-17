@@ -1,6 +1,7 @@
 import logging
 
 import ckan.lib.uploader as uploader
+import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
 from ckan.logic.converters import convert_user_name_or_id_to_id
 from ckan.lib.navl.dictization_functions import validate
@@ -104,3 +105,26 @@ def showcase_admin_add(context, data_dict):
 
     # create showcase admin entry
     return ShowcaseAdmin.create(user_id=user_id)
+
+
+def showcase_upload(context, data_dict):
+    ''' Uploads images to be used in showcase content.
+
+    '''
+    toolkit.check_access('ckanext_showcase_upload', context, data_dict)
+
+    try:
+        upload = uploader.get_uploader('showcase_image')
+    except AttributeError:
+        upload = uploader.Upload('showcase_image')
+
+    upload.update_data_dict(data_dict, 'image_url', 'upload', 'clear_upload')
+    upload.upload(uploader.get_max_image_size())
+
+    image_url = data_dict.get('image_url')
+    if image_url:
+        image_url = h.url_for_static(
+           'uploads/showcase_image/{}'.format(image_url),
+            qualified = True
+        )
+    return {'url': image_url}

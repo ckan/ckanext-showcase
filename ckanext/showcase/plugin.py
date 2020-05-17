@@ -131,7 +131,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'ckanext_showcase_admin_remove':
                 ckanext.showcase.logic.auth.remove_showcase_admin,
             'ckanext_showcase_admin_list':
-                ckanext.showcase.logic.auth.showcase_admin_list
+                ckanext.showcase.logic.auth.showcase_admin_list,
+            'ckanext_showcase_upload':
+                ckanext.showcase.logic.auth.showcase_upload
         }
 
     # IRoutes
@@ -159,7 +161,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                       action='manage_showcase_admins', ckan_icon='picture'),
             m.connect('ckanext_showcase_admin_remove',
                       '/ckan-admin/showcase_admin_remove',
-                      action='remove_showcase_admin')
+                      action='remove_showcase_admin'),
+            m.connect('showcase_upload', '/showcase_upload',
+                    action='showcase_upload')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map
@@ -192,6 +196,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                 ckanext.showcase.logic.action.delete.showcase_admin_remove,
             'ckanext_showcase_admin_list':
                 ckanext.showcase.logic.action.get.showcase_admin_list,
+            'ckanext_showcase_upload':
+                ckanext.showcase.logic.action.create.showcase_upload,
         }
         return action_functions
 
