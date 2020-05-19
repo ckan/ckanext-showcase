@@ -45,3 +45,7 @@ td.ckanext_showcase_pagination_footer {
 .module-narrow .nav-item > a {
     word-break: break-word;
 }
+
+.ck-editor__editable_inline {
+    min-height: 200px;
+}

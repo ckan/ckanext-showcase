@@ -95,3 +95,7 @@ def remove_showcase_admin(context, data_dict):
 def showcase_admin_list(context, data_dict):
     '''Only sysadmins can list showcase admin users.'''
     return {'success': False}
+
+def showcase_upload(context, data_dict):
+    '''Only sysadmins can upload images.'''
+    return {'success': _is_showcase_admin(context)}

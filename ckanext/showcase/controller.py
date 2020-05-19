@@ -1,5 +1,6 @@
 from urllib import urlencode
 import logging
+import json
 
 from pylons import config
 
@@ -602,3 +603,17 @@ class ShowcaseController(PackageController):
         c.user_dict = get_action('user_show')(data_dict={'id': user_id})
         c.user_id = user_id
         return render('admin/confirm_remove_showcase_admin.html')
+
+    def showcase_upload(self):
+        if not tk.request.method == 'POST':
+            tk.abort(409, _('Only Posting is availiable'))
+
+        try:
+            url = tk.get_action('ckanext_showcase_upload')(
+                None,
+                dict(tk.request.POST)
+                )
+        except tk.NotAuthorized:
+            tk.abort(401, _('Unauthorized to upload file %s') % id)
+
+        return json.dumps(url)
