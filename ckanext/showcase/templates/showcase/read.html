@@ -8,6 +8,7 @@
 {% block styles %}
   {{ super() }}
   <link rel="stylesheet" href="{{ g.site_url }}/ckanext_showcase.css" />
+  <link rel="stylesheet" href="{{ g.site_url }}/ckeditor-content-style.css" type="text/css">
 {% endblock %}
 
 {% block links -%}
@@ -67,7 +68,12 @@
     {% endif %}
 
     {% block package_notes %}
-      {% if pkg.showcase_notes_formatted %}
+      {% set editor = h.get_wysiwyg_editor() %}
+      {% if pkg.showcase_notes_formatted and editor == 'ckeditor' %}
+        <div class="ck-content">
+          {{ pkg.showcase_notes_formatted|safe }}
+        </div>
+      {% elif pkg.showcase_notes_formatted %}
         <div class="notes embedded-content ckanext-showcase-notes">
           {{ pkg.showcase_notes_formatted }}
         </div>

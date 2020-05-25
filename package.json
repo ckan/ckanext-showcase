@@ -38,7 +38,6 @@
     "@ckeditor/ckeditor5-indent": "^19.0.0",
     "@ckeditor/ckeditor5-link": "^19.0.0",
     "@ckeditor/ckeditor5-list": "^19.0.0",
-    "@ckeditor/ckeditor5-markdown-gfm": "^19.0.0",
     "@ckeditor/ckeditor5-media-embed": "^19.0.0",
     "@ckeditor/ckeditor5-paragraph": "^19.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^19.0.0",

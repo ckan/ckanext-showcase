@@ -411,3 +411,18 @@ class TestCKEditor(helpers.FunctionalTestBase):
             extra_environ=env,
         )
         nosetools.assert_not_in('<textarea id="editor"', response.ubody)
+
+    @helpers.change_config('ckanext.showcase.editor', 'ckeditor')
+    def test_custom_div_content_is_used_with_ckeditor(self):
+        app = self._get_test_app()
+        sysadmin = factories.Sysadmin()
+        factories.Dataset(name='my-showcase', type='showcase')
+
+        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
+        response = app.get(
+            url=url_for(controller='ckanext.showcase.controller:ShowcaseController',
+                        action='read',
+                        id='my-showcase'),
+            extra_environ=env,
+        )
+        nosetools.assert_in('<div class="ck-content">', response.ubody)
