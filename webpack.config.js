@@ -1,4 +1,5 @@
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const path = require('path');
 const assetPath = './ckanext/showcase/fanstatic/';
@@ -9,7 +10,10 @@ module.exports = {
         "index": path.resolve(__dirname, assetPath, 'src/ckeditor.js'),
       },
     plugins: [
-        new CKEditorWebpackPlugin({language: 'en'})
+        new CKEditorWebpackPlugin({language: 'en'}),
+        new MiniCssExtractPlugin({
+            filename: path.resolve(__dirname, assetPath, 'public/ckeditor-content-style.css')
+        })
     ],
     output: {
         path: path.resolve(__dirname, assetPath, 'dist'),
@@ -24,15 +28,8 @@ module.exports = {
             {
                 test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
                 use: [
-                    {
-                        loader: 'style-loader',
-                        options: {
-                            injectType: 'singletonStyleTag',
-                            attributes: {
-                                'data-cke': true
-                            }
-                        }
-                    },
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
                     {
                         loader: 'postcss-loader',
                         options: styles.getPostCssConfig( {
@@ -41,7 +38,7 @@ module.exports = {
                             },
                             minify: true
                         } )
-                    },
+                    }
                 ]
             }
         ]
