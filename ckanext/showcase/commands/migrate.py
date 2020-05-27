@@ -3,6 +3,7 @@ from ckan.lib.cli import CkanCommand
 from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 from ckan.logic import get_action
 from ckan.lib.helpers import render_markdown
+from ckan.plugins import toolkit
 
 
 import logging
@@ -157,10 +158,24 @@ migration can continue. Please correct and try again:"""
         markdown, this command will migrate all nothes using CKAN's
         render_markdown core helper.
         '''
-        showcases = get_action('ckanext_showcase_list')(data_dict={})
+        showcases = toolkit.get_action('ckanext_showcase_list')(data_dict={})
+
+        site_user = toolkit.get_action('get_site_user')({
+            'model': model,
+            'ignore_auth': True},
+            {}
+        )
+        context = {
+            'model': model,
+            'session': model.Session,
+            'ignore_auth': True,
+            'user': site_user['name'],
+        }
+
         for showcase in showcases:
-            get_action('package_patch')(
-                data_dict = {
+            toolkit.get_action('package_patch')(
+                context,
+                {
                     'id': showcase['id'],
                     'notes': render_markdown(showcase['notes'])
                 }
