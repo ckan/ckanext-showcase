@@ -51,8 +51,6 @@ class MigrationCommand(CkanCommand):
 
         if cmd == 'migrate':
             self.migrate()
-        elif cmd == 'make_related':
-            self.make_related()
         elif cmd == 'markdown_to_html':
             self.markdown_to_html()
         else:
