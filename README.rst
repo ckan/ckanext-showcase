@@ -173,6 +173,18 @@ If you want to use the WYSIWYG editor instead of Markdown to write the content o
 
     ckanext.showcase.editor = ckeditor
 
+-----------------------------------------------
+Migrating Showcases Notes from Markdown to HTML
+-----------------------------------------------
+
+When using CKEditor as WYSIWYG editor showcases notes are stored in HTML
+instead of Markdown. To migrate all existing notes from markdown to
+HTML you can use the ```showcase markdown_to_html``` command.
+
+From the ``ckanext-showcase`` directory::
+
+    paster showcase markdown_to_html -c {path to production.ini}
+
 -----------------
 Running the Tests
 -----------------
