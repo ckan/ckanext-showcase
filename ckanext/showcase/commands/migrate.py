@@ -165,3 +165,4 @@ migration can continue. Please correct and try again:"""
                     'notes': render_markdown(showcase['notes'])
                 }
             )
+        print('All notes were migrated successfully.')
