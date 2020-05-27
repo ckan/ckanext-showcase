@@ -9,9 +9,8 @@ from ckan.lib.helpers import render_markdown
 from ckanext.showcase.commands.migrate import MigrationCommand
 
 
-class TestUserAdd(object):
-
-    '''Tests for UserCmd.add'''
+class TestMigrationCommand(object):
+    '''Tests for MigrationCommand.markdown_to_html'''
 
     @classmethod
     def setup_class(cls):
