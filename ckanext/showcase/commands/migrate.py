@@ -2,6 +2,7 @@ from ckan import model
 from ckan.lib.cli import CkanCommand
 from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 from ckan.logic import get_action
+from ckan.lib.helpers import render_markdown
 
 
 import logging
@@ -19,6 +20,9 @@ class MigrationCommand(CkanCommand):
 
         paster showcase migrate -c <path to config file> [--allow-duplicates]
             - Migrate Related Items to Showcases and allow duplicates
+
+        paster showcase markdown_to_html -c <path to config file>
+            - Migrate the notes of all showcases from markdown to html.
 
     Must be run from the ckanext-showcase directory.
     '''
@@ -49,6 +53,8 @@ class MigrationCommand(CkanCommand):
             self.migrate()
         elif cmd == 'make_related':
             self.make_related()
+        elif cmd == 'markdown_to_html':
+            self.markdown_to_html()
         else:
             print('Command "{0}" not recognized'.format(cmd))
 
@@ -145,3 +151,19 @@ migration can continue. Please correct and try again:"""
             return 'duplicate_' + title + '_' + related_id
         else:
             return title
+
+    def markdown_to_html(self):
+        ''' Migrates the notes of all showcases from markdown to html.
+
+        When using CKEditor, notes on showcases are stored in html instead of
+        markdown, this command will migrate all nothes using CKAN's
+        render_markdown core helper.
+        '''
+        showcases = get_action('ckanext_showcase_list')(data_dict={})
+        for showcase in showcases:
+            get_action('package_patch')(
+                data_dict = {
+                    'id': showcase['id'],
+                    'notes': render_markdown(showcase['notes'])
+                }
+            )
