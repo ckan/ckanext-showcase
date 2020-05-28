@@ -22,7 +22,7 @@ class MigrationCommand(CkanCommand):
         paster showcase migrate -c <path to config file> [--allow-duplicates]
             - Migrate Related Items to Showcases and allow duplicates
 
-        paster showcase markdown_to_html -c <path to config file>
+        paster showcase markdown-to-html -c <path to config file>
             - Migrate the notes of all showcases from markdown to html.
 
     Must be run from the ckanext-showcase directory.
@@ -52,7 +52,7 @@ class MigrationCommand(CkanCommand):
 
         if cmd == 'migrate':
             self.migrate()
-        elif cmd == 'markdown_to_html':
+        elif cmd == 'markdown-to-html':
             self.markdown_to_html()
         else:
             print('Command "{0}" not recognized'.format(cmd))

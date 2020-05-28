@@ -183,7 +183,7 @@ HTML you can use the ```showcase markdown_to_html``` command.
 
 From the ``ckanext-showcase`` directory::
 
-    paster showcase markdown_to_html -c {path to production.ini}
+    paster showcase markdown-to-html -c {path to production.ini}
 
 -----------------
 Running the Tests
