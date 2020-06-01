@@ -27,14 +27,8 @@ import ImageUploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
-
-// Simple plugin which loads the data processor.
-function Markdown( editor ) {
-    editor.data.processor = new GFMDataProcessor( editor.editing.view.document );
-}
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -62,7 +56,6 @@ ClassicEditor.builtinPlugins = [
     LinkPlugin,
     ListPlugin,
     ParagraphPlugin,
-    Markdown,
     SimpleUploadAdapter
 ];
 
