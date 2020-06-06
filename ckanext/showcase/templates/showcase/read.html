@@ -8,9 +8,9 @@
 
 {% block styles %}
   {{ super() }}
-  <link rel="stylesheet" href="{{ g.site_url }}/ckanext_showcase.css" />
+  {% resource "showcase/ckanext_showcase.css" %}
   {% if editor == 'ckeditor' %}
-    <link rel="stylesheet" href="{{ g.site_url }}/ckeditor-content-style.css" type="text/css">
+    {% resource "showcase/ckeditor-content-style.css" %}
   {% endif %}
 {% endblock %}
 
