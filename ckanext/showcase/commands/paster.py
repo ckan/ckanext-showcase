@@ -1,15 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import print_function
-import logging
 
 from ckan.lib.cli import CkanCommand
 
-import ckanext.showcase.utils as utils
-from ckan.lib.helpers import render_markdown
-from ckan.plugins import toolkit
+from ckanext.showcase import utils
 
-
-
-log = logging.getLogger(__name__)
+# Paster commands for CKAN 2.8 and below
 
 
 class MigrationCommand(CkanCommand):
@@ -66,32 +63,4 @@ class MigrationCommand(CkanCommand):
         utils.migrate(self.options.allow_duplicates)
 
     def markdown_to_html(self):
-        ''' Migrates the notes of all showcases from markdown to html.
-
-        When using CKEditor, notes on showcases are stored in html instead of
-        markdown, this command will migrate all nothes using CKAN's
-        render_markdown core helper.
-        '''
-        showcases = toolkit.get_action('ckanext_showcase_list')(data_dict={})
-
-        site_user = toolkit.get_action('get_site_user')({
-            'model': model,
-            'ignore_auth': True},
-            {}
-        )
-        context = {
-            'model': model,
-            'session': model.Session,
-            'ignore_auth': True,
-            'user': site_user['name'],
-        }
-
-        for showcase in showcases:
-            toolkit.get_action('package_patch')(
-                context,
-                {
-                    'id': showcase['id'],
-                    'notes': render_markdown(showcase['notes'])
-                }
-            )
-        print('All notes were migrated successfully.')
+        utils.markdown_to_html()

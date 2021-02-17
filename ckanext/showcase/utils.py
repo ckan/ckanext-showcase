@@ -680,3 +680,34 @@ def remove_showcase_admin():
     c.user_dict = tk.get_action('user_show')(data_dict={'id': user_id})
     c.user_id = user_id
     return tk.render('admin/confirm_remove_showcase_admin.html')
+
+def markdown_to_html():
+    ''' Migrates the notes of all showcases from markdown to html.
+
+    When using CKEditor, notes on showcases are stored in html instead of
+    markdown, this command will migrate all nothes using CKAN's
+    render_markdown core helper.
+    '''
+    showcases = tk.get_action('ckanext_showcase_list')(data_dict={})
+
+    site_user = tk.get_action('get_site_user')({
+        'model': model,
+        'ignore_auth': True},
+        {}
+    )
+    context = {
+        'model': model,
+        'session': model.Session,
+        'ignore_auth': True,
+        'user': site_user['name'],
+    }
+
+    for showcase in showcases:
+        tk.get_action('package_patch')(
+            context,
+            {
+                'id': showcase['id'],
+                'notes': h.render_markdown(showcase['notes'])
+            }
+        )
+    log.info('All notes were migrated successfully.')

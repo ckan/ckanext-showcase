@@ -80,7 +80,7 @@ setup(
         ckan = ckan.lib.extract:extract_ckan
 
         [paste.paster_command]
-        showcase=ckanext.showcase.commands.migrate:MigrationCommand
+        showcase=ckanext.showcase.commands.paster:MigrationCommand
     ''',
 
     message_extractors={
