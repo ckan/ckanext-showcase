@@ -432,4 +432,4 @@ class TestCKEditor(object):
         response = app.get(
             url=url_for("showcase_edit", id="my-showcase",), extra_environ=env,
         )
-        assert '<div class="ck-content">' in response.ubody
+        assert '<div class="ck-content">' in response.body
