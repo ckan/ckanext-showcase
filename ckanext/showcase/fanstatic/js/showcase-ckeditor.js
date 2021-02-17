@@ -5,6 +5,10 @@
 
 ckan.module('showcase-ckeditor', function ($) {
   return {
+    options: {
+        site_url: ""
+      },
+
     initialize: function () {
       jQuery.proxyAll(this, /_on/);
       this.el.ready(this._onReady);
@@ -21,7 +25,9 @@ ckan.module('showcase-ckeditor', function ($) {
                 '|',
                 'bulletedList', 'numberedList',
                 '|',
-                'horizontalline', 'link', 'blockQuote', 'undo', 'redo'
+                'horizontalline', 'link', 'blockQuote', 'undo', 'redo',
+                '|',
+                'imageUpload'
             ]
 
         config.image = {
@@ -34,6 +40,10 @@ ckan.module('showcase-ckeditor', function ($) {
         }
 
         config.language = 'en'
+
+        config.simpleUpload = {
+            uploadUrl: this.options.site_url + 'showcase_upload'
+        }
 
         ClassicEditor
         .create(

@@ -2,12 +2,16 @@
 
 {% set pkg = pkg_dict or c.pkg_dict %}
 {% set name = pkg.title or pkg.name %}
+{% set editor = h.get_wysiwyg_editor() %}
 
 {% block subtitle %}{{ pkg.title or pkg.name }} - {{ _('Showcases') }}{% endblock %}
 
 {% block styles %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ g.site_url }}/ckanext_showcase.css" />
+  {{ super() }}
+  {% resource "showcase/ckanext_showcase.css" %}
+  {% if editor == 'ckeditor' %}
+    {% resource "showcase/ckeditor-content-style.css" %}
+  {% endif %}
 {% endblock %}
 
 {% block links -%}
@@ -66,13 +70,17 @@
             <p class="ckanext-showcase-image-container"><img src="{{ pkg.image_display_url }}" alt="{{ name }}" class="media-image ckanext-showcase-image img-responsive"></p>
         {% endif %}
 
-        {% block package_notes %}
-            {% if pkg.showcase_notes_formatted %}
-                <div class="notes embedded-content ckanext-showcase-notes">
-                    {{ pkg.showcase_notes_formatted }}
-                </div>
-            {% endif %}
-        {% endblock %}
+    {% block package_notes %}
+      {% if pkg.showcase_notes_formatted and editor == 'ckeditor' %}
+        <div class="ck-content">
+          {{ pkg.showcase_notes_formatted|safe }}
+        </div>
+      {% elif pkg.showcase_notes_formatted %}
+        <div class="notes embedded-content ckanext-showcase-notes">
+          {{ pkg.showcase_notes_formatted }}
+        </div>
+      {% endif %}
+    {% endblock %}
 
         {% if pkg.url %}
             <p><a class="btn btn-primary ckanext-showcase-launch" href="{{ pkg.url }}" target="_blank"><i class="fa fa-external-link icon-external-link"></i> {{ _('Launch website') }}</a></p>

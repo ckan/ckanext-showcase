@@ -172,8 +172,12 @@ class ShowcasePlugin(
                 context, {'showcase_id': pkg_dict['id']}))
 
         # Rendered notes
-        pkg_dict[u'showcase_notes_formatted'] = \
-            h.render_markdown(pkg_dict['notes'])
+        if showcase_helpers.get_wysiwyg_editor() == 'ckeditor':
+            pkg_dict[u'showcase_notes_formatted'] = pkg_dict['notes']
+        else:
+            pkg_dict[u'showcase_notes_formatted'] = \
+                h.render_markdown(pkg_dict['notes'])
+
         return pkg_dict
 
     def after_show(self, context, pkg_dict):

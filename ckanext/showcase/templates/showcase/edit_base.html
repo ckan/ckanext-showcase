@@ -5,8 +5,8 @@
 {% block subtitle %}{{ _('Showcases') }}{% endblock %}
 
 {% block styles %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ g.site_url }}/ckanext_showcase.css" />
+  {{ super() }}
+  {% resource "showcase/ckanext_showcase.css" %}
 {% endblock %}
 
 {% block breadcrumb_content_selected %}{% endblock %}
