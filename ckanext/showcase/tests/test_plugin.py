@@ -423,13 +423,13 @@ class TestCKEditor(object):
         )
         assert '<textarea id="editor"' not in response.body
 
-    @helpers.change_config('ckanext.showcase.editor', 'ckeditor')
+    @pytest.mark.ckan_config("ckanext.showcase.editor", "ckeditor")
     def test_custom_div_content_is_used_with_ckeditor(self, app):
         sysadmin = factories.Sysadmin()
         factories.Dataset(name='my-showcase', type='showcase')
 
         env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for("showcase_edit", id="my-showcase",), extra_environ=env,
+            url=url_for("showcase_read", id="my-showcase",), extra_environ=env,
         )
         assert '<div class="ck-content">' in response.body

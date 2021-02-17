@@ -27,8 +27,7 @@
       {% block package_basic_fields_description %}
         {% set editor = h.get_wysiwyg_editor() %}
         {% if editor == 'ckeditor' %}
-          {% resource 'showcase/dist/ckeditor.js' %}
-          {% resource 'showcase/js/showcase-ckeditor.js' %}
+          {% asset 'showcase/ckeditor' %}
           {%
             set ckeditor_attrs = {
               'data-module': 'showcase-ckeditor',

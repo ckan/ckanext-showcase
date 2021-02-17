@@ -8,9 +8,9 @@
 
 {% block styles %}
   {{ super() }}
-  {% resource "showcase/ckanext_showcase.css" %}
+  {% asset "showcase/ckanext-showcase-css" %}
   {% if editor == 'ckeditor' %}
-    {% resource "showcase/ckeditor-content-style.css" %}
+    {% asset "showcase/ckeditor-content-css" %}
   {% endif %}
 {% endblock %}
 
