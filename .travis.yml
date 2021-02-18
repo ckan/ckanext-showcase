@@ -30,12 +30,27 @@ jobs:
         # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
         # - flake8 . --count --max-line-length=127 --statistics --exclude ckan --exit-zero
 
+    - python: "3.6"
+      env: CKANVERSION=master
+      services:
+          - postgresql
+          - redis
+          - docker
+
+    - python: "3.6"
+      env: CKANVERSION="2.9"
+      services:
+          - postgresql
+          - redis
+          - docker
+
     - stage: Tests
       python: "2.7"
       env: CKANVERSION=master
-
-    - python: "3.6"
-      env: CKANVERSION=master
+      services:
+          - postgresql
+          - redis
+          - docker
 
     - python: "2.7"
       env: CKANVERSION=2.8
