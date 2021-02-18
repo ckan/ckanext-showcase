@@ -8,9 +8,10 @@
 
 {% block styles %}
   {{ super() }}
-  {% asset "showcase/ckanext-showcase-css" %}
+  {% set _type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource'  %}
+  {% snippet 'showcase/snippets/showcase_css_' ~ _type ~ '.html' %}
   {% if editor == 'ckeditor' %}
-    {% asset "showcase/ckeditor-content-css" %}
+    {% snippet 'showcase/snippets/ckeditor_content_css_' ~ _type ~ '.html' %}
   {% endif %}
 {% endblock %}
 

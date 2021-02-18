@@ -6,7 +6,8 @@
 
 {% block styles %}
   {{ super() }}
-  {% asset "showcase/ckanext-showcase-css" %}
+  {% set _type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource'  %}
+  {% snippet 'showcase/snippets/showcase_css_' ~ _type ~ '.html' %}
 {% endblock %}
 
 {% block breadcrumb_content_selected %}{% endblock %}
