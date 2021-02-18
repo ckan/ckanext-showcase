@@ -27,7 +27,8 @@
       {% block package_basic_fields_description %}
         {% set editor = h.get_wysiwyg_editor() %}
         {% if editor == 'ckeditor' %}
-          {% asset 'showcase/ckeditor' %}
+          {% set _type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource'  %}
+          {% snippet 'showcase/snippets/ckeditor_' ~ _type ~ '.html' %}
           {%
             set ckeditor_attrs = {
               'data-module': 'showcase-ckeditor',
