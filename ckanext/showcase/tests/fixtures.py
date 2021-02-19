@@ -12,6 +12,8 @@ except ImportError:
 
     from ckan.common import config
 
+    from ckanext.showcase.model import setup as showcase_setup
+
     @pytest.fixture
     def ckan_config(request, monkeypatch):
         """Allows to override the configuration object used by tests
@@ -111,6 +113,7 @@ except ImportError:
 
         """
         reset_db()
+        showcase_setup()
 
     @pytest.fixture
     def clean_index(reset_index):
