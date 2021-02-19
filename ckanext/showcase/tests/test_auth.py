@@ -6,6 +6,22 @@ import ckan.plugins.toolkit as toolkit
 from ckan.tests import factories, helpers
 
 
+def _get_request(app, url, status):
+    ''' Wrapper around app.get() for compatibility between CKAN versions.
+
+    CKAN 2.9's app.get() forces a redirect and 2.8's doesn't. Also
+    follow_redirects parameter is not supported in CKAN 2.8.
+
+    Can be removed when CKAN 2.8 is no longer supported.
+    '''
+    try:
+        # CKAN 2.9
+        app.get(url, status=status, follow_redirects=False)
+    except TypeError:
+        # CKAN 2.8
+        app.get(url, status=status)
+
+
 @pytest.mark.usefixtures("clean_db", "clean_index")
 class TestShowcaseAuthIndex(object):
     def test_auth_anon_user_can_view_showcase_index(self, app):
@@ -206,7 +222,7 @@ class TestShowcaseAuthCreate(object):
         """
         An anon (not logged in) user can't access the create showcase page.
         """
-        app.get("/showcase/new", status=302, follow_redirects=False)
+        _get_request(app, "/showcase/new", status=302)
 
     def test_auth_logged_in_user_cant_view_create_showcase_page(self, app):
         """
@@ -292,9 +308,7 @@ class TestShowcaseAuthEdit(object):
 
         factories.Dataset(type="showcase", name="my-showcase")
 
-        app.get(
-            "/showcase/edit/my-showcase", status=302, follow_redirects=False
-        )
+        _get_request(app, "/showcase/edit/my-showcase", status=302)
 
     def test_auth_logged_in_user_cant_view_edit_showcase_page(self, app):
         """
@@ -353,11 +367,7 @@ class TestShowcaseAuthEdit(object):
 
         factories.Dataset(type="showcase", name="my-showcase")
 
-        app.get(
-            "/showcase/manage_datasets/my-showcase",
-            status=302,
-            follow_redirects=False,
-        )
+        _get_request(app, "/showcase/manage_datasets/my-showcase", status=302)
 
     def test_auth_logged_in_user_cant_view_manage_datasets(self, app):
         """
@@ -416,9 +426,7 @@ class TestShowcaseAuthEdit(object):
 
         factories.Dataset(type="showcase", name="my-showcase")
 
-        app.get(
-            "/showcase/delete/my-showcase", status=302, follow_redirects=False
-        )
+        _get_request(app, "/showcase/delete/my-showcase", status=302)
 
     def test_auth_logged_in_user_cant_view_delete_showcase_page(self, app):
         """
@@ -781,7 +789,7 @@ class TestShowcaseAuthManageShowcaseAdmins(object):
         page.
         """
 
-        app.get("/showcase/new", status=302, follow_redirects=False)
+        _get_request(app, "/showcase/new", status=302)
 
     def test_auth_logged_in_user_cant_view_showcase_admin_manage_page(
         self, app
