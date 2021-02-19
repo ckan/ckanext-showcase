@@ -3,7 +3,7 @@
 import ckan.plugins as p
 import ckanext.showcase.views as views
 
-from ckanext.showcase.commands import click
+from ckanext.showcase.commands import cli
 
 
 class MixinPlugin(p.SingletonPlugin):
@@ -18,4 +18,4 @@ class MixinPlugin(p.SingletonPlugin):
     # IClick
 
     def get_commands(self):
-        return click.get_commands()
+        return cli.get_commands()
