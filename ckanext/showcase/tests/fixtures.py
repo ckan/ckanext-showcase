@@ -120,36 +120,3 @@ except ImportError:
         """Clear search index before starting the test.
         """
         reset_index()
-
-    @pytest.fixture
-    def with_plugins(ckan_config):
-        """Load all plugins specified by the ``ckan.plugins`` config option
-        at the beginning of the test. When the test ends (even it fails), it will
-        unload all the plugins in the reverse order.
-
-        .. literalinclude:: /../ckan/tests/test_factories.py
-           :start-after: # START-CONFIG-OVERRIDE
-           :end-before: # END-CONFIG-OVERRIDE
-
-        """
-        plugins = ckan_config["ckan.plugins"].split()
-        for plugin in plugins:
-            if not ckan.plugins.plugin_loaded(plugin):
-                ckan.plugins.load(plugin)
-        yield
-        for plugin in reversed(plugins):
-            if ckan.plugins.plugin_loaded(plugin):
-                ckan.plugins.unload(plugin)
-
-    @pytest.fixture
-    def test_request_context(app):
-        """Provide function for creating Flask request context.
-        """
-        return app.flask_app.test_request_context
-
-    @pytest.fixture
-    def with_request_context(test_request_context):
-        """Execute test inside requests context
-        """
-        with test_request_context():
-            yield
