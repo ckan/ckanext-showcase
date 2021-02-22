@@ -70,8 +70,3 @@ class TestGetSiteStatistics(object):
         stats = showcase_helpers.get_site_statistics()
         assert stats["dataset_count"] == 10
         assert stats["showcase_count"] == 5
-
-
-@pytest.mark.ckan_config("ckanext.showcase.editor", "custom-editor")
-def test_get_wysiwyg_editor():
-    assert showcase_helpers.get_wysiwyg_editor() == "custom-editor"
