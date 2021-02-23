@@ -117,26 +117,26 @@ showcase.add_url_rule('/showcase', view_func=index)
 showcase.add_url_rule('/showcase/new', view_func=CreateView.as_view('new'))
 showcase.add_url_rule('/showcase/delete/<id>',
                       view_func=delete,
-                      methods=(u'GET', u'POST'))
+                      methods=[u'GET', u'POST'])
 showcase.add_url_rule('/showcase/<id>', view_func=read)
 showcase.add_url_rule('/showcase/edit/<id>',
                       view_func=EditView.as_view('edit'),
-                      methods=(u'GET', u'POST'))
+                      methods=[u'GET', u'POST'])
 showcase.add_url_rule('/showcase/manage_datasets/<id>',
                       view_func=manage_datasets,
-                      methods=(u'GET', u'POST'))
+                      methods=[u'GET', u'POST'])
 showcase.add_url_rule('/dataset/showcases/<id>',
                       view_func=dataset_showcase_list,
-                      methods=(u'GET', u'POST'))
+                      methods=[u'GET', u'POST'])
 showcase.add_url_rule('/ckan-admin/showcase_admins',
                       view_func=admins,
-                      methods=(u'GET', u'POST'))
+                      methods=[u'GET', u'POST'])
 showcase.add_url_rule('/ckan-admin/showcase_admin_remove',
                       view_func=admin_remove,
-                      methods=(u'GET', u'POST'))
+                      methods=[u'GET', u'POST'])
 showcase.add_url_rule('/showcase/upload',
                       view_func=upload,
-                      methods=(u'POST'))
+                      methods=[u'POST'])
 
 
 def get_blueprints():
