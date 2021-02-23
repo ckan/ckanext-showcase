@@ -30,5 +30,7 @@ def get_actions():
             ckanext.showcase.logic.action.delete.showcase_admin_remove,
         'ckanext_showcase_admin_list':
             ckanext.showcase.logic.action.get.showcase_admin_list,
+        'ckanext_showcase_upload':
+            ckanext.showcase.logic.action.create.showcase_upload,
     }
     return action_functions

@@ -34,7 +34,9 @@ class MixinPlugin(p.SingletonPlugin):
                       action='manage_showcase_admins', ckan_icon='picture'),
             m.connect('showcase_admin_remove',
                       '/ckan-admin/showcase_admin_remove',
-                      action='remove_showcase_admin')
+                      action='remove_showcase_admin'),
+            m.connect('showcase_upload', '/showcase_upload',
+                      action='showcase_upload')
         map.redirect('/showcases', '/showcase')
         map.redirect('/showcases/{url:.*}', '/showcase/{url}')
         return map

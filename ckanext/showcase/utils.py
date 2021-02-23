@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+import json
 import logging
 
 from collections import OrderedDict
@@ -711,3 +712,18 @@ def markdown_to_html():
             }
         )
     log.info('All notes were migrated successfully.')
+
+
+def upload():
+    if not tk.request.method == 'POST':
+        tk.abort(409, _('Only Posting is availiable'))
+
+    try:
+        url = tk.get_action('ckanext_showcase_upload')(
+            None,
+            dict(tk.request.POST)
+            )
+    except tk.NotAuthorized:
+        tk.abort(401, _('Unauthorized to upload file %s') % id)
+
+    return json.dumps(url)

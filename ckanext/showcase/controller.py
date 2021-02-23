@@ -128,15 +128,4 @@ class ShowcaseController(PackageController):
         return utils.remove_showcase_admin()
 
     def showcase_upload(self):
-        if not tk.request.method == 'POST':
-            tk.abort(409, _('Only Posting is availiable'))
-
-        try:
-            url = tk.get_action('ckanext_showcase_upload')(
-                None,
-                dict(tk.request.POST)
-                )
-        except tk.NotAuthorized:
-            tk.abort(401, _('Unauthorized to upload file %s') % id)
-
-        return json.dumps(url)
+        return utils.upload()

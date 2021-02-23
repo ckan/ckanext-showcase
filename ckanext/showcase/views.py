@@ -109,6 +109,9 @@ def admins():
 def admin_remove():
     return utils.remove_showcase_admin()
 
+def upload():
+    return utils.upload()
+
 
 showcase.add_url_rule('/showcase', view_func=index)
 showcase.add_url_rule('/showcase/new', view_func=CreateView.as_view('new'))
@@ -131,6 +134,9 @@ showcase.add_url_rule('/ckan-admin/showcase_admins',
 showcase.add_url_rule('/ckan-admin/showcase_admin_remove',
                       view_func=admin_remove,
                       methods=(u'GET', u'POST'))
+showcase.add_url_rule('/showcase/upload',
+                      view_func=upload,
+                      methods=(u'POST'))
 
 
 def get_blueprints():

@@ -20,7 +20,8 @@ def get_auth_functions():
         'ckanext_package_showcase_list': package_showcase_list,
         'ckanext_showcase_admin_add': add_showcase_admin,
         'ckanext_showcase_admin_remove': remove_showcase_admin,
-        'ckanext_showcase_admin_list': showcase_admin_list
+        'ckanext_showcase_admin_list': showcase_admin_list,
+        'ckanext_showcase_updload': showcase_upload,
     }
 
 
