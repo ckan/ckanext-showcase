@@ -2,8 +2,8 @@
    these badges work. The necessary Travis and Coverage config files have been
    generated for you.
 
-.. image:: https://travis-ci.org/ckan/ckanext-showcase.svg?branch=master
-    :target: https://travis-ci.org/ckan/ckanext-showcase
+.. image:: https://github.com/ckan/ckanext-showcase/workflows/Tests/badge.svg?branch=master
+    :target: https://github.com/ckan/ckanext-showcase/actions
 
 .. image:: https://coveralls.io/repos/ckan/ckanext-showcase/badge.svg
   :target: https://coveralls.io/r/ckan/ckanext-showcase
