@@ -61,9 +61,9 @@ jobs:
       run: |
         paster --plugin=ckan db init -c test.ini
     - name: Run tests
-      run: pytest --ckan-ini=test.ini --cov=ckanext.showcase --disable-warnings ckanext/showcase/tests
+      run: pytest --ckan-ini=test.ini --cov=ckanext.showcase --cov-report=xml --cov-append --disable-warnings ckanext/showcase/tests
 
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
+    - name: Upload coverage report to codecov
+      uses: codecov/codecov-action@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}      
+      file: ./coverage.xml

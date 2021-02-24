@@ -5,8 +5,8 @@
 .. image:: https://github.com/ckan/ckanext-showcase/workflows/Tests/badge.svg?branch=master
     :target: https://github.com/ckan/ckanext-showcase/actions
 
-.. image:: https://coveralls.io/repos/ckan/ckanext-showcase/badge.svg
-  :target: https://coveralls.io/r/ckan/ckanext-showcase
+.. image:: https://codecov.io/gh/ckan/ckanext-showcase/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/ckan/ckanext-showcase
 
 ================
 ckanext-showcase
