@@ -62,3 +62,8 @@ jobs:
         paster --plugin=ckan db init -c test.ini
     - name: Run tests
       run: pytest --ckan-ini=test.ini --cov=ckanext.showcase --disable-warnings ckanext/showcase/tests
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}      
