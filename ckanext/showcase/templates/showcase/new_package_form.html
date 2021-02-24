@@ -72,7 +72,7 @@
         {% endif %}
       {% endblock %}
       {% block save_button %}
-        <button class="btn btn-primary" type="submit" name="save">{% block save_button_text %}{% if form_style != 'edit' %}{{ _('Create Showcase') }}{% else %}{{ _('Update Showcase') }}{% endif %}{% endblock %}</button>
+        <button class="btn btn-primary" type="submit" name="save" value=''>{% block save_button_text %}{% if form_style != 'edit' %}{{ _('Create Showcase') }}{% else %}{{ _('Update Showcase') }}{% endif %}{% endblock %}</button>
       {% endblock %}
       {{ form.required_message() }}
     </div>
