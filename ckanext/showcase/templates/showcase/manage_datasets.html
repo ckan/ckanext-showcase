@@ -65,22 +65,22 @@
                           <input type="checkbox" name="dataset_{{ package.id }}">
                         </td>
                         <td class="context">
-                          <h3 class="dataset-heading">
-                            {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='package', action='read', id=package.name)) }}
-                          </h3>
-                          {% if notes %}
-                            <p>{{ notes|urlize }}</p>
-                          {% endif %}
+                            <h3 class="dataset-heading">
+                                {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
+                            </h3>
+                            {% if notes %}
+                                <p>{{ notes|urlize }}</p>
+                            {% endif %}
                         </td>
                       </tr>
                     {% endfor %}
                   </tbody>
                   {% if c.page.pager() %}
-                    <tfoot>
-                      <tr>
-                        <td colspan="2" class="ckanext_showcase_pagination_footer">{{ c.page.pager(q=c.q) }}</td>
-                      </tr>
-                    </tfoot>
+                      <tfoot>
+                          <tr>
+                              <td colspan="2" class="ckanext_showcase_pagination_footer">{{ c.page.pager(q=c.q) }}</td>
+                          </tr>
+                      </tfoot>
                   {% endif %}
                 </table>
               </form>
@@ -92,39 +92,39 @@
       </section>
 
       <section class="span6">
-        <div class="module-content">
-          <h3 class="page-heading">{{ _('Datasets in this showcase') }}</h3>
-          {% if c.showcase_pkgs %}
-            <form method="POST" data-module="basic-form">
-              <table class="table table-bordered table-header table-hover table-bulk-edit table-edit-hover" data-module="table-selectable-rows">
-                <col width="8">
-                <col width="120">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th class="table-actions">
-                      <div class="btn-group">
-                        <button name="bulk_action.showcase_remove" value="remove" class="btn btn-danger" type="submit">
-                          <i class="fa fa-times icon-remove"></i>
-                          {{ _('Remove from Showcase') }}
-                        </button>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for package in c.showcase_pkgs %}
-                    {% set truncate = truncate or 180 %}
-                    {% set truncate_title = truncate_title or 80 %}
-                    {% set title = package.title or package.name %}
-                    {% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
-                    <tr>
-                      <td>
-                        <input type="checkbox" name="dataset_{{ package.id }}">
-                      </td>
-                      <td class="context">
-                        <h3 class="dataset-heading">
-                          {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='package', action='read', id=package.name)) }}
+          <div class="module-content">
+              <h3 class="page-heading">{{ _('Datasets in this showcase') }}</h3>
+              {% if c.showcase_pkgs %}
+                  <form method="POST" data-module="basic-form">
+                      <table class="table table-bordered table-header table-hover table-bulk-edit table-edit-hover" data-module="table-selectable-rows">
+                          <col width="8">
+                          <col width="120">
+                          <thead>
+                              <tr>
+                                  <th></th>
+                                  <th class="table-actions">
+                                      <div class="btn-group">
+                                          <button name="bulk_action.showcase_remove" value="remove" class="btn btn-danger" type="submit">
+                                              <i class="fa fa-times icon-remove"></i>
+                                              {{ _('Remove from Showcase') }}
+                                          </button>
+                                      </div>
+                                  </th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for package in c.showcase_pkgs %}
+                                  {% set truncate = truncate or 180 %}
+                                  {% set truncate_title = truncate_title or 80 %}
+                                  {% set title = package.title or package.name %}
+                                  {% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
+                                  <tr>
+                                      <td>
+                                          <input type="checkbox" name="dataset_{{ package.id }}">
+                                      </td>
+                                      <td class="context">
+                                          <h3 class="dataset-heading">
+                                              {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
                         </h3>
                         {% if notes %}
                           <p>{{ notes|urlize }}</p>

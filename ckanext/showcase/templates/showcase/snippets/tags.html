@@ -1,11 +1,14 @@
 {% if tags %}
+  {% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+  {% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
+
   <section class="tags">
   {% set _class = 'tag-list well' %}
   {% block tag_list %}
     <ul class="{{ _class }}">
       {% for tag in tags %}
         <li>
-          <a class="{% block tag_list_item_class %}tag{% endblock %}" href="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='search', tags=tag.name %}">{{ h.truncate(tag.display_name, 22) }}</a>
+            <a class="{% block tag_list_item_class %}tag{% endblock %}" href="{{ h.url_for(showcase_index_route, tags=tag.name) }}">{{ h.truncate(tag.display_name, 22) }}</a>
         </li>
       {% endfor %}
     </ul>

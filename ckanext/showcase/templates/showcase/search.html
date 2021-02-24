@@ -1,16 +1,20 @@
 {% extends "package/search.html" %}
 {% import 'macros/form.html' as form %}
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
+{% set showcase_new_route = 'showcase_blueprint.new' if ckan_29_or_higher else 'showcase_new' %}
+
 
 {% block subtitle %}{{ _("Showcases") }}{% endblock %}
 
 {% block breadcrumb_content %}
-  <li class="active">{{ h.nav_link(_('Showcases'), controller='ckanext.showcase.controller:ShowcaseController', action='search', highlight_actions = 'new index') }}</li>
+  <li class="active">{{ h.nav_link(_('Showcases'), named_route=showcase_index_route, highlight_actions = 'new index') }}</li>
 {% endblock %}
 
 {% block page_primary_action %}
   {% if h.check_access('ckanext_showcase_create') %}
     <div class="page_primary_action">
-      {% link_for _('Add Showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='new', class_='btn btn-primary', icon='plus-sign-alt' %}
+      {% link_for _('Add Showcase'), named_route=showcase_new_route, class_='btn btn-primary', icon='plus-square' %}
     </div>
   {% endif %}
 {% endblock %}

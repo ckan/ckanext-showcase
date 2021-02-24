@@ -1,4 +1,6 @@
 {% extends "page.html" %}
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_admin_remove_route = 'showcase_blueprint.admin_remove' if ckan_29_or_higher else 'showcase_admin_remove' %}
 
 {% block subtitle %}{{ _("Confirm Remove") }}{% endblock %}
 
@@ -10,7 +12,7 @@
       {% block form %}
         <p>{{ _('Are you sure you want to remove this user as a Showcase Admin - {name}?').format(name=c.user_dict.name) }}</p>
         <p class="form-actions">
-          <form action="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='remove_showcase_admin' %}" method="post">
+            <form action="{{ h.url_for(showcase_admin_remove_route) }}" method="post">
             <input type="hidden" name="user" value="{{ c.user_id }}" />
             <button class="btn" type="submit" name="cancel" >{{ _('Cancel') }}</button>
             <button class="btn btn-primary" type="submit" name="delete" >{{ _('Confirm Remove') }}</button>

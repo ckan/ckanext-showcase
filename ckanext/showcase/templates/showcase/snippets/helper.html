@@ -1,3 +1,6 @@
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_admins_route = 'showcase_blueprint.admins' if ckan_29_or_higher else 'showcase_admins' %}
+
 <div class="module module-narrow module-shallow">
   <h2 class="module-heading">
     <i class="fa fa-info-circle icon-info-sign"></i>
@@ -9,7 +12,7 @@
     </p>
     {% if h.check_access('ckanext_showcase_admin_add') %}
       <p>
-        {% trans url=h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='manage_showcase_admins') %}Sysadmins can manage Showcase Admins from the <a href='{{ url }}'>Showcase configuration page</a>.{% endtrans %}
+        {% trans url=h.url_for(showcase_admins_route) %}Sysadmins can manage Showcase Admins from the <a href='{{ url }}'>Showcase configuration page</a>.{% endtrans %}
       </p>
     {% endif %}
   </div>

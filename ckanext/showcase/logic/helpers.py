@@ -7,10 +7,14 @@ def facet_remove_field(key, value=None, replace=None):
     A custom remove field function to be used by the Showcase search page to
     render the remove link for the tag pills.
     '''
+    if tk.check_ckan_version(min_version='2.9.0'):
+        index_route = 'showcase_blueprint.index'
+    else:
+        index_route = 'showcase_index'
+
     return h.remove_url_param(
         key, value=value, replace=replace,
-        controller='ckanext.showcase.controller:ShowcaseController',
-        action='search')
+        alternative_url=h.url_for(index_route))
 
 
 def get_site_statistics():

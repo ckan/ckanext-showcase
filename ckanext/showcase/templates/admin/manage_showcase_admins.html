@@ -3,6 +3,9 @@
 {% import 'macros/form.html' as form %}
 
 {% set user = c.user_dict %}
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_admin_remove_route = 'showcase_blueprint.admin_remove' if ckan_29_or_higher else 'showcase_admin_remove' %}
+
 
 {% block primary_content_inner %}
   <h1 class="page-heading">
@@ -50,7 +53,7 @@
           {{ h.linked_user(user_dict['id'], maxlength=20) }}
           {% set locale = h.dump_json({'content': _('Are you sure you want to remove this user from the Showcase Admin list?')}) %}
           <div class="btn-group pull-right">
-            <a class="btn btn-danger btn-small" href="{% url_for controller='ckanext.showcase.controller:ShowcaseController', action='remove_showcase_admin', user=user_dict['id'] %}" data-module="confirm-action" data-module-i18n="{{ locale }}" title="{{ _('Remove') }}">{% block delete_button_text %}<i class="icon-remove"></i> {{ _('Remove') }}{% endblock %}</a>
+            <a class="btn btn-danger btn-small" href="{{ h.url_for(showcase_admin_remove_route, user=user_dict['id']) }}" data-module="confirm-action" data-module-i18n="{{ locale }}" title="{{ _('Remove') }}">{% block delete_button_text %}<i class="icon-remove"></i> {{ _('Remove') }}{% endblock %}</a>
           </div>
         </td>
       </tr>

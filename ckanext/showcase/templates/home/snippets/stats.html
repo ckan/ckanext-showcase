@@ -1,3 +1,6 @@
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
+
 {% set stats = h.get_site_statistics() %}
 
 <div class="box stats">
@@ -23,7 +26,7 @@
         </a>
       </li>
       <li>
-        <a href="{{ h.url_for(controller='ckanext.showcase.controller:ShowcaseController', action='search') }}">
+        <a href="{{ h.url_for(showcase_index_route) }}">
           <b>{{ h.SI_number_span(stats.showcase_count) }}</b>
           {{ ungettext('showcase', 'showcases', stats.showcase_count) }}
         </a>
