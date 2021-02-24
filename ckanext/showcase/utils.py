@@ -497,7 +497,9 @@ def url_with_params(url, params):
 
 def delete_view(id):
     if 'cancel' in tk.request.params:
-        tk.redirect_to('showcase_edit', id=id)
+        tk.redirect_to(
+            'showcase_blueprint.edit' if tk.check_ckan_version(min_version='2.9.0')
+            else 'showcase_edit', id=id)
 
     context = {
         'model': model,
@@ -511,11 +513,16 @@ def delete_view(id):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to delete showcase'))
 
+    if tk.check_ckan_version(min_version='2.9.0'):
+        index_route = 'showcase_blueprint.index'
+    else:
+        index_route = 'showcase_index'
+
     try:
         if tk.request.method == 'POST':
             tk.get_action('ckanext_showcase_delete')(context, {'id': id})
             h.flash_notice(_('Showcase has been deleted.'))
-            return tk.redirect_to('showcase_index')
+            return tk.redirect_to(index_route)
         c.pkg_dict = tk.get_action('package_show')(context, {'id': id})
     except tk.NotAuthorized:
         tk.abort(401, _('Unauthorized to delete showcase'))
@@ -553,6 +560,11 @@ def dataset_showcase_list(id):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read package'))
 
+    if tk.check_ckan_version(min_version='2.9.0'):
+        list_route = 'showcase_blueprint.dataset_showcase_list'
+    else:
+        list_route = 'showcase_dataset_showcase_list'
+
     if tk.request.method == 'POST':
         # Are we adding the dataset to a showcase?
         form_data = tk.request.form if tk.check_ckan_version(
@@ -589,7 +601,7 @@ def dataset_showcase_list(id):
                 h.flash_success(
                     _("The dataset has been removed from the showcase."))
         return h.redirect_to(
-            h.url_for('showcase_dataset_showcase_list', id=c.pkg_dict['name']))
+            h.url_for(list_route, id=c.pkg_dict['name']))
 
     pkg_showcase_ids = [showcase['id'] for showcase in c.showcase_list]
     site_showcases = tk.get_action('ckanext_showcase_list')(context, {})
@@ -617,6 +629,11 @@ def manage_showcase_admins():
     form_data = tk.request.form if tk.check_ckan_version(
         '2.9') else tk.request.params
 
+    if tk.check_ckan_version(min_version='2.9.0'):
+        admins_route = 'showcase_blueprint.admins'
+    else:
+        admins_route = 'showcase_admins'
+
     # We're trying to add a user to the showcase admins list.
     if tk.request.method == 'POST' and form_data['username']:
         username = form_data['username']
@@ -634,7 +651,7 @@ def manage_showcase_admins():
         else:
             h.flash_success(_("The user is now a Showcase Admin"))
 
-        return tk.redirect_to(h.url_for('showcase_admins'))
+        return tk.redirect_to(h.url_for(admins_route))
 
     c.showcase_admins = tk.get_action('ckanext_showcase_admin_list')()
 
@@ -659,8 +676,13 @@ def remove_showcase_admin():
     form_data = tk.request.form if tk.check_ckan_version(
         '2.9') else tk.request.params
 
+    if tk.check_ckan_version(min_version='2.9.0'):
+        admins_route = 'showcase_blueprint.admins'
+    else:
+        admins_route = 'showcase_admins'
+
     if 'cancel' in form_data:
-        return tk.redirect_to('showcase_admins')
+        return tk.redirect_to(admins_route)
 
     user_id = tk.request.params['user']
     if tk.request.method == 'POST' and user_id:
@@ -676,7 +698,7 @@ def remove_showcase_admin():
         else:
             h.flash_success(_('The user is no longer a Showcase Admin'))
 
-        return tk.redirect_to(h.url_for('showcase_admins'))
+        return tk.redirect_to(h.url_for(admins_route))
 
     c.user_dict = tk.get_action('user_show')(data_dict={'id': user_id})
     c.user_id = user_id

@@ -1,6 +1,13 @@
 {% extends 'page.html' %}
 
 {% set pkg = pkg_dict or c.pkg_dict  %}
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
+{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
+{% set showcase_edit_route = 'showcase_blueprint.edit' if ckan_29_or_higher else 'showcase_edit' %}
+{% set showcase_manage_route = 'showcase_blueprint.manage_datasets' if ckan_29_or_higher else 'showcase_manage_datasets' %}
+
+
 
 {% block subtitle %}{{ _('Showcases') }}{% endblock %}
 
@@ -15,11 +22,11 @@
 {% block breadcrumb_content %}
   {% if pkg %}
     {% set showcase = pkg.title or pkg.name %}
-    <li>{% link_for _('Showcases'), named_route='showcase_index' %}</li>
-    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route='showcase_read', id=pkg.name %}</li>
-    <li class="active">{% link_for _('Edit'), named_route='showcase_edit', id=pkg.name %}</li>
+    <li>{% link_for _('Showcases'), named_route=showcase_index_route %}</li>
+    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route=showcase_read_route, id=pkg.name %}</li>
+    <li class="active">{% link_for _('Edit'), named_route=showcase_edit_route, id=pkg.name %}</li>
   {% else %}
-    <li>{% link_for _('Showcases'), named_route='showcase_index' %}</li>
+    <li>{% link_for _('Showcases'), named_route=showcase_index_route %}</li>
     <li class="active"><a href="">{{ _('Create Showcase') }}</a></li>
   {% endif %}
 {% endblock %}
@@ -33,14 +40,14 @@
             {% if self.content_action() | trim %}
               <div class="content_action">
                 {% block content_action %}
-                  {% link_for _('View showcase'), named_route='showcase_read', id=pkg.name, class_='btn', icon='eye-open' %}
+                  {% link_for _('View showcase'), named_route=showcase_read_route, id=pkg.name, class_='btn', icon='eye-open' %}
                 {% endblock %}
               </div>
             {% endif %}
             <ul class="nav nav-tabs">
               {% block content_primary_nav %}
-                {{ h.build_nav_icon('showcase_edit', _('Edit showcase'), id=pkg.name) }}
-                {{ h.build_nav_icon('showcase_manage_datasets', _('Manage datasets'), id=pkg.name) }}
+                {{ h.build_nav_icon(showcase_edit_route, _('Edit showcase'), id=pkg.name) }}
+                {{ h.build_nav_icon(showcase_manage_route, _('Manage datasets'), id=pkg.name) }}
               {% endblock %}
             </ul>
           </header>

@@ -94,7 +94,7 @@ class EditView(dataset.EditView):
         tk.c.pkg_dict = pkg
 
         # redirect to showcase details page
-        url = h.url_for('showcase_read', id=pkg['name'])
+        url = h.url_for('showcase_blueprint._read', id=pkg['name'])
         return h.redirect_to(url)
 
 
@@ -108,6 +108,7 @@ def admins():
 
 def admin_remove():
     return utils.remove_showcase_admin()
+
 
 def upload():
     return utils.upload()

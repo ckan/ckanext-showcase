@@ -4,6 +4,11 @@
 {% set name = pkg.title or pkg.name %}
 {% set editor = h.get_wysiwyg_editor() %}
 
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
+{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
+{% set showcase_edit_route = 'showcase_blueprint.edit' if ckan_29_or_higher else 'showcase_edit' %}
+
 {% block subtitle %}{{ pkg.title or pkg.name }} - {{ _('Showcases') }}{% endblock %}
 
 {% block styles %}
@@ -17,7 +22,7 @@
 
 {% block links -%}
     {{ super() }}
-    <link rel="alternate" type="application/rdf+xml" href="{{ h.url_for('showcase_read', id=pkg.id, format='rdf', qualified=True) }}"/>
+    <link rel="alternate" type="application/rdf+xml" href="{{ h.url_for(showcase_read_route, id=pkg.id, format='rdf', qualified=True) }}"/>
 {% endblock -%}
 
 {% block head_extras -%}
@@ -35,8 +40,8 @@
 
 {% block breadcrumb_content %}
     {% set showcase = pkg.title or pkg.name %}
-    <li>{{ h.nav_link(_('Showcases'), named_route='showcase_index', highlight_actions = 'new index') }}</li>
-    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route='showcase_read', id=pkg.name %}</li>
+    <li>{{ h.nav_link(_('Showcases'), named_route=showcase_index_route, highlight_actions = 'new index') }}</li>
+    <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route=showcase_read_route, id=pkg.name %}</li>
 {% endblock %}
 
 {% block page_header %}
@@ -48,7 +53,7 @@
 {% block primary_content_inner %}
     {% if h.check_access('ckanext_showcase_update', {'id':pkg.id }) %}
         <div class="actions">
-            {% link_for _('Manage'), named_route='showcase_edit', id=pkg.name, class_='btn btn-default', icon='wrench' %}
+            {% link_for _('Manage'), named_route=showcase_edit_route, id=pkg.name, class_='btn btn-default', icon='wrench' %}
         </div>
     {% endif %}
     {% block package_description %}

@@ -59,8 +59,11 @@ class ShowcasePlugin(
         tk.add_template_directory(config, '../templates')
         tk.add_public_directory(config, '../public')
         tk.add_resource('../fanstatic', 'showcase')
-        if tk.check_ckan_version(min_version='2.4'):
+        if tk.check_ckan_version(min_version='2.4', max_version='2.9.0'):
             tk.add_ckan_admin_tab(config, 'showcase_admins',
+                                  'Showcase Config')
+        elif tk.check_ckan_version(min_version='2.9.0'):
+            tk.add_ckan_admin_tab(config, 'showcase_blueprint.admins',
                                   'Showcase Config')
 
         if tk.check_ckan_version(min_version='2.9.0'):
