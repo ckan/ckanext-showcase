@@ -10,7 +10,7 @@ from ckan.tests import factories, helpers
 from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("clean_db", "showcase_setup", "clean_session")
 class TestCreateShowcase(object):
     def test_showcase_create_no_args(self):
         """
@@ -97,7 +97,7 @@ class TestCreateShowcase(object):
         )
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("clean_db", "showcase_setup", "clean_session")
 class TestCreateShowcasePackageAssociation(object):
     def test_association_create_no_args(self):
         """
@@ -204,7 +204,7 @@ class TestCreateShowcasePackageAssociation(object):
             )
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("clean_db", "showcase_setup", "clean_session")
 class TestCreateShowcaseAdmin(object):
     def test_showcase_admin_add_creates_showcase_admin_user(self):
         """
