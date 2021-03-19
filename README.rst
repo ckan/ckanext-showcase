@@ -141,6 +141,21 @@ Showcase admin actions::
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_list -H "Authorization:{YOUR-API-KEY}" -d ''
 
 
+---
+UI
+---
+
+How to use the Showcase extension from the user interface
+
+1. Add a Showcase Admin : ``http://127.0.0.1:5000/ckan-admin/showcase_admins``
+
+2. The Showcase page is available on: ``http://127.0.0.1:5000/showcase``
+
+3. Create new Showcase: ``http://127.0.0.1:5000/showcase/new``
+
+4. Edit or delete a Showcase: ``http://127.0.0.1:5000/showcase/edit/{showcase-name}``
+
+
 ----------------------------
 Migrating from Related Items
 ----------------------------
