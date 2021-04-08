@@ -11,7 +11,8 @@ from six.moves.urllib.parse import urlencode
 import ckan.plugins as p
 from ckan import model
 from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
-from ckan.logic import get_action
+import ckan.logic as logic
+import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.helpers as h
 import ckantoolkit as tk
 from ckanext.showcase.model import ShowcasePackageAssociation
@@ -22,6 +23,7 @@ c = tk.c
 
 log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = 'showcase'
+ckan_29_or_higher = tk.check_ckan_version(min_version='2.9.0')
 
 
 def check_edit_view_auth(id):
@@ -740,11 +742,22 @@ def upload():
     if not tk.request.method == 'POST':
         tk.abort(409, _('Only Posting is availiable'))
 
+    if ckan_29_or_higher:
+        data_dict = logic.clean_dict(
+            dict_fns.unflatten(
+                logic.tuplize_dict(
+                    logic.parse_params(tk.request.files)
+                )
+            )
+        )
+    else:
+        data_dict = tk.request.POST
     try:
+
         url = tk.get_action('ckanext_showcase_upload')(
             None,
-            dict(tk.request.POST)
-            )
+            data_dict
+        )
     except tk.NotAuthorized:
         tk.abort(401, _('Unauthorized to upload file %s') % id)
 
