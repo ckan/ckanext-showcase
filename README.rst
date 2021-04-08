@@ -145,15 +145,16 @@ Showcase admin actions::
 UI
 ---
 
-How to use the Showcase extension from the user interface
+The Showcase extension adds the following pages to the user interface:
 
-1. Add a Showcase Admin : ``http://127.0.0.1:5000/ckan-admin/showcase_admins``
 
-2. The Showcase page is available on: ``http://127.0.0.1:5000/showcase``
+* The main showcase index is available on: ``http://127.0.0.1:5000/showcase``
 
-3. Create new Showcase: ``http://127.0.0.1:5000/showcase/new``
+* To create a new showcase: ``http://127.0.0.1:5000/showcase/new``
 
-4. Edit or delete a Showcase: ``http://127.0.0.1:5000/showcase/edit/{showcase-name}``
+* To edit or delete a showcase: ``http://127.0.0.1:5000/showcase/edit/{showcase-name}``
+
+* To add a Showcase Admin : ``http://127.0.0.1:5000/ckan-admin/showcase_admins``
 
 
 ----------------------------
