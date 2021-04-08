@@ -21,7 +21,7 @@ def get_auth_functions():
         'ckanext_showcase_admin_add': add_showcase_admin,
         'ckanext_showcase_admin_remove': remove_showcase_admin,
         'ckanext_showcase_admin_list': showcase_admin_list,
-        'ckanext_showcase_updload': showcase_upload,
+        'ckanext_showcase_upload': showcase_upload,
     }
 
 

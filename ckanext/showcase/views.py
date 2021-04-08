@@ -94,7 +94,7 @@ class EditView(dataset.EditView):
         tk.c.pkg_dict = pkg
 
         # redirect to showcase details page
-        url = h.url_for('showcase_blueprint._read', id=pkg['name'])
+        url = h.url_for('showcase_blueprint.read', id=pkg['name'])
         return h.redirect_to(url)
 
 
@@ -135,7 +135,7 @@ showcase.add_url_rule('/ckan-admin/showcase_admins',
 showcase.add_url_rule('/ckan-admin/showcase_admin_remove',
                       view_func=admin_remove,
                       methods=[u'GET', u'POST'])
-showcase.add_url_rule('/showcase/upload',
+showcase.add_url_rule('/showcase_upload',
                       view_func=upload,
                       methods=[u'POST'])
 
