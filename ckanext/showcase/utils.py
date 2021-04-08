@@ -191,14 +191,14 @@ def manage_datasets_view(id):
 
 
 def migrate(allow_duplicates):
-    related_items = get_action('related_list')(data_dict={})
+    related_items = tk.get_action('related_list')(data_dict={})
 
     # preflight:
     # related items must have unique titles before migration
     related_titles = [i['title'] for i in related_items]
     # make a list of duplicate titles
     duplicate_titles = _find_duplicates(related_titles)
-    if duplicate_titles and allow_duplicates == False:
+    if duplicate_titles and allow_duplicates is False:
         print(
             """All Related Items must have unique titles before migration. The following
 Related Item titles are used more than once and need to be corrected before
@@ -208,7 +208,7 @@ migration can continue. Please correct and try again:""")
         return
 
     for related in related_items:
-        existing_showcase = get_action('package_search')(data_dict={
+        existing_showcase = tk.get_action('package_search')(data_dict={
             'fq':
             '+dataset_type:showcase original_related_item_id:{0}'.format(
                 related['id'])
@@ -233,7 +233,7 @@ migration can continue. Please correct and try again:""")
             }
             # make the showcase
             try:
-                new_showcase = get_action('ckanext_showcase_create')(
+                new_showcase = tk.get_action('ckanext_showcase_create')(
                     data_dict=data_dict)
             except Exception as e:
                 print('There was a problem migrating "{0}": {1}'.format(
@@ -246,7 +246,7 @@ migration can continue. Please correct and try again:""")
                 try:
                     related_pkg_id = _get_related_dataset(related['id'])
                     if related_pkg_id:
-                        get_action(
+                        tk.get_action(
                             'ckanext_showcase_package_association_create')(
                                 data_dict={
                                     'showcase_id': new_showcase['id'],
