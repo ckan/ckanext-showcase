@@ -1,5 +1,12 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.1 2021-04-08
+
+* Fix uploads on CKAN 2.9 (71215ca)
+* Upgrade CKEditor and additional libraries
+* Align search form design with core (#100)
+* Include webassets.yml in MANIFEST.in (#98)
+
 ## v1.4.0 2021-02-21
 
 Features:
