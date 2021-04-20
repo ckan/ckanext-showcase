@@ -1,5 +1,10 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.2 2021-04-20
+
+* Fix ckeditor asset bundle (#105)
+
+
 ## v1.4.1 2021-04-08
 
 * Fix uploads on CKAN 2.9 (71215ca)
