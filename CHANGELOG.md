@@ -1,5 +1,10 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.3 2021-04-21
+
+* Fix typo on setup.py (#107)
+
+
 ## v1.4.2 2021-04-20
 
 * Fix ckeditor asset bundle (#105)
