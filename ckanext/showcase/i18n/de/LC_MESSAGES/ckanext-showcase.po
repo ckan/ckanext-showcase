@@ -1,18 +1,18 @@
 # German translations for ckanext-showcase.
-# Copyright (C) 2015 ORGANIZATION
+# Copyright (C) 2021 Ondics GmbH
 # This file is distributed under the same license as the ckanext-showcase
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+# Ondics Githubler <info@ondics.de>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-showcase 1.0.0b1\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-09-23 14:49+0100\n"
+"Report-Msgid-Bugs-To: info@ondics.de\n"
+"POT-Creation-Date: 2021-07-05 14:49+0100\n"
 "PO-Revision-Date: 2021-07-02 10:18+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Ondics Githubler <info@ondics.de>\n"
 "Language: de\n"
-"Language-Team: de <LL@li.org>\n"
+"Language-Team: de <info@ondics.de>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -21,11 +21,11 @@ msgstr ""
 
 #: ckanext/showcase/controller.py:56
 msgid "Unauthorized to create a package"
-msgstr "Nicht zum Anlegen eines Pakets autorisiert"
+msgstr "Nicht zum Anlegen eines Datensatzes autorisiert"
 
 #: ckanext/showcase/controller.py:71 ckanext/showcase/controller.py:267
 msgid "User not authorized to edit {showcase_id}"
-msgstr "Benutzer hat keine Berechtigung {showcase_id} zu bearbeiten"
+msgstr "Benutzer hat keine Berechtigung, {showcase_id} zu bearbeiten"
 
 #: ckanext/showcase/controller.py:147 ckanext/showcase/controller.py:184
 #: ckanext/showcase/controller.py:224 ckanext/showcase/controller.py:238
@@ -35,11 +35,11 @@ msgstr "Anwendung nicht gefunden"
 
 #: ckanext/showcase/controller.py:149 ckanext/showcase/controller.py:276
 msgid "Unauthorized to read showcase"
-msgstr "Keine Berechtigung die Anwendung anzuzeigen"
+msgstr "Keine Berechtigung, die Anwendung anzuzeigen"
 
 #: ckanext/showcase/controller.py:171 ckanext/showcase/controller.py:182
 msgid "Unauthorized to delete showcase"
-msgstr "Keine Berechtigung die Anwendung zu löschen"
+msgstr "Keine Berechtigung, die Anwendung zu löschen"
 
 #: ckanext/showcase/controller.py:176
 msgid "Showcase has been deleted."
@@ -55,7 +55,7 @@ msgstr "Keine Berechtigung zum Anzeigen dieser Seite"
 
 #: ckanext/showcase/controller.py:212
 msgid "Unauthorized to read package"
-msgstr "Nicht leseberechtigt für dieses Paket"
+msgstr "Nicht leseberechtigt für diesen Datensatz"
 
 #: ckanext/showcase/controller.py:227 ckanext/showcase/controller.py:329
 msgid "The dataset has been added to the showcase."
@@ -97,11 +97,11 @@ msgstr "Parameter '{parameter_name}' ist kein Ganzzahlwert"
 
 #: ckanext/showcase/controller.py:531 ckanext/showcase/controller.py:567
 msgid "User not authorized to view page"
-msgstr "Benutzer hat keine Berechtigung die Seite zu betrachten"
+msgstr "Benutzer hat keine Berechtigung, die Seite zu betrachten"
 
 #: ckanext/showcase/controller.py:540 ckanext/showcase/controller.py:581
 msgid "Unauthorized to perform that action"
-msgstr "Nicht berechtigt diese Aktion auszuführen"
+msgstr "Nicht berechtigt, diese Aktion auszuführen"
 
 #: ckanext/showcase/controller.py:542
 msgid "User '{user_name}' not found."
@@ -154,7 +154,7 @@ msgstr "Über uns"
 #: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:3
 #: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:16
 msgid "Confirm Remove"
-msgstr "Bestätige das Entfernen"
+msgstr "Bitte Entfernen bestätigen"
 
 #: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:11
 msgid "Are you sure you want to remove this user as a Showcase Admin - {name}?"
@@ -208,8 +208,8 @@ msgstr "Es gibt momentan keine Anwendungsadministratoren."
 
 #: ckanext/showcase/templates/admin/manage_showcase_admins.html:69
 msgid ""
-" <p><strong>Showcase Admin:</strong> Can create and remove showcases. Can"
-" add and remove datasets from showcases.</p> "
+"<p><strong>Showcase Admin:</strong> Can create and remove showcases. Can"
+" add and remove datasets from showcases.</p>"
 msgstr "<p><strong>Anwendungsadministrator:</strong> Kann Anwendungen erstellen und entfernen. Kann Datensätze Anwendungen hinzufügen und aus diesen entfernen.</p>"
 
 #: ckanext/showcase/templates/home/snippets/stats.html:5
@@ -258,7 +258,7 @@ msgstr "Es gibt keine Anwendungen für diesen Datensatz"
 
 #: ckanext/showcase/templates/package/read_base.html:6
 msgid "Activity Stream"
-msgstr "Aktivitätsanzeige"
+msgstr "Aktivitäten"
 
 #: ckanext/showcase/templates/showcase/add_datasets.html:3
 msgid "Showcases - Add datasets"
@@ -302,7 +302,7 @@ msgstr "Mögliche Datensätze für diese Anwendung"
 #: ckanext/showcase/templates/showcase/add_datasets.html:48
 #: ckanext/showcase/templates/showcase/manage_datasets.html:51
 msgid "Add to Showcase"
-msgstr "der Anwendung hinzufügen"
+msgstr "Der Anwendung hinzufügen"
 
 #: ckanext/showcase/templates/showcase/add_datasets.html:78
 #: ckanext/showcase/templates/showcase/manage_datasets.html:88
@@ -312,7 +312,7 @@ msgstr "Es konnten keine Datensätze gefunden werden"
 #: ckanext/showcase/templates/showcase/confirm_delete.html:3
 #: ckanext/showcase/templates/showcase/confirm_delete.html:15
 msgid "Confirm Delete"
-msgstr "Bestätige das Löschen"
+msgstr "Bitte Löschen bestätigen"
 
 #: ckanext/showcase/templates/showcase/confirm_delete.html:11
 msgid "Are you sure you want to delete showcase - {showcase_name}?"
@@ -374,7 +374,7 @@ msgstr "URL"
 
 #: ckanext/showcase/templates/showcase/new_package_form.html:24
 msgid "eg. my-showcase"
-msgstr "z.B. mein-Datensatz"
+msgstr "z.B. meine-Anwendung"
 
 #: ckanext/showcase/templates/showcase/new_package_form.html:28
 msgid "Description"
@@ -382,11 +382,11 @@ msgstr "Beschreibung"
 
 #: ckanext/showcase/templates/showcase/new_package_form.html:28
 msgid "eg. Some useful notes about the data"
-msgstr "z.B. einige nützliche Hinweise zu den Daten"
+msgstr "z.B. nützliche Hinweise zu den Daten"
 
 #: ckanext/showcase/templates/showcase/new_package_form.html:33
 msgid "eg. economy, mental health, government"
-msgstr "z.B. Wirtschaft, geistige Gesundheit, Regierung"
+msgstr "z.B. Wirtschaft, Gesundheit, Regierung"
 
 #: ckanext/showcase/templates/showcase/new_package_form.html:44
 msgid "External link"
@@ -461,15 +461,16 @@ msgid ""
 "use, to provide further insight, ideas, and inspiration."
 msgstr ""
 "Datensätze wurden genutzt um Apps, Webseiten und Visualisierungen zu erstellen. "
-"Sie wurden in Artikeln präsentiert und in Nachrichten und Blogs wurde über sie berichtet. "
-"Anwendungen vereinen die besten gebräuchlichen Datensätze für mehr Einsicht, Ideen und Inspiration."
+"Sie werden in Artikeln präsentiert und in Nachrichten und Blogs wird über sie berichtet. "
+"Anwendungen bündeln die meistbenutzten Datensätze mit den Ziel,"
+"mehr Einblick, Ideen und Inspiration über deren Nutzung zu geben."
 
 #: ckanext/showcase/templates/showcase/snippets/helper.html:12
 #, python-format
 msgid ""
 "Sysadmins can manage Showcase Admins from the <a href='%(url)s'>Showcase "
 "configuration page</a>."
-msgstr "Sysadmins können die Anwendungsadministratoren auf der <a href='%(url)s'>Showcase "
+msgstr "Sysadmins können die Anwendungsadministratoren auf der <a href='%(url)s'>Anwendungs-"
 "Konfiguratonsseite</a> verwalten."
 
 #: ckanext/showcase/templates/showcase/snippets/showcase_info.html:21
