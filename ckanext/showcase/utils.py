@@ -124,6 +124,11 @@ def manage_datasets_view(id):
     form_data = tk.request.form if tk.check_ckan_version(
         '2.9') else tk.request.params
 
+    if tk.check_ckan_version(min_version='2.9.0'):
+        manage_route = 'showcase_blueprint.manage_datasets'
+    else:
+        manage_route = 'showcase_manage_datasets'
+    
     if (tk.request.method == 'POST'
             and 'bulk_action.showcase_remove' in form_data):
         # Find the datasets to perform the action on, they are prefixed by
@@ -144,7 +149,7 @@ def manage_datasets_view(id):
                     "The dataset has been removed from the showcase.",
                     "The datasets have been removed from the showcase.",
                     len(dataset_ids)))
-            url = h.url_for('showcase_manage_datasets', id=id)
+            url = h.url_for(manage_route, id=id)
             return h.redirect_to(url)
 
     # Are we creating a showcase/dataset association?
@@ -176,7 +181,7 @@ def manage_datasets_view(id):
                         "The dataset has been added to the showcase.",
                         "The datasets have been added to the showcase.",
                         len(successful_adds)))
-            url = h.url_for('showcase_manage_datasets', id=id)
+            url = h.url_for(manage_route, id=id)
             return h.redirect_to(url)
 
     _add_dataset_search(tk.c.pkg_dict['id'], tk.c.pkg_dict['name'])
