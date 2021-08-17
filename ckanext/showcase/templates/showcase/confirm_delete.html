@@ -2,6 +2,9 @@
 
 {% set pkg = pkg_dict or c.pkg_dict %}
 
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_delete_route = 'showcase_blueprint.delete' if ckan_29_or_higher else 'showcase_delete' %}
+
 {% block subtitle %}{{ _("Confirm Delete") }}{% endblock %}
 
 {% block maintag %}
@@ -14,7 +17,7 @@
             {% block form %}
                 <p>{{ _('Are you sure you want to delete showcase - {showcase_name}?').format(showcase_name=pkg.name) }}</p>
                 <p class="form-actions">
-                    <form action="{{ h.url_for('showcase_delete', id=c.pkg_dict.name) }}" method="post">
+                    <form action="{{ h.url_for(showcase_delete_route, id=c.pkg_dict.name) }}" method="post">
                         <button class="btn" type="submit" name="cancel" >{{ _('Cancel') }}</button>
                         <button class="btn btn-primary" type="submit" name="delete" >{{ _('Confirm Delete') }}</button>
                     </form>
