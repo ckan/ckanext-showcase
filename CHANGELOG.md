@@ -1,5 +1,9 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.4 2021-08-17
+
+* Fix hardcoded route (#118)
+
 ## v1.4.3 2021-04-21
 
 * Fix typo on setup.py (#107)
