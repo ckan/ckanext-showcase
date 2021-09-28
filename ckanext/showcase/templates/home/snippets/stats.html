@@ -8,11 +8,11 @@
     <h3>{{ _('{site_title} statistics').format(site_title=g.site_title) }}</h3>
     <ul>
       <li>
-        <a href="{{ h.url_for(controller='package', action='search') }}">
+		<a href="{{ h.url_for('dataset.search') }}">
           <b>{{ h.SI_number_span(stats.dataset_count) }}</b>
-          {{ ungettext('dataset', 'datasets', stats.dataset_count) }}
+          {{ _('dataset') if stats.dataset_count == 1 else _('datasets') }}
         </a>
-      </li>
+	  </li>
       <li>
         <a href="{{ h.url_for(controller='organization', action='index') }}">
           <b>{{ h.SI_number_span(stats.organization_count) }}</b>
