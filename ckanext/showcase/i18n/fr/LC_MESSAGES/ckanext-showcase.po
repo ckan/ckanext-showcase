@@ -1,16 +1,16 @@
 # French translations for ckanext-showcase.
-# Copyright (C) 2018 SICTIAM
+# Copyright (C) 2021 Ozwillo
 # This file is distributed under the same license as the ckanext-showcase
 # project.
-# Benoit Orihuela <b.orihuela@sictiam.fr>, 2018.
+# Benoit Orihuela <borihuela@ozwillo.org>, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-showcase 1.0.0b1\n"
-"Report-Msgid-Bugs-To: opendata@sictiam.fr\n"
+"Report-Msgid-Bugs-To: admin@ozwillo.org\n"
 "POT-Creation-Date: 2015-09-23 14:49+0100\n"
 "PO-Revision-Date: 2017-03-03 09:15+0100\n"
-"Last-Translator: Benoit Orihuela <b.orihuela@sictiam.fr>\n"
+"Last-Translator: Benoit Orihuela <borihuela@ozwillo.org>\n"
 "Language: fr\n"
 "Language-Team: fr <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -46,14 +46,10 @@ msgid "Showcase has been deleted."
 msgstr "La réutilisation a été supprimée"
 
 #: ckanext/showcase/controller.py:201 ckanext/showcase/controller.py:210
-#, fuzzy
-#| msgid "Showcase not found"
 msgid "Dataset not found"
 msgstr "Jeu de données introuvable"
 
 #: ckanext/showcase/controller.py:203
-#, fuzzy
-#| msgid "User not authorized to view page"
 msgid "Not authorized to see this page"
 msgstr "Non autorisé à accéder à cette page"
 
@@ -125,24 +121,18 @@ msgstr "L'utilisateur n'est plus un administrateur des réutilisations"
 
 #: ckanext/showcase/logic/converters.py:24
 #: ckanext/showcase/logic/validators.py:29
-#, fuzzy
-#| msgid "Showcase not found"
 msgid "Not found"
 msgstr "Réutilisation introuvable"
 
 #: ckanext/showcase/logic/converters.py:24
 #: ckanext/showcase/logic/validators.py:29
 #: ckanext/showcase/templates/package/read_base.html:4
-#, fuzzy
-#| msgid "Manage datasets"
 msgid "Dataset"
-msgstr "Gérer le jeu de données"
+msgstr "Jeu de données"
 
 #: ckanext/showcase/templates/header.html:5
-#, fuzzy
-#| msgid "Manage datasets"
 msgid "Datasets"
-msgstr "Gérer les jeux de données"
+msgstr "Jeux de données"
 
 #: ckanext/showcase/templates/header.html:8
 #: ckanext/showcase/templates/package/dataset_showcase_list.html:3
@@ -214,10 +204,8 @@ msgstr "Êtes-vous sûr de vouloir supprimer cet utilisateur de la liste des "
 
 #: ckanext/showcase/templates/admin/manage_showcase_admins.html:53
 #: ckanext/showcase/templates/showcase/snippets/showcase_item.html:46
-#, fuzzy
-#| msgid "Confirm Remove"
 msgid "Remove"
-msgstr "Confirmer la suppression"
+msgstr "Supprimer"
 
 #: ckanext/showcase/templates/admin/manage_showcase_admins.html:61
 msgid "There are currently no Showcase Admins."
@@ -237,12 +225,10 @@ msgid "{site_title} statistics"
 msgstr "{site_title} statistiques"
 
 #: ckanext/showcase/templates/home/snippets/stats.html:10
-#, fuzzy
-#| msgid "Manage datasets"
 msgid "dataset"
 msgid_plural "datasets"
-msgstr[0] "Gérer le jeu de données"
-msgstr[1] "Gérer les jeux de données"
+msgstr[0] "jeu de données"
+msgstr[1] "jeux de données"
 
 #: ckanext/showcase/templates/home/snippets/stats.html:16
 msgid "organization"
@@ -513,16 +499,12 @@ msgid "This showcase has no description"
 msgstr "Aucune description"
 
 #: ckanext/showcase/templates/showcase/snippets/showcase_item.html:35
-#, fuzzy
-#| msgid "Manage datasets"
 msgid "{num} Dataset"
 msgid_plural "{num} Datasets"
 msgstr[0] "{num} jeu de données"
 msgstr[1] "{num} jeux de données"
 
 #: ckanext/showcase/templates/showcase/snippets/showcase_item.html:37
-#, fuzzy
-#| msgid "Manage datasets"
 msgid "0 Datasets"
 msgstr "0 jeu de données"
 
