@@ -121,7 +121,7 @@ def package_showcase_list(context, data_dict):
         for showcase_id in showcase_id_list:
             id_list.append(showcase_id[0])
         fq = 'dataset_type:showcase'
-        q = ' OR '.join(['id:{0}'.format(x) for x in id_list])
+        q = 'id:(' + ' OR '.join(['{0}'.format(x) for x in id_list]) + ')'
         _showcase_list = toolkit.get_action('package_search')(
             context,
             {'q': q, 'fq': fq, 'rows': 100})
