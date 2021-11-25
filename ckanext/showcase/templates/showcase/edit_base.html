@@ -40,7 +40,7 @@
             {% if self.content_action() | trim %}
               <div class="content_action">
                 {% block content_action %}
-                  {% link_for _('View showcase'), controller='ckanext.showcase.controller:ShowcaseController', action='read', id=pkg.name, class_='btn', icon='icon-eye-open' %}
+                  {% link_for _('View showcase'), named_route=showcase_read_route, id=pkg.name, class_='btn btn-default', icon='icon-eye-open' %}
                 {% endblock %}
               </div>
             {% endif %}
