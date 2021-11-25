@@ -1,39 +1,47 @@
+# -*- coding: utf-8 -*-
+
 import os
 import sys
+import json
 import logging
+from collections import OrderedDict
+
+from six import string_types
 
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
-from ckan.plugins import toolkit as tk
-from ckan.common import OrderedDict
 from ckan import model as ckan_model
 
-from routes.mapper import SubMapper
+import ckantoolkit as tk
 
-import ckanext.showcase.logic.auth
-import ckanext.showcase.logic.action.create
-import ckanext.showcase.logic.action.delete
-import ckanext.showcase.logic.action.update
-import ckanext.showcase.logic.action.get
+
+import ckanext.showcase.utils as utils
+from ckanext.showcase.logic import auth, action
+
 import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
 from ckanext.showcase.model import setup as model_setup
+
+if tk.check_ckan_version(u'2.9'):
+    from ckanext.showcase.plugin.flask_plugin import MixinPlugin
+else:
+    from ckanext.showcase.plugin.pylons_plugin import MixinPlugin
 
 c = tk.c
 _ = tk._
 
 log = logging.getLogger(__name__)
 
-DATASET_TYPE_NAME = 'showcase'
+DATASET_TYPE_NAME = utils.DATASET_TYPE_NAME
 
 
-class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
+class ShowcasePlugin(
+        MixinPlugin, plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IFacets, inherit=True)
-    plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IAuthFunctions)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
@@ -48,11 +56,32 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # IConfigurer
 
     def update_config(self, config):
-        tk.add_template_directory(config, 'templates')
-        tk.add_public_directory(config, 'public')
-        if tk.check_ckan_version(min_version='2.4'):
-            tk.add_ckan_admin_tab(config, 'ckanext_showcase_admins',
+        tk.add_template_directory(config, '../templates')
+        tk.add_public_directory(config, '../public')
+        tk.add_resource('../fanstatic', 'showcase')
+        if tk.check_ckan_version(min_version='2.4', max_version='2.9.0'):
+            tk.add_ckan_admin_tab(config, 'showcase_admins',
                                   'Showcase Config')
+        elif tk.check_ckan_version(min_version='2.9.0'):
+            tk.add_ckan_admin_tab(config, 'showcase_blueprint.admins',
+                                  'Showcase Config')
+
+        if tk.check_ckan_version(min_version='2.9.0'):
+            mappings = config.get('ckan.legacy_route_mappings', {})
+            if isinstance(mappings, string_types):
+                mappings = json.loads(mappings)
+
+            bp_routes = [
+                'index', 'new', 'delete',
+                'read', 'edit', 'manage_datasets',
+                'dataset_showcase_list', 'admins', 'admin_remove'
+            ]
+            mappings.update({
+                'showcase_' + route: 'showcase_blueprint.' + route
+                for route in bp_routes
+            })
+            # https://github.com/ckan/ckan/pull/4521
+            config['ckan.legacy_route_mappings'] = json.dumps(mappings)
 
     # IConfigurable
 
@@ -96,7 +125,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def get_helpers(self):
         return {
             'facet_remove_field': showcase_helpers.facet_remove_field,
-            'get_site_statistics': showcase_helpers.get_site_statistics
+            'get_site_statistics': showcase_helpers.get_site_statistics,
+            'get_wysiwyg_editor': showcase_helpers.get_wysiwyg_editor,
         }
 
     # IFacets
@@ -110,88 +140,12 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # IAuthFunctions
 
     def get_auth_functions(self):
-        return {
-            'ckanext_showcase_create': ckanext.showcase.logic.auth.create,
-            'ckanext_showcase_update': ckanext.showcase.logic.auth.update,
-            'ckanext_showcase_delete': ckanext.showcase.logic.auth.delete,
-            'ckanext_showcase_show': ckanext.showcase.logic.auth.show,
-            'ckanext_showcase_list': ckanext.showcase.logic.auth.list,
-            'ckanext_showcase_package_association_create':
-                ckanext.showcase.logic.auth.package_association_create,
-            'ckanext_showcase_package_association_delete':
-                ckanext.showcase.logic.auth.package_association_delete,
-            'ckanext_showcase_package_list':
-                ckanext.showcase.logic.auth.showcase_package_list,
-            'ckanext_package_showcase_list':
-                ckanext.showcase.logic.auth.package_showcase_list,
-            'ckanext_showcase_admin_add':
-                ckanext.showcase.logic.auth.add_showcase_admin,
-            'ckanext_showcase_admin_remove':
-                ckanext.showcase.logic.auth.remove_showcase_admin,
-            'ckanext_showcase_admin_list':
-                ckanext.showcase.logic.auth.showcase_admin_list
-        }
-
-    # IRoutes
-
-    def before_map(self, map):
-        # These named routes are used for custom dataset forms which will use
-        # the names below based on the dataset.type ('dataset' is the default
-        # type)
-        with SubMapper(map, controller='ckanext.showcase.controller:ShowcaseController') as m:
-            m.connect('ckanext_showcase_index', '/showcase', action='search',
-                      highlight_actions='index search')
-            m.connect('ckanext_showcase_new', '/showcase/new', action='new')
-            m.connect('ckanext_showcase_delete', '/showcase/delete/{id}',
-                      action='delete')
-            m.connect('ckanext_showcase_read', '/showcase/{id}', action='read',
-                      ckan_icon='picture')
-            m.connect('ckanext_showcase_edit', '/showcase/edit/{id}',
-                      action='edit', ckan_icon='edit')
-            m.connect('ckanext_showcase_manage_datasets',
-                      '/showcase/manage_datasets/{id}',
-                      action="manage_datasets", ckan_icon="sitemap")
-            m.connect('dataset_showcase_list', '/dataset/showcases/{id}',
-                      action='dataset_showcase_list', ckan_icon='picture')
-            m.connect('ckanext_showcase_admins', '/ckan-admin/showcase_admins',
-                      action='manage_showcase_admins', ckan_icon='picture'),
-            m.connect('ckanext_showcase_admin_remove',
-                      '/ckan-admin/showcase_admin_remove',
-                      action='remove_showcase_admin')
-        map.redirect('/showcases', '/showcase')
-        map.redirect('/showcases/{url:.*}', '/showcase/{url}')
-        return map
+        return auth.get_auth_functions()
 
     # IActions
 
     def get_actions(self):
-        action_functions = {
-            'ckanext_showcase_create':
-                ckanext.showcase.logic.action.create.showcase_create,
-            'ckanext_showcase_update':
-                ckanext.showcase.logic.action.update.showcase_update,
-            'ckanext_showcase_delete':
-                ckanext.showcase.logic.action.delete.showcase_delete,
-            'ckanext_showcase_show':
-                ckanext.showcase.logic.action.get.showcase_show,
-            'ckanext_showcase_list':
-                ckanext.showcase.logic.action.get.showcase_list,
-            'ckanext_showcase_package_association_create':
-                ckanext.showcase.logic.action.create.showcase_package_association_create,
-            'ckanext_showcase_package_association_delete':
-                ckanext.showcase.logic.action.delete.showcase_package_association_delete,
-            'ckanext_showcase_package_list':
-                ckanext.showcase.logic.action.get.showcase_package_list,
-            'ckanext_package_showcase_list':
-                ckanext.showcase.logic.action.get.package_showcase_list,
-            'ckanext_showcase_admin_add':
-                ckanext.showcase.logic.action.create.showcase_admin_add,
-            'ckanext_showcase_admin_remove':
-                ckanext.showcase.logic.action.delete.showcase_admin_remove,
-            'ckanext_showcase_admin_list':
-                ckanext.showcase.logic.action.get.showcase_admin_list,
-        }
-        return action_functions
+        return action.get_actions()
 
     # IPackageController
 
@@ -221,8 +175,12 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
                 context, {'showcase_id': pkg_dict['id']}))
 
         # Rendered notes
-        pkg_dict[u'showcase_notes_formatted'] = \
-            h.render_markdown(pkg_dict['notes'])
+        if showcase_helpers.get_wysiwyg_editor() == 'ckeditor':
+            pkg_dict[u'showcase_notes_formatted'] = pkg_dict['notes']
+        else:
+            pkg_dict[u'showcase_notes_formatted'] = \
+                h.render_markdown(pkg_dict['notes'])
+
         return pkg_dict
 
     def after_show(self, context, pkg_dict):

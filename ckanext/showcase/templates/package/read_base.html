@@ -1,6 +1,8 @@
 {% ckan_extends %}
+{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
+{% set showcase_dataset_showcase_list_route = 'showcase_blueprint.dataset_showcase_list' if ckan_29_or_higher else 'showcase_dataset_showcase_list' %}
 
 {% block content_primary_nav %}
   {{ super() }}
-  {{ h.build_nav_icon('dataset_showcase_list', _('Showcases'), id=pkg.name) }}
+  {{ h.build_nav_icon(showcase_dataset_showcase_list_route, _('Showcases'), id=pkg.name) }}
 {% endblock %}

@@ -1,0 +1,542 @@
+# French translations for ckanext-showcase.
+# Copyright (C) 2021 Ozwillo
+# This file is distributed under the same license as the ckanext-showcase
+# project.
+# Benoit Orihuela <borihuela@ozwillo.org>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-showcase 1.0.0b1\n"
+"Report-Msgid-Bugs-To: admin@ozwillo.org\n"
+"POT-Creation-Date: 2015-09-23 14:49+0100\n"
+"PO-Revision-Date: 2017-03-03 09:15+0100\n"
+"Last-Translator: Benoit Orihuela <borihuela@ozwillo.org>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+
+#: ckanext/showcase/controller.py:56
+msgid "Unauthorized to create a package"
+msgstr "Vous n'êtes pas autorisé à créer un jeu de données"
+
+#: ckanext/showcase/controller.py:71 ckanext/showcase/controller.py:267
+msgid "User not authorized to edit {showcase_id}"
+msgstr "Vous n'êtes pas autorisé à modifier {showcase_id}"
+
+#: ckanext/showcase/controller.py:147 ckanext/showcase/controller.py:184
+#: ckanext/showcase/controller.py:224 ckanext/showcase/controller.py:238
+#: ckanext/showcase/controller.py:274
+msgid "Showcase not found"
+msgstr "Réutilisation introuvable"
+
+#: ckanext/showcase/controller.py:149 ckanext/showcase/controller.py:276
+msgid "Unauthorized to read showcase"
+msgstr "Vous n'êtes pas autorisé à accéder aux réutilisations"
+
+#: ckanext/showcase/controller.py:171 ckanext/showcase/controller.py:182
+msgid "Unauthorized to delete showcase"
+msgstr "Vous n'êtes pas autorisé à supprimer cette réutilisation"
+
+#: ckanext/showcase/controller.py:176
+msgid "Showcase has been deleted."
+msgstr "La réutilisation a été supprimée"
+
+#: ckanext/showcase/controller.py:201 ckanext/showcase/controller.py:210
+msgid "Dataset not found"
+msgstr "Jeu de données introuvable"
+
+#: ckanext/showcase/controller.py:203
+msgid "Not authorized to see this page"
+msgstr "Non autorisé à accéder à cette page"
+
+#: ckanext/showcase/controller.py:212
+msgid "Unauthorized to read package"
+msgstr "Vous n'êtes pas autorisé à accéder à ce jeu de données"
+
+#: ckanext/showcase/controller.py:227 ckanext/showcase/controller.py:329
+msgid "The dataset has been added to the showcase."
+msgid_plural "The datasets have been added to the showcase."
+msgstr[0] "Le jeu de données a été ajouté à la réutilisation."
+msgstr[1] "Les jeux de données ont été ajoutés à la réutilisation."
+
+#: ckanext/showcase/controller.py:241 ckanext/showcase/controller.py:297
+msgid "The dataset has been removed from the showcase."
+msgid_plural "The datasets have been removed from the showcase."
+msgstr[0] "Le jeu de données a été supprimé de la réutilisation."
+msgstr[1] "Les jeux de données ont été supprimés de la réutilisation."
+
+#: ckanext/showcase/controller.py:462 ckanext/showcase/templates/header.html:6
+msgid "Organizations"
+msgstr "Organisations"
+
+#: ckanext/showcase/controller.py:463 ckanext/showcase/templates/header.html:7
+#: ckanext/showcase/templates/package/read_base.html:5
+msgid "Groups"
+msgstr "Groupes"
+
+#: ckanext/showcase/controller.py:464 ckanext/showcase/plugin.py:103
+#: ckanext/showcase/templates/showcase/new_package_form.html:33
+msgid "Tags"
+msgstr "Mots-clés"
+
+#: ckanext/showcase/controller.py:465
+msgid "Formats"
+msgstr "Formats"
+
+#: ckanext/showcase/controller.py:466
+msgid "Licenses"
+msgstr "Licences"
+
+#: ckanext/showcase/controller.py:516
+msgid "Parameter '{parameter_name}' is not an integer"
+msgstr "Le paramètre '{parameter_name}' doit être un entier"
+
+#: ckanext/showcase/controller.py:531 ckanext/showcase/controller.py:567
+msgid "User not authorized to view page"
+msgstr "L'utilisateur n'est pas autorisé à accéder à cette page"
+
+#: ckanext/showcase/controller.py:540 ckanext/showcase/controller.py:581
+msgid "Unauthorized to perform that action"
+msgstr "Vous n'êtes pas autorisé à exécuter cette action"
+
+#: ckanext/showcase/controller.py:542
+msgid "User '{user_name}' not found."
+msgstr "L'utilisateur '{user_name}' est introuvable."
+
+#: ckanext/showcase/controller.py:547
+msgid "The user is now a Showcase Admin"
+msgstr "L'utilisateur est maintenant administrateur des réutilisations"
+
+#: ckanext/showcase/controller.py:583
+msgid "The user is not a Showcase Admin"
+msgstr "L'utilisateur n'est pas un administrateur des réutilisations"
+
+#: ckanext/showcase/controller.py:585
+msgid "The user is no longer a Showcase Admin"
+msgstr "L'utilisateur n'est plus un administrateur des réutilisations"
+
+#: ckanext/showcase/logic/converters.py:24
+#: ckanext/showcase/logic/validators.py:29
+msgid "Not found"
+msgstr "Réutilisation introuvable"
+
+#: ckanext/showcase/logic/converters.py:24
+#: ckanext/showcase/logic/validators.py:29
+#: ckanext/showcase/templates/package/read_base.html:4
+msgid "Dataset"
+msgstr "Jeu de données"
+
+#: ckanext/showcase/templates/header.html:5
+msgid "Datasets"
+msgstr "Jeux de données"
+
+#: ckanext/showcase/templates/header.html:8
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:3
+#: ckanext/showcase/templates/package/read_base.html:7
+#: ckanext/showcase/templates/showcase/edit_base.html:5
+#: ckanext/showcase/templates/showcase/edit_base.html:17
+#: ckanext/showcase/templates/showcase/edit_base.html:21
+#: ckanext/showcase/templates/showcase/read.html:6
+#: ckanext/showcase/templates/showcase/read.html:33
+#: ckanext/showcase/templates/showcase/search.html:4
+#: ckanext/showcase/templates/showcase/search.html:7
+msgid "Showcases"
+msgstr "Réutilisations"
+
+#: ckanext/showcase/templates/header.html:9
+msgid "About"
+msgstr "À propos"
+
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:3
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:16
+msgid "Confirm Remove"
+msgstr "Confirmer la suppression"
+
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:11
+msgid "Are you sure you want to remove this user as a Showcase Admin - {name}?"
+msgstr "Êtes-vous sûr de vouloir retirer les droits d'administration à {name} ?"
+
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:15
+#: ckanext/showcase/templates/showcase/confirm_delete.html:14
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:9
+msgid "Manage Showcase Admins"
+msgstr "Gestion des administrateurs"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:16
+msgid "Add an Existing User"
+msgstr "Ajouter un utilisateur existant"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:19
+msgid ""
+"To make an existing user a Showcase Admin, search for their username "
+"below."
+msgstr ""
+"Pour ajouter un administrateur, sélectionner son nom dans la liste ci-"
+"dessous"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:23
+msgid "Username"
+msgstr "Nom de l'utilisateur"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:32
+msgid "Add User"
+msgstr "Ajouter l'utilisateur"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:38
+msgid "Showcase Admins"
+msgstr "Administrateurs des réutilisations"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:43
+msgid "User"
+msgstr "Utilisateur"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:51
+msgid "Are you sure you want to remove this user from the Showcase Admin list?"
+msgstr "Êtes-vous sûr de vouloir supprimer cet utilisateur de la liste des "
+"administrateurs ?"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:53
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:46
+msgid "Remove"
+msgstr "Supprimer"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:61
+msgid "There are currently no Showcase Admins."
+msgstr "Il n'y a actuellement aucun administrateur."
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:69
+msgid ""
+" <p><strong>Showcase Admin:</strong> Can create and remove showcases. Can"
+" add and remove datasets from showcases.</p> "
+msgstr ""
+" <p><strong>Administrateur :</strong> Peut créer et supprimer des "
+"réutilisations. Peut ajouter ou supprimer des jeux de données aux "
+"réutilisations.</p> "
+
+#: ckanext/showcase/templates/home/snippets/stats.html:5
+msgid "{site_title} statistics"
+msgstr "{site_title} statistiques"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:10
+msgid "dataset"
+msgid_plural "datasets"
+msgstr[0] "jeu de données"
+msgstr[1] "jeux de données"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:16
+msgid "organization"
+msgid_plural "organizations"
+msgstr[0] "Organisation"
+msgstr[1] "Organisations"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:22
+msgid "group"
+msgid_plural "groups"
+msgstr[0] "Groupe"
+msgstr[1] "Groupes"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:28
+msgid "showcase"
+msgid_plural "showcases"
+msgstr[0] "réutilisation"
+msgstr[1] "réutilisations"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:13
+msgid "Associate this showcase with this dataset"
+msgstr "Associer cette réutilisation à ce jeu de données"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:13
+msgid "Add to showcase"
+msgstr "Ajouter aux réutilisations"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:17
+msgid "Showcases featuring {dataset_name}"
+msgstr "Réutilisations en lien avec {dataset_name}"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:22
+msgid "There are no showcases that feature this dataset"
+msgstr "Il n'y a aucune réutilisation en lien avec ce jeu de données"
+
+#: ckanext/showcase/templates/package/read_base.html:6
+msgid "Activity Stream"
+msgstr "Flux d'activité"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:3
+msgid "Showcases - Add datasets"
+msgstr "Réutilisations - Ajouter des jeux de données"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:21
+#: ckanext/showcase/templates/showcase/manage_datasets.html:24
+#: ckanext/showcase/templates/showcase/search.html:27
+msgid "Relevance"
+msgstr "Pertinence"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:22
+#: ckanext/showcase/templates/showcase/manage_datasets.html:25
+#: ckanext/showcase/templates/showcase/search.html:28
+msgid "Name Ascending"
+msgstr "Nom croissant"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:23
+#: ckanext/showcase/templates/showcase/manage_datasets.html:26
+#: ckanext/showcase/templates/showcase/search.html:29
+msgid "Name Descending"
+msgstr "Nom décroissant"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:24
+#: ckanext/showcase/templates/showcase/manage_datasets.html:27
+#: ckanext/showcase/templates/showcase/search.html:30
+msgid "Last Modified"
+msgstr "Dernière modification"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:25
+#: ckanext/showcase/templates/showcase/manage_datasets.html:28
+#: ckanext/showcase/templates/showcase/search.html:31
+msgid "Popular"
+msgstr "Popularité"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:31
+#: ckanext/showcase/templates/showcase/manage_datasets.html:36
+msgid "Datasets available to add to this showcase"
+msgstr "Jeux de données à ajouter à cette réutilisation"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:48
+#: ckanext/showcase/templates/showcase/manage_datasets.html:51
+msgid "Add to Showcase"
+msgstr "Ajouter"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:78
+#: ckanext/showcase/templates/showcase/manage_datasets.html:88
+msgid "No datasets could be found"
+msgstr "Aucun jeu de données n'a été trouvé"
+
+#: ckanext/showcase/templates/showcase/confirm_delete.html:3
+#: ckanext/showcase/templates/showcase/confirm_delete.html:15
+msgid "Confirm Delete"
+msgstr "Confirmer la suppression"
+
+#: ckanext/showcase/templates/showcase/confirm_delete.html:11
+msgid "Are you sure you want to delete showcase - {showcase_name}?"
+msgstr "Êtes-vous sûr de vouloir supprimer la réutilisation - {showcase_name}?"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:19
+msgid "Edit"
+msgstr "Modifier"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:22
+#: ckanext/showcase/templates/showcase/new.html:3
+#: ckanext/showcase/templates/showcase/new_package_form.html:63
+msgid "Create Showcase"
+msgstr "Créer une réutilisation"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:35
+msgid "View showcase"
+msgstr "Voir la réutilisation"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:41
+msgid "Edit showcase"
+msgstr "Modifier la réutilisation"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:42
+msgid "Manage datasets"
+msgstr "Gérer les jeux de données"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:3
+msgid "Showcases - Manage datasets"
+msgstr "Réutilisations - Gérer les jeux de données"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:96
+msgid "Datasets in this showcase"
+msgstr "Jeux de données utilisés dans cette réutilisation"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:109
+msgid "Remove from Showcase"
+msgstr "Supprimer de la réutilisation"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:140
+msgid "This showcase has no datasets associated to it"
+msgstr "Cette réutilisation n'a aucun jeu de données associé"
+
+#: ckanext/showcase/templates/showcase/new.html:8
+msgid "Create a Showcase"
+msgstr "Créer une réutilisation"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:15
+msgid "Title"
+msgstr "Titre"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:15
+msgid "eg. A descriptive title"
+msgstr "par ex. un titre explicite"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:24
+msgid "URL"
+msgstr "URL"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:24
+msgid "eg. my-showcase"
+msgstr "p.ex. ma-reutilisation"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:28
+msgid "Description"
+msgstr "Description"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:28
+msgid "eg. Some useful notes about the data"
+msgstr "par ex. un commentaire utile au sujet de cette donnée"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:33
+msgid "eg. economy, mental health, government"
+msgstr "par ex. économie, santé mentale, gouvernement"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:44
+msgid "External link"
+msgstr "Lien externe"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:44
+msgid "http://www.example.com"
+msgstr "http://www.example.com"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:48
+msgid "Submitted By"
+msgstr "Créé par"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:48
+msgid "Joe Bloggs"
+msgstr "Jean Dupont"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:50
+msgid "Submitter Email"
+msgstr "Courrier du créateur"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:50
+msgid "joe@example.com"
+msgstr "joe@example.com"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:58
+msgid "Are you sure you want to delete this showcase?"
+msgstr "Êtes-vous sûr de vouloir supprimer cette réutilisation ?"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:59
+msgid "Delete"
+msgstr "Supprimer"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:63
+msgid "Update Showcase"
+msgstr "Mettre à jour"
+
+#: ckanext/showcase/templates/showcase/read.html:46
+msgid "Manage"
+msgstr "Gérer"
+
+#: ckanext/showcase/templates/showcase/read.html:53
+msgid "Private"
+msgstr "Privé"
+
+#: ckanext/showcase/templates/showcase/read.html:60
+msgid "Draft"
+msgstr "Brouillon"
+
+#: ckanext/showcase/templates/showcase/read.html:78
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:27
+msgid "Launch website"
+msgstr "Accéder au site"
+
+#: ckanext/showcase/templates/showcase/search.html:13
+msgid "Add Showcase"
+msgstr "Ajouter une réutilisation"
+
+#: ckanext/showcase/templates/showcase/search.html:33
+msgid "Search showcases..."
+msgstr "Rechercher des réutilisations ..."
+
+#: ckanext/showcase/templates/showcase/snippets/helper.html:4
+msgid "What are Showcases?"
+msgstr "Que sont les réutilisations ?"
+
+#: ckanext/showcase/templates/showcase/snippets/helper.html:8
+msgid ""
+"Datasets have been used to build apps, websites and visualizations. "
+"They've been featured in articles, and written about in news reports and "
+"blog posts. Showcases collect together the best examples of datasets in "
+"use, to provide further insight, ideas, and inspiration."
+msgstr ""
+"Certains jeux de données ont été utilisés pour développer des "
+"applications, sites web et visualisations. Retrouvez sur cette page des "
+"exemples de réutilisations réalisés à partir de ces données."
+
+#: ckanext/showcase/templates/showcase/snippets/helper.html:12
+#, python-format
+msgid ""
+"Sysadmins can manage Showcase Admins from the <a href='%(url)s'>Showcase "
+"configuration page</a>."
+msgstr ""
+"Les administrateurs de la plateforme peuvent gérer les administrateurs "
+"des réutilisations à partir de <a href='%(url)s'>la page de configuration "
+"des réutilisations</a>."
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:21
+msgid "Submitted by"
+msgstr "Créé par"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:37
+msgid "Datasets in Showcase"
+msgstr "Jeux de données utilisés"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:47
+msgid "There are no Datasets in this Showcase"
+msgstr "Aucun jeu de données n'a été utilisé dans cette réutilisation"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:30
+msgid "This showcase has no description"
+msgstr "Aucune description"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:35
+msgid "{num} Dataset"
+msgid_plural "{num} Datasets"
+msgstr[0] "{num} jeu de données"
+msgstr[1] "{num} jeux de données"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:37
+msgid "0 Datasets"
+msgstr "0 jeu de données"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:41
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:42
+msgid "View {showcase_title}"
+msgstr "Voir {showcase_title}"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:46
+msgid "Remove dataset from this showcase"
+msgstr "Supprimer ce jeu de données de cette réutilisation"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:7
+msgid "{number} showcase found for '{query}'"
+msgid_plural "{number} showcases found for '{query}'"
+msgstr[0] "{number} réutilisation trouvée pour '{query}'"
+msgstr[1] "{number} réutilisations trouvées pour '{query}'"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:8
+msgid "No showcases found for '{query}'"
+msgstr "Aucune réutilisation trouvée pour '{query}'"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:9
+msgid "{number} showcase found"
+msgid_plural "{number} showcases found"
+msgstr[0] "{number} réutilisation trouvée"
+msgstr[1] "{number} réutilisations trouvées"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:10
+msgid "No showcases found"
+msgstr "Aucune réutilisation trouvée"
+
+#~ msgid "Showcase"
+#~ msgstr "Réutilisations"
+

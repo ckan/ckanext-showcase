@@ -1,0 +1,21 @@
+ckeditor:
+  filter: rjsmin
+  output: showcase/%(version)s_ckeditor.js
+  extra:
+    preload:
+      - base/main
+  contents:
+    - dist/ckeditor.js
+    - js/showcase-ckeditor.js
+
+ckanext-showcase-css:
+  contents:
+    - ckanext_showcase.css
+  output: showcase/%(version)s_ckanext_showcase.css
+  filter: cssrewrite
+
+ckeditor-content-css:
+  contents:
+    - ckeditor-content-style.css
+  output: showcase/%(version)s_ckeditor-content-style.css
+  filter: cssrewrite

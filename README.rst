@@ -2,11 +2,11 @@
    these badges work. The necessary Travis and Coverage config files have been
    generated for you.
 
-.. image:: https://travis-ci.org/ckan/ckanext-showcase.svg?branch=master
-    :target: https://travis-ci.org/ckan/ckanext-showcase
+.. image:: https://github.com/ckan/ckanext-showcase/workflows/Tests/badge.svg?branch=master
+    :target: https://github.com/ckan/ckanext-showcase/actions
 
-.. image:: https://coveralls.io/repos/ckan/ckanext-showcase/badge.svg
-  :target: https://coveralls.io/r/ckan/ckanext-showcase
+.. image:: https://codecov.io/gh/ckan/ckanext-showcase/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/ckan/ckanext-showcase
 
 ================
 ckanext-showcase
@@ -31,7 +31,7 @@ Requirements
 ------------
 
 
-Compatible with CKAN 2.3+.
+Compatible with CKAN 2.9.
 
 N.B. The ``migrate`` command, detailed below, requires the Related Item models
 and actions, which have been removed in CKAN 2.6. If you wish to migrate your
@@ -77,6 +77,20 @@ do::
     cd ckanext-showcase
     python setup.py develop
     pip install -r dev-requirements.txt
+
+
+The extension contains a custom build of CKEditor to allow using a WYSIWYG editor
+to write the content of the showcase. It has been built using `webpack` and the
+repository contains all the files needed to edit and customize it if needed::
+
+    npm install
+    npx webpack --config webpack.config.js
+
+The webpack will use as entrypoint a file located in `ckanext/showcase/fanstatic/src/ckeditor.js`,
+create a build and save it to `ckanext/showcase/fanstatic/dist/ckeditor.js`
+
+More info on how to build CKEditor from source:
+https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source
 
 
 ---
@@ -127,6 +141,22 @@ Showcase admin actions::
     curl -X POST http://127.0.0.1:5000/api/3/action/ckanext_showcase_admin_list -H "Authorization:{YOUR-API-KEY}" -d ''
 
 
+---
+UI
+---
+
+The Showcase extension adds the following pages to the user interface:
+
+
+* The main showcase index is available on: ``http://127.0.0.1:5000/showcase``
+
+* To create a new showcase: ``http://127.0.0.1:5000/showcase/new``
+
+* To edit or delete a showcase: ``http://127.0.0.1:5000/showcase/edit/{showcase-name}``
+
+* To add a Showcase Admin : ``http://127.0.0.1:5000/ckan-admin/showcase_admins``
+
+
 ----------------------------
 Migrating from Related Items
 ----------------------------
@@ -150,6 +180,26 @@ properties ``created``, ``owner_id``, ``view_count``, and ``featured`` have no
 equivalent in Showcases and will not be migrated.
 
 Related Item data is not removed from the database by this command.
+
+---------------------
+Configuration
+---------------------
+
+If you want to use the WYSIWYG editor instead of Markdown to write the content of the showcase::
+
+    ckanext.showcase.editor = ckeditor
+
+-----------------------------------------------
+Migrating Showcases Notes from Markdown to HTML
+-----------------------------------------------
+
+When using CKEditor as WYSIWYG editor showcases notes are stored in HTML
+instead of Markdown. To migrate all existing notes from markdown to
+HTML you can use the ```showcase markdown_to_html``` command.
+
+From the ``ckanext-showcase`` directory::
+
+    paster showcase markdown-to-html -c {path to production.ini}
 
 -----------------
 Running the Tests
