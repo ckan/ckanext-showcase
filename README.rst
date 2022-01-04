@@ -171,7 +171,7 @@ From the ``ckanext-showcase`` directory::
 Note that each Related Item must have a unique title before migration can
 proceed. If you prefer resolving duplicates as showcases, you can use the --allow-duplicates
 option to migrate them anyways. Duplicate Relations will be created as
-'duplicate_' + original_related_title + '_' + related_id
+'duplicate\_' + original_related_title + '_' + related_id
 
     paster showcase migrate -c {path to production.ini} --allow-duplicates
 
