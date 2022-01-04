@@ -1,5 +1,10 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.7 2022-01-04
+
+* Fix ReST in README (#133)
+* Move minimal requirements into setup.py (#134)
+
 ## v1.4.6 2022-01-04
 
 * Fix version in setup.py and add to changelog (#130)
