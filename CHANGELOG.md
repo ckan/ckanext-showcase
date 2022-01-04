@@ -1,5 +1,15 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.6 2022-01-04
+
+* Fix version in setup.py and add to changelog (#130)
+
+## v1.4.5 2021-11.25
+
+* Add German and French translations (#124, #126)
+* Fix logic for API routes (#128)
+* Dependency updates
+
 ## v1.4.4 2021-08-17
 
 * Fix hardcoded route (#118)
