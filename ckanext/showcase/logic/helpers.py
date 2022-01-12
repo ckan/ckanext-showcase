@@ -37,3 +37,11 @@ def get_site_statistics():
 
 def get_wysiwyg_editor():
     return tk.config.get('ckanext.showcase.editor', '')
+
+def get_value_from_showcase_extras(extras, key):
+    value = ''
+    for item in extras:
+        if item.get('key') == key:
+            value = item.get('value')
+    return value
+    
