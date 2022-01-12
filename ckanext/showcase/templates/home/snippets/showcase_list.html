@@ -1,0 +1,24 @@
+{#
+    Displays a list of showcases.
+    
+    showcases      - A list of showcases to display.
+    list_class     - The class name for the list item.
+    item_class     - The class name to use on each item.
+    truncate       - The length to trucate the description to (default: 180)
+    truncate_title - The length to truncate the title to (default: 80).
+    show_remove    - If True, show the remove button to remove the showcase/dataset association.
+    
+    {% snippet 'home/snippets/showcase_list.html', showcases=h.get_recent_showcase_list() %}
+    
+    #}
+    {% block showcase_list %}
+      {% if showcases %}
+        <div class="slick-showcase">
+          {% block showcase_list_inner %}
+            {% for showcase in showcases %}
+              {% snippet 'home/snippets/showcase_item.html', showcase=showcase, item_class=item_class, truncate=truncate, truncate_title=60, show_remove=show_remove %}
+            {% endfor %}
+          {% endblock %}
+        </div>    
+      {% endif %}
+    {% endblock %}
