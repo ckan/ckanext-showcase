@@ -1,5 +1,10 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.4.8 2022-01-17
+
+* Add Chinese (Traditional, Taiwan) translations (#136)
+* Dependency update
+
 ## v1.4.7 2022-01-04
 
 * Fix ReST in README (#133)
