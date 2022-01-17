@@ -1,0 +1,524 @@
+# Chinese (Traditional, Taiwan) translations for ckanext-showcase.
+# Copyright (C) 2021 The depositar Team
+# This file is distributed under the same license as the ckanext-showcase
+# project.
+# Cheng-Jen Lee <u103133.u103135@gmail.com>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-showcase 1.0.0b1\n"
+"Report-Msgid-Bugs-To: data.contact@depositar.io\n"
+"POT-Creation-Date: 2015-09-23 14:49+0100\n"
+"PO-Revision-Date: 2021-11-26 17:34+0800\n"
+"Last-Translator: Cheng-Jen Lee <u103133.u103135@gmail.com>\n"
+"Language: zh_Hant_TW\n"
+"Language-Team: zh_Hant_TW <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: ckanext/showcase/controller.py:56
+msgid "Unauthorized to create a package"
+msgstr "沒有權限建立資料集"
+
+#: ckanext/showcase/controller.py:71 ckanext/showcase/controller.py:267
+msgid "User not authorized to edit {showcase_id}"
+msgstr "使用者沒有權限編輯 {showcase_id}"
+
+#: ckanext/showcase/controller.py:147 ckanext/showcase/controller.py:184
+#: ckanext/showcase/controller.py:224 ckanext/showcase/controller.py:238
+#: ckanext/showcase/controller.py:274
+msgid "Showcase not found"
+msgstr "展示案例不存在"
+
+#: ckanext/showcase/controller.py:149 ckanext/showcase/controller.py:276
+msgid "Unauthorized to read showcase"
+msgstr "沒有權限讀取展示案例"
+
+#: ckanext/showcase/controller.py:171 ckanext/showcase/controller.py:182
+msgid "Unauthorized to delete showcase"
+msgstr "沒有權限刪除展示案例"
+
+#: ckanext/showcase/controller.py:176
+msgid "Showcase has been deleted."
+msgstr "此展示案例已被刪除"
+
+#: ckanext/showcase/controller.py:201 ckanext/showcase/controller.py:210
+msgid "Dataset not found"
+msgstr "資料集不存在"
+
+#: ckanext/showcase/controller.py:203
+msgid "Not authorized to see this page"
+msgstr "沒有權限瀏覽此頁面"
+
+#: ckanext/showcase/controller.py:212
+msgid "Unauthorized to read package"
+msgstr "沒有權限讀取資料集"
+
+#: ckanext/showcase/controller.py:227 ckanext/showcase/controller.py:329
+msgid "The dataset has been added to the showcase."
+msgid_plural "The datasets have been added to the showcase."
+msgstr[0] "此資料集已加入展示案例"
+
+#: ckanext/showcase/controller.py:241 ckanext/showcase/controller.py:297
+msgid "The dataset has been removed from the showcase."
+msgid_plural "The datasets have been removed from the showcase."
+msgstr[0] "已從展示案例移除此資料集"
+
+#: ckanext/showcase/controller.py:462 ckanext/showcase/templates/header.html:6
+msgid "Organizations"
+msgstr "組織"
+
+#: ckanext/showcase/controller.py:463 ckanext/showcase/templates/header.html:7
+#: ckanext/showcase/templates/package/read_base.html:5
+msgid "Groups"
+msgstr "群組"
+
+#: ckanext/showcase/controller.py:464 ckanext/showcase/plugin.py:103
+#: ckanext/showcase/templates/showcase/new_package_form.html:33
+msgid "Tags"
+msgstr "標籤"
+
+#: ckanext/showcase/controller.py:465
+msgid "Formats"
+msgstr "格式"
+
+#: ckanext/showcase/controller.py:466
+msgid "Licenses"
+msgstr "授權"
+
+#: ckanext/showcase/controller.py:516
+msgid "Parameter '{parameter_name}' is not an integer"
+msgstr "參數 '{parameter_name}' 並不是整數"
+
+#: ckanext/showcase/controller.py:531 ckanext/showcase/controller.py:567
+msgid "User not authorized to view page"
+msgstr "使用者沒有權限瀏覽頁面"
+
+#: ckanext/showcase/controller.py:540 ckanext/showcase/controller.py:581
+msgid "Unauthorized to perform that action"
+msgstr "沒有權限執行此動作"
+
+#: ckanext/showcase/controller.py:542
+msgid "User '{user_name}' not found."
+msgstr "使用者 '{user_name}' 不存在"
+
+#: ckanext/showcase/controller.py:547
+msgid "The user is now a Showcase Admin"
+msgstr "已將此使用者設為展示案例管理者"
+
+#: ckanext/showcase/controller.py:583
+msgid "The user is not a Showcase Admin"
+msgstr "此使用者現在不是展示案例的管理者"
+
+#: ckanext/showcase/controller.py:585
+msgid "The user is no longer a Showcase Admin"
+msgstr "此使用者已不再是展示案例的管理者"
+
+#: ckanext/showcase/logic/converters.py:24
+#: ckanext/showcase/logic/validators.py:29
+msgid "Not found"
+msgstr "不存在"
+
+#: ckanext/showcase/logic/converters.py:24
+#: ckanext/showcase/logic/validators.py:29
+#: ckanext/showcase/templates/package/read_base.html:4
+msgid "Dataset"
+msgstr "資料集"
+
+#: ckanext/showcase/templates/header.html:5
+msgid "Datasets"
+msgstr "資料集"
+
+#: ckanext/showcase/templates/header.html:8
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:3
+#: ckanext/showcase/templates/package/read_base.html:7
+#: ckanext/showcase/templates/showcase/edit_base.html:5
+#: ckanext/showcase/templates/showcase/edit_base.html:17
+#: ckanext/showcase/templates/showcase/edit_base.html:21
+#: ckanext/showcase/templates/showcase/read.html:6
+#: ckanext/showcase/templates/showcase/read.html:33
+#: ckanext/showcase/templates/showcase/search.html:4
+#: ckanext/showcase/templates/showcase/search.html:7
+msgid "Showcases"
+msgstr "展示案例"
+
+#: ckanext/showcase/templates/header.html:9
+msgid "About"
+msgstr "關於"
+
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:3
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:16
+msgid "Confirm Remove"
+msgstr "確認刪除"
+
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:11
+msgid "Are you sure you want to remove this user as a Showcase Admin - {name}?"
+msgstr "確定要將使用者 {name} 從展示案例管理者中移除嗎？"
+
+#: ckanext/showcase/templates/admin/confirm_remove_showcase_admin.html:15
+#: ckanext/showcase/templates/showcase/confirm_delete.html:14
+msgid "Cancel"
+msgstr "取消"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:9
+msgid "Manage Showcase Admins"
+msgstr "管理展示案例管理者"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:16
+msgid "Add an Existing User"
+msgstr "從已存在使用者新增"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:19
+msgid ""
+"To make an existing user a Showcase Admin, search for their username "
+"below."
+msgstr "欲將已存在使用者設為展示案例管理者，請在下面搜尋"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:23
+msgid "Username"
+msgstr "使用者"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:32
+msgid "Add User"
+msgstr "新增使用者"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:38
+msgid "Showcase Admins"
+msgstr "展示案例管理者"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:43
+msgid "User"
+msgstr "使用者"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:51
+msgid "Are you sure you want to remove this user from the Showcase Admin list?"
+msgstr "確定要將此使用者從展示案例管理者中移除？"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:53
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:46
+msgid "Remove"
+msgstr "移除"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:61
+msgid "There are currently no Showcase Admins."
+msgstr "目前沒有任何展示案例管理者"
+
+#: ckanext/showcase/templates/admin/manage_showcase_admins.html:69
+msgid ""
+"<p><strong>Showcase Admin:</strong> Can create and remove showcases. Can"
+" add and remove datasets from showcases.</p>"
+msgstr ""
+"<p><strong>展示案例管理者：</strong> 可以新增和刪除展示案例。"
+" 可以於展示案例中新增和移除資料集。</p>"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:5
+msgid "{site_title} statistics"
+msgstr "{site_title} 統計"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:10
+msgid "dataset"
+msgid_plural "datasets"
+msgstr[0] "資料集"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:16
+msgid "organization"
+msgid_plural "organizations"
+msgstr[0] "組織"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:22
+msgid "group"
+msgid_plural "groups"
+msgstr[0] "群組"
+
+#: ckanext/showcase/templates/home/snippets/stats.html:28
+msgid "showcase"
+msgid_plural "showcases"
+msgstr[0] "展示案例"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:13
+msgid "Associate this showcase with this dataset"
+msgstr "將資料集關聯到此展示案例"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:13
+msgid "Add to showcase"
+msgstr "新增到展示案例"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:17
+msgid "Showcases featuring {dataset_name}"
+msgstr "引用 {dataset_name} 的展示案例"
+
+#: ckanext/showcase/templates/package/dataset_showcase_list.html:22
+msgid "There are no showcases that feature this dataset"
+msgstr "沒有展示案例引用此資料集"
+
+#: ckanext/showcase/templates/package/read_base.html:6
+msgid "Activity Stream"
+msgstr "動態牆"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:3
+msgid "Showcases - Add datasets"
+msgstr "展示案例 - 新增資料集"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:21
+#: ckanext/showcase/templates/showcase/manage_datasets.html:24
+#: ckanext/showcase/templates/showcase/search.html:27
+msgid "Relevance"
+msgstr "關聯"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:22
+#: ckanext/showcase/templates/showcase/manage_datasets.html:25
+#: ckanext/showcase/templates/showcase/search.html:28
+msgid "Name Ascending"
+msgstr "根據名稱遞增排序"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:23
+#: ckanext/showcase/templates/showcase/manage_datasets.html:26
+#: ckanext/showcase/templates/showcase/search.html:29
+msgid "Name Descending"
+msgstr "根據名稱遞減排序"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:24
+#: ckanext/showcase/templates/showcase/manage_datasets.html:27
+#: ckanext/showcase/templates/showcase/search.html:30
+msgid "Last Modified"
+msgstr "最後修改"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:25
+#: ckanext/showcase/templates/showcase/manage_datasets.html:28
+#: ckanext/showcase/templates/showcase/search.html:31
+msgid "Popular"
+msgstr "熱門的"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:31
+#: ckanext/showcase/templates/showcase/manage_datasets.html:36
+msgid "Datasets available to add to this showcase"
+msgstr "可新增到此展示案例的資料集"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:48
+#: ckanext/showcase/templates/showcase/manage_datasets.html:51
+msgid "Add to Showcase"
+msgstr "新增到展示案例"
+
+#: ckanext/showcase/templates/showcase/add_datasets.html:78
+#: ckanext/showcase/templates/showcase/manage_datasets.html:88
+msgid "No datasets could be found"
+msgstr "找不到資料集"
+
+#: ckanext/showcase/templates/showcase/confirm_delete.html:3
+#: ckanext/showcase/templates/showcase/confirm_delete.html:15
+msgid "Confirm Delete"
+msgstr "確認刪除"
+
+#: ckanext/showcase/templates/showcase/confirm_delete.html:11
+msgid "Are you sure you want to delete showcase - {showcase_name}?"
+msgstr "確定要刪除展示案例：{showcase_name} 嗎？"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:19
+msgid "Edit"
+msgstr "編輯"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:22
+#: ckanext/showcase/templates/showcase/new.html:3
+#: ckanext/showcase/templates/showcase/new_package_form.html:63
+msgid "Create Showcase"
+msgstr "建立展示案例"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:35
+msgid "View showcase"
+msgstr "瀏覽展示案例"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:41
+msgid "Edit showcase"
+msgstr "編輯展示案例"
+
+#: ckanext/showcase/templates/showcase/edit_base.html:42
+msgid "Manage datasets"
+msgstr "管理資料集"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:3
+msgid "Showcases - Manage datasets"
+msgstr "展示案例 - 管理資料集"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:96
+msgid "Datasets in this showcase"
+msgstr "此展示案例包含的資料集"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:109
+msgid "Remove from Showcase"
+msgstr "從展示案例中移除"
+
+#: ckanext/showcase/templates/showcase/manage_datasets.html:140
+msgid "This showcase has no datasets associated to it"
+msgstr "沒有任何資料集和這個展示案例有關聯"
+
+#: ckanext/showcase/templates/showcase/new.html:8
+msgid "Create a Showcase"
+msgstr "建立一個展示案例"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:15
+msgid "Title"
+msgstr "標題"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:15
+msgid "eg. A descriptive title"
+msgstr "例如：一個描述性的標題"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:24
+msgid "URL"
+msgstr "網址"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:24
+msgid "eg. my-showcase"
+msgstr "例如：我的展示案例"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:28
+msgid "Description"
+msgstr "說明"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:28
+msgid "eg. Some useful notes about the data"
+msgstr "例如：此資料一些有用的紀錄"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:33
+msgid "eg. economy, mental health, government"
+msgstr "例如：經濟、醫療衛生、政府"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:44
+msgid "External link"
+msgstr "外部連結"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:44
+msgid "http://www.example.com"
+msgstr "http://www.example.com"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:48
+msgid "Submitted By"
+msgstr "作者"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:48
+msgid "Joe Bloggs"
+msgstr "Joe Bloggs"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:50
+msgid "Submitter Email"
+msgstr "作者的電子郵件"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:50
+msgid "joe@example.com"
+msgstr "joe@example.com"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:58
+msgid "Are you sure you want to delete this showcase?"
+msgstr "確定要刪除此展示案例嗎？"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:59
+msgid "Delete"
+msgstr "刪除"
+
+#: ckanext/showcase/templates/showcase/new_package_form.html:63
+msgid "Update Showcase"
+msgstr "更新展示案例"
+
+#: ckanext/showcase/templates/showcase/read.html:46
+msgid "Manage"
+msgstr "管理"
+
+#: ckanext/showcase/templates/showcase/read.html:53
+msgid "Private"
+msgstr "非公開"
+
+#: ckanext/showcase/templates/showcase/read.html:60
+msgid "Draft"
+msgstr "草稿"
+
+#: ckanext/showcase/templates/showcase/read.html:78
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:27
+msgid "Launch website"
+msgstr "前往網站"
+
+#: ckanext/showcase/templates/showcase/search.html:13
+msgid "Add Showcase"
+msgstr "新增展示案例"
+
+#: ckanext/showcase/templates/showcase/search.html:33
+msgid "Search showcases..."
+msgstr "搜尋展示案例..."
+
+#: ckanext/showcase/templates/showcase/snippets/helper.html:4
+msgid "What are Showcases?"
+msgstr "展示案例是什麼？"
+
+#: ckanext/showcase/templates/showcase/snippets/helper.html:8
+msgid ""
+"Datasets have been used to build apps, websites and visualizations. "
+"They've been featured in articles, and written about in news reports and "
+"blog posts. Showcases collect together the best examples of datasets in "
+"use, to provide further insight, ideas, and inspiration."
+msgstr ""
+"資料集常被用以打造應用程式、網站或資料視覺化，"
+"並使用於新聞報導與部落格文章。展示案例蒐集資料集的最佳實踐範例，"
+"提供深入的見解、想法與靈感。"
+
+#: ckanext/showcase/templates/showcase/snippets/helper.html:12
+#, python-format
+msgid ""
+"Sysadmins can manage Showcase Admins from the <a href='%(url)s'>Showcase "
+"configuration page</a>."
+msgstr ""
+"系統管理員可於<a href='%(url)s'>展示案例設定</a>管理展示案例管理者。"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:21
+msgid "Submitted by"
+msgstr "作者"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:37
+msgid "Datasets in Showcase"
+msgstr "展示案例包含的資料集"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_info.html:47
+msgid "There are no Datasets in this Showcase"
+msgstr "此展示案例沒有包含資料集"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:30
+msgid "This showcase has no description"
+msgstr "此展示案例沒有說明"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:35
+msgid "{num} Dataset"
+msgid_plural "{num} Datasets"
+msgstr[0] "{num} 個資料集"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:37
+msgid "0 Datasets"
+msgstr "0 資料集"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:41
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:42
+msgid "View {showcase_title}"
+msgstr "瀏覽 {showcase_title}"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_item.html:46
+msgid "Remove dataset from this showcase"
+msgstr "從此展示案例移除資料集"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:7
+msgid "{number} showcase found for '{query}'"
+msgid_plural "{number} showcases found for '{query}'"
+msgstr[0] "根據 '{query}' 找到 {number} 個展示案例"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:8
+msgid "No showcases found for '{query}'"
+msgstr "找不到符合 '{query}' 的展示案例"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:9
+msgid "{number} showcase found"
+msgid_plural "{number} showcases found"
+msgstr[0] "找到 {number} 個展示案例"
+
+#: ckanext/showcase/templates/showcase/snippets/showcase_search_result_text.html:10
+msgid "No showcases found"
+msgstr "找不到展示案例"
+
