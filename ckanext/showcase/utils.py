@@ -32,7 +32,7 @@ def check_edit_view_auth(id):
         'session': model.Session,
         'user': c.user or c.author,
         'auth_user_obj': c.userobj,
-        'save': 'save' in tk.request.params,
+        'save': 'save' in tk.request.args,
         'moderated': tk.config.get('moderated'),
         'pending': True
     }
@@ -52,7 +52,7 @@ def check_new_view_auth():
         'session': model.Session,
         'user': tk.c.user or tk.c.author,
         'auth_user_obj': tk.c.userobj,
-        'save': 'save' in tk.request.params
+        'save': 'save' in tk.request.args
     }
 
     # Check access here, then continue with PackageController.new()
@@ -122,7 +122,7 @@ def manage_datasets_view(id):
 
     # Are we removing a showcase/dataset association?
     form_data = tk.request.form if tk.check_ckan_version(
-        '2.9') else tk.request.params
+        '2.9') else tk.request.args
 
     if tk.check_ckan_version(min_version='2.9.0'):
         manage_route = 'showcase_blueprint.manage_datasets'
@@ -308,14 +308,14 @@ def _add_dataset_search(showcase_id, showcase_name):
     package_type = 'dataset'
 
     # unicode format (decoded from utf8)
-    q = c.q = tk.request.params.get('q', u'')
+    q = c.q = tk.request.args.get('q', u'')
     c.query_error = False
-    page = h.get_page_number(tk.request.params)
+    page = h.get_page_number(tk.request.args)
 
     limit = int(tk.config.get('ckan.datasets_per_page', 20))
 
     # most search operations should reset the page counter:
-    params_nopage = [(k, v) for k, v in tk.request.params.items()
+    params_nopage = [(k, v) for k, v in tk.request.args.items()
                      if k != 'page']
 
     def drill_down_url(alternative_url=None, **by):
@@ -337,7 +337,7 @@ def _add_dataset_search(showcase_id, showcase_name):
 
     c.remove_field = remove_field
 
-    sort_by = tk.request.params.get('sort', None)
+    sort_by = tk.request.args.get('sort', None)
     params_nosort = [(k, v) for k, v in params_nopage if k != 'sort']
 
     def _sort_by(fields):
@@ -377,7 +377,7 @@ def _add_dataset_search(showcase_id, showcase_name):
         c.fields_grouped = {}
         search_extras = {}
         fq = ''
-        for (param, value) in tk.request.params.items():
+        for (param, value) in tk.request.args.items():
             if param not in ['q', 'page', 'sort'] \
                     and len(value) and not param.startswith('_'):
                 if not param.startswith('ext_'):
@@ -479,7 +479,7 @@ def _add_dataset_search(showcase_id, showcase_name):
     for facet in c.search_facets.keys():
         try:
             limit = int(
-                tk.request.params.get(
+                tk.request.args.get(
                     '_%s_limit' % facet,
                     int(tk.config.get('search.facets.default', 10))))
         except tk.ValueError:
@@ -505,7 +505,7 @@ def url_with_params(url, params):
 
 
 def delete_view(id):
-    if 'cancel' in tk.request.params:
+    if 'cancel' in tk.request.args:
         tk.redirect_to(
             'showcase_blueprint.edit' if tk.check_ckan_version(min_version='2.9.0')
             else 'showcase_edit', id=id)
@@ -577,7 +577,7 @@ def dataset_showcase_list(id):
     if tk.request.method == 'POST':
         # Are we adding the dataset to a showcase?
         form_data = tk.request.form if tk.check_ckan_version(
-            '2.9') else tk.request.params
+            '2.9') else tk.request.args
 
         new_showcase = form_data.get('showcase_added')
         if new_showcase:
@@ -636,7 +636,7 @@ def manage_showcase_admins():
         return tk.abort(401, _('User not authorized to view page'))
 
     form_data = tk.request.form if tk.check_ckan_version(
-        '2.9') else tk.request.params
+        '2.9') else tk.request.args
 
     if tk.check_ckan_version(min_version='2.9.0'):
         admins_route = 'showcase_blueprint.admins'
@@ -683,7 +683,7 @@ def remove_showcase_admin():
         return tk.abort(401, _('User not authorized to view page'))
 
     form_data = tk.request.form if tk.check_ckan_version(
-        '2.9') else tk.request.params
+        '2.9') else tk.request.args
 
     if tk.check_ckan_version(min_version='2.9.0'):
         admins_route = 'showcase_blueprint.admins'
@@ -693,9 +693,9 @@ def remove_showcase_admin():
     if 'cancel' in form_data:
         return tk.redirect_to(admins_route)
 
-    user_id = tk.request.params['user']
+    user_id = tk.request.args['user']
     if tk.request.method == 'POST' and user_id:
-        user_id = tk.request.params['user']
+        user_id = tk.request.args['user']
         try:
             tk.get_action('ckanext_showcase_admin_remove')(
                 {}, {'username': user_id}
