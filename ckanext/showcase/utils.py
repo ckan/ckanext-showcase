@@ -14,7 +14,7 @@ from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.helpers as h
-import ckantoolkit as tk
+import ckan.plugins.toolkit as tk
 from ckanext.showcase.model import ShowcasePackageAssociation
 
 _ = tk._
@@ -128,7 +128,7 @@ def manage_datasets_view(id):
         manage_route = 'showcase_blueprint.manage_datasets'
     else:
         manage_route = 'showcase_manage_datasets'
-    
+
     if (tk.request.method == 'POST'
             and 'bulk_action.showcase_remove' in form_data):
         # Find the datasets to perform the action on, they are prefixed by
@@ -196,7 +196,7 @@ def manage_datasets_view(id):
 
 
 def migrate(allow_duplicates):
-    related_items = tk.get_action('related_list')(data_dict={})
+    related_items = tk.get_action('related_list')({}, {})
 
     # preflight:
     # related items must have unique titles before migration
@@ -213,7 +213,7 @@ migration can continue. Please correct and try again:""")
         return
 
     for related in related_items:
-        existing_showcase = tk.get_action('package_search')(data_dict={
+        existing_showcase = tk.get_action('package_search')({}, {
             'fq':
             '+dataset_type:showcase original_related_item_id:{0}'.format(
                 related['id'])
@@ -239,7 +239,8 @@ migration can continue. Please correct and try again:""")
             # make the showcase
             try:
                 new_showcase = tk.get_action('ckanext_showcase_create')(
-                    data_dict=data_dict)
+                    {}, data_dict
+                    )
             except Exception as e:
                 print('There was a problem migrating "{0}": {1}'.format(
                     normalized_title, e))
@@ -253,7 +254,8 @@ migration can continue. Please correct and try again:""")
                     if related_pkg_id:
                         tk.get_action(
                             'ckanext_showcase_package_association_create')(
-                                data_dict={
+                                {},
+                                {
                                     'showcase_id': new_showcase['id'],
                                     'package_id': related_pkg_id
                                 })
@@ -645,9 +647,9 @@ def manage_showcase_admins():
     if tk.request.method == 'POST' and form_data['username']:
         username = form_data['username']
         try:
-            tk.get_action('ckanext_showcase_admin_add')(data_dict={
-                'username': username
-            })
+            tk.get_action('ckanext_showcase_admin_add')(
+                {}, {'username': username}
+                )
         except tk.NotAuthorized:
             abort(401, _('Unauthorized to perform that action'))
         except tk.ObjectNotFound:
@@ -660,7 +662,7 @@ def manage_showcase_admins():
 
         return tk.redirect_to(h.url_for(admins_route))
 
-    c.showcase_admins = tk.get_action('ckanext_showcase_admin_list')()
+    c.showcase_admins = tk.get_action('ckanext_showcase_admin_list')({},{})
 
     return tk.render('admin/manage_showcase_admins.html')
 
@@ -695,9 +697,9 @@ def remove_showcase_admin():
     if tk.request.method == 'POST' and user_id:
         user_id = tk.request.params['user']
         try:
-            tk.get_action('ckanext_showcase_admin_remove')(data_dict={
-                'username': user_id
-            })
+            tk.get_action('ckanext_showcase_admin_remove')(
+                {}, {'username': user_id}
+                )
         except tk.NotAuthorized:
             return tk.abort(401, _('Unauthorized to perform that action'))
         except tk.ObjectNotFound:
@@ -707,7 +709,7 @@ def remove_showcase_admin():
 
         return tk.redirect_to(h.url_for(admins_route))
 
-    c.user_dict = tk.get_action('user_show')(data_dict={'id': user_id})
+    c.user_dict = tk.get_action('user_show')({}, {'id': user_id})
     c.user_id = user_id
     return tk.render('admin/confirm_remove_showcase_admin.html')
 
@@ -718,7 +720,7 @@ def markdown_to_html():
     markdown, this command will migrate all nothes using CKAN's
     render_markdown core helper.
     '''
-    showcases = tk.get_action('ckanext_showcase_list')(data_dict={})
+    showcases = tk.get_action('ckanext_showcase_list')({},{})
 
     site_user = tk.get_action('get_site_user')({
         'model': model,
