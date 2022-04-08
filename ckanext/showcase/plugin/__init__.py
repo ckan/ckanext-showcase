@@ -11,7 +11,6 @@ from six import string_types
 import ckan.plugins as plugins
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
-from ckan import model as ckan_model
 
 import ckantoolkit as tk
 
@@ -28,7 +27,6 @@ if tk.check_ckan_version(u'2.9'):
 else:
     from ckanext.showcase.plugin.pylons_plugin import MixinPlugin
 
-c = tk.c
 _ = tk._
 
 log = logging.getLogger(__name__)
@@ -183,33 +181,58 @@ class ShowcasePlugin(
 
         return pkg_dict
 
-    def after_show(self, context, pkg_dict):
-        '''
-        Modify package_show pkg_dict.
-        '''
-        pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
-    def before_view(self, pkg_dict):
-        '''
-        Modify pkg_dict that is sent to templates.
-        '''
+    if tk.check_ckan_version("2.10"):
+        def after_package_show(self, context, pkg_dict):
+            '''
+            Modify package_show pkg_dict.
+            '''
+            pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
-        context = {'model': ckan_model, 'session': ckan_model.Session,
-                   'user': c.user or c.author}
+        def before_package_view(self, pkg_dict):
+            '''
+            Modify pkg_dict that is sent to templates.
+            '''
+            context = {'user': tk.g.user or tk.g.author}
 
-        return self._add_to_pkg_dict(context, pkg_dict)
+            return self._add_to_pkg_dict(context, pkg_dict)
 
-    def before_search(self, search_params):
-        '''
-        Unless the query is already being filtered by this dataset_type
-        (either positively, or negatively), exclude datasets of type
-        `showcase`.
-        '''
-        fq = search_params.get('fq', '')
-        filter = 'dataset_type:{0}'.format(DATASET_TYPE_NAME)
-        if filter not in fq:
-            search_params.update({'fq': fq + " -" + filter})
-        return search_params
+        def before_package_search(self, search_params):
+            '''
+            Unless the query is already being filtered by this dataset_type
+            (either positively, or negatively), exclude datasets of type
+            `showcase`.
+            '''
+            fq = search_params.get('fq', '')
+            filter = 'dataset_type:{0}'.format(DATASET_TYPE_NAME)
+            if filter not in fq:
+                search_params.update({'fq': fq + " -" + filter})
+            return search_params
+    else:
+        def after_show(self, context, pkg_dict):
+            '''
+            Modify package_show pkg_dict.
+            '''
+            pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
+
+        def before_view(self, pkg_dict):
+            '''
+            Modify pkg_dict that is sent to templates.
+            '''
+            context = {'user': tk.g.user or tk.g.author}
+            return self._add_to_pkg_dict(context, pkg_dict)
+
+        def before_search(self, search_params):
+            '''
+            Unless the query is already being filtered by this dataset_type
+            (either positively, or negatively), exclude datasets of type
+            `showcase`.
+            '''
+            fq = search_params.get('fq', '')
+            filter = 'dataset_type:{0}'.format(DATASET_TYPE_NAME)
+            if filter not in fq:
+                search_params.update({'fq': fq + " -" + filter})
+            return search_params
 
     # ITranslation
 
