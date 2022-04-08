@@ -2,9 +2,9 @@
 
 from flask import Blueprint
 
-import ckantoolkit as tk
 
 import ckan.lib.helpers as h
+import ckan.plugins.toolkit as tk
 import ckan.views.dataset as dataset
 
 import ckanext.showcase.utils as utils

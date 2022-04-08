@@ -9,10 +9,9 @@ from collections import OrderedDict
 from six import string_types
 
 import ckan.plugins as plugins
+import ckan.plugins.toolkit as tk
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
-
-import ckantoolkit as tk
 
 
 import ckanext.showcase.utils as utils
