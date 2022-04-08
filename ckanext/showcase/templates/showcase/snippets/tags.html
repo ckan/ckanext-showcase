@@ -8,7 +8,7 @@
     <ul class="{{ _class }}">
       {% for tag in tags %}
         <li>
-            <a class="{% block tag_list_item_class %}tag{% endblock %}" href="{{ h.url_for(showcase_index_route, tags=tag.name) }}">{{ h.truncate(tag.display_name, 22) }}</a>
+            <a class="{% block tag_list_item_class %}tag{% endblock %}" href="{{ h.url_for(showcase_index_route, tags=tag.name) }}">{{ tag.display_name|truncate(22) }}</a>
         </li>
       {% endfor %}
     </ul>
