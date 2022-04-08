@@ -183,13 +183,13 @@ class ShowcasePlugin(
 
 
     if tk.check_ckan_version("2.10"):
-        def after_package_show(self, context, pkg_dict):
+        def after_dataset_show(self, context, pkg_dict):
             '''
             Modify package_show pkg_dict.
             '''
             pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
-        def before_package_view(self, pkg_dict):
+        def before_dataset_view(self, pkg_dict):
             '''
             Modify pkg_dict that is sent to templates.
             '''
@@ -197,7 +197,7 @@ class ShowcasePlugin(
 
             return self._add_to_pkg_dict(context, pkg_dict)
 
-        def before_package_search(self, search_params):
+        def before_dataset_search(self, search_params):
             '''
             Unless the query is already being filtered by this dataset_type
             (either positively, or negatively), exclude datasets of type
