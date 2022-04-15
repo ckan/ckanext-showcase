@@ -214,15 +214,6 @@ def _add_dataset_search(showcase_id, showcase_name):
     params_nopage = [(k, v) for k, v in tk.request.params.items()
                      if k != 'page']
 
-    def drill_down_url(alternative_url=None, **by):
-        return h.add_url_param(alternative_url=alternative_url,
-                               controller='dataset'
-                               if tk.check_ckan_version('2.9') else 'package',
-                               action='search',
-                               new_params=by)
-
-    c.drill_down_url = drill_down_url
-
     def remove_field(key, value=None, replace=None):
         return h.remove_url_param(key,
                                   value=value,
@@ -608,6 +599,7 @@ def remove_showcase_admin():
     c.user_dict = tk.get_action('user_show')({}, {'id': user_id})
     c.user_id = user_id
     return tk.render('admin/confirm_remove_showcase_admin.html')
+
 
 def markdown_to_html():
     ''' Migrates the notes of all showcases from markdown to html.
