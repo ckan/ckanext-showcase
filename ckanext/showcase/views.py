@@ -34,7 +34,6 @@ class CreateView(dataset.CreateView):
                         tk.request.files)))))
         context = self._prepare()
         data_dict['type'] = utils.DATASET_TYPE_NAME
-        context['message'] = data_dict.get('log_message', '')
 
         try:
             pkg_dict = tk.get_action('ckanext_showcase_create')(context,

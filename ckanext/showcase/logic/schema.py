@@ -29,7 +29,6 @@ user_id_or_name_exists = toolkit.get_validator("user_id_or_name_exists")
 package_name_validator = toolkit.get_validator("package_name_validator")
 tag_string_convert = toolkit.get_validator("tag_string_convert")
 ignore_not_package_admin = toolkit.get_validator("ignore_not_package_admin")
-no_http = toolkit.get_validator("no_http")
 url_validator = toolkit.get_validator("url_validator")
 
 def showcase_base_schema():
@@ -44,7 +43,6 @@ def showcase_base_schema():
         'url': [ignore_missing, url_validator],
         'state': [ignore_not_package_admin, ignore_missing],
         'type': [ignore_missing, unicode_safe],
-        'log_message': [ignore_missing, unicode_safe, no_http],
         '__extras': [ignore],
         '__junk': [empty],
         'resources': default_resource_schema(),
