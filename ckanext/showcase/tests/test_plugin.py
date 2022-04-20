@@ -37,7 +37,10 @@ class TestShowcaseIndex(object):
             )
 
         response = app.get("/showcase", status=200)
-        assert 'this-must-be-shown</span>' in response.body
+        if tk.check_ckan_version(max_version="2.7"):
+            assert '<span>this-must-be-shown 1</span>' in response.body
+        else:
+            assert '<span class="item-label">this-must-be-shown</span>' in response.body
 
 
 @pytest.mark.usefixtures("clean_db")
