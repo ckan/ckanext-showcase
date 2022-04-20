@@ -67,7 +67,7 @@ def read_view(id):
     context = {
         'model': model,
         'session': model.Session,
-        'user': g.user or g.author,
+        'user': tk.g.user or tk.g.author,
         'for_view': True,
         'auth_user_obj': tk.g.userobj
     }
