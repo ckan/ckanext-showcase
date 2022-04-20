@@ -1,9 +1,6 @@
-import sqlalchemy
-
 import ckan.plugins.toolkit as toolkit
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib.navl.dictization_functions import validate
-from ckan.logic import NotAuthorized
 
 from ckanext.showcase.logic.schema import (showcase_package_list_schema,
                                            package_showcase_list_schema)
@@ -11,9 +8,6 @@ from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 
 import logging
 log = logging.getLogger(__name__)
-
-_select = sqlalchemy.sql.select
-_and_ = sqlalchemy.and_
 
 
 @toolkit.side_effect_free
