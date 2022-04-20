@@ -8,18 +8,16 @@ from collections import OrderedDict
 import six
 from six.moves.urllib.parse import urlencode
 
+import ckan.model as model
 import ckan.plugins as p
-from ckan import model
-from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.helpers as h
-import ckantoolkit as tk
+import ckan.plugins.toolkit as tk
 from ckanext.showcase.model import ShowcasePackageAssociation
 
 _ = tk._
 abort = tk.abort
-c = tk.c
 
 log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = 'showcase'
@@ -30,10 +28,9 @@ def check_edit_view_auth(id):
     context = {
         'model': model,
         'session': model.Session,
-        'user': c.user or c.author,
-        'auth_user_obj': c.userobj,
+        'user': tk.g.user or tk.g.author,
+        'auth_user_obj': tk.g.userobj,
         'save': 'save' in tk.request.params,
-        'moderated': tk.config.get('moderated'),
         'pending': True
     }
 
@@ -50,8 +47,8 @@ def check_new_view_auth():
     context = {
         'model': model,
         'session': model.Session,
-        'user': tk.c.user or tk.c.author,
-        'auth_user_obj': tk.c.userobj,
+        'user': tk.g.user or tk.g.author,
+        'auth_user_obj': tk.g.userobj,
         'save': 'save' in tk.request.params
     }
 
@@ -70,24 +67,24 @@ def read_view(id):
     context = {
         'model': model,
         'session': model.Session,
-        'user': c.user or c.author,
+        'user': tk.g.user or tk.g.author,
         'for_view': True,
-        'auth_user_obj': c.userobj
+        'auth_user_obj': tk.g.userobj
     }
     data_dict = {'id': id}
 
     # check if showcase exists
     try:
-        c.pkg_dict = tk.get_action('package_show')(context, data_dict)
+        tk.g.pkg_dict = tk.get_action('package_show')(context, data_dict)
     except tk.ObjectNotFound:
         return tk.abort(404, _('Showcase not found'))
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read showcase'))
 
     # get showcase packages
-    c.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
+    tk.g.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
         context, {
-            'showcase_id': c.pkg_dict['id']
+            'showcase_id': tk.g.pkg_dict['id']
         })
 
     package_type = DATASET_TYPE_NAME
@@ -100,7 +97,7 @@ def manage_datasets_view(id):
     context = {
         'model': model,
         'session': model.Session,
-        'user': tk.c.user or tk.c.author
+        'user': tk.g.user or tk.g.author
     }
     data_dict = {'id': id}
 
@@ -114,7 +111,7 @@ def manage_datasets_view(id):
 
     # check if showcase exists
     try:
-        tk.c.pkg_dict = tk.get_action('package_show')(context, data_dict)
+        tk.g.pkg_dict = tk.get_action('package_show')(context, data_dict)
     except tk.ObjectNotFound:
         return tk.abort(404, _('Showcase not found'))
     except tk.NotAuthorized:
@@ -128,7 +125,7 @@ def manage_datasets_view(id):
         manage_route = 'showcase_blueprint.manage_datasets'
     else:
         manage_route = 'showcase_manage_datasets'
-    
+
     if (tk.request.method == 'POST'
             and 'bulk_action.showcase_remove' in form_data):
         # Find the datasets to perform the action on, they are prefixed by
@@ -141,7 +138,7 @@ def manage_datasets_view(id):
             for dataset_id in dataset_ids:
                 tk.get_action('ckanext_showcase_package_association_delete')(
                     context, {
-                        'showcase_id': tk.c.pkg_dict['id'],
+                        'showcase_id': tk.g.pkg_dict['id'],
                         'package_id': dataset_id
                     })
             h.flash_success(
@@ -168,7 +165,7 @@ def manage_datasets_view(id):
                     tk.get_action(
                         'ckanext_showcase_package_association_create')(
                             context, {
-                                'showcase_id': tk.c.pkg_dict['id'],
+                                'showcase_id': tk.g.pkg_dict['id'],
                                 'package_id': dataset_id
                             })
                 except tk.ValidationError as e:
@@ -184,117 +181,15 @@ def manage_datasets_view(id):
             url = h.url_for(manage_route, id=id)
             return h.redirect_to(url)
 
-    _add_dataset_search(tk.c.pkg_dict['id'], tk.c.pkg_dict['name'])
+    _add_dataset_search(tk.g.pkg_dict['id'], tk.g.pkg_dict['name'])
 
     # get showcase packages
-    tk.c.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
+    tk.g.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
         context, {
-            'showcase_id': tk.c.pkg_dict['id']
+            'showcase_id': tk.g.pkg_dict['id']
         })
 
     return tk.render('showcase/manage_datasets.html')
-
-
-def migrate(allow_duplicates):
-    related_items = tk.get_action('related_list')(data_dict={})
-
-    # preflight:
-    # related items must have unique titles before migration
-    related_titles = [i['title'] for i in related_items]
-    # make a list of duplicate titles
-    duplicate_titles = _find_duplicates(related_titles)
-    if duplicate_titles and allow_duplicates is False:
-        print(
-            """All Related Items must have unique titles before migration. The following
-Related Item titles are used more than once and need to be corrected before
-migration can continue. Please correct and try again:""")
-        for i in duplicate_titles:
-            print(i)
-        return
-
-    for related in related_items:
-        existing_showcase = tk.get_action('package_search')(data_dict={
-            'fq':
-            '+dataset_type:showcase original_related_item_id:{0}'.format(
-                related['id'])
-        })
-        normalized_title = substitute_ascii_equivalents(related['title'])
-        if existing_showcase['count'] > 0:
-            print('Showcase for Related Item "{0}" already exists.'.format(
-                normalized_title))
-        else:
-            showcase_title = _gen_new_title(related.get('title'),
-                                            related['id'])
-            data_dict = {
-                'original_related_item_id': related.get('id'),
-                'title': showcase_title,
-                'name': munge_title_to_name(showcase_title),
-                'notes': related.get('description'),
-                'image_url': related.get('image_url'),
-                'url': related.get('url'),
-                'tags': [{
-                    "name": related.get('type').lower()
-                }]
-            }
-            # make the showcase
-            try:
-                new_showcase = tk.get_action('ckanext_showcase_create')(
-                    data_dict=data_dict)
-            except Exception as e:
-                print('There was a problem migrating "{0}": {1}'.format(
-                    normalized_title, e))
-            else:
-                print('Created Showcase from the Related Item "{0}"'.format(
-                    normalized_title))
-
-                # make the showcase_package_association, if needed
-                try:
-                    related_pkg_id = _get_related_dataset(related['id'])
-                    if related_pkg_id:
-                        tk.get_action(
-                            'ckanext_showcase_package_association_create')(
-                                data_dict={
-                                    'showcase_id': new_showcase['id'],
-                                    'package_id': related_pkg_id
-                                })
-                except Exception as e:
-                    print(
-                        'There was a problem creating the showcase_package_association for "{0}": {1}'
-                        .format(normalized_title, e))
-
-
-def _get_related_dataset(related_id):
-    '''Get the id of a package from related_dataset, if one exists.'''
-    related_dataset = model.Session.query(
-        model.RelatedDataset).filter_by(related_id=related_id).first()
-    if related_dataset:
-        return related_dataset.dataset_id
-
-
-def _find_duplicates(lst):
-    '''From a list, return a set of duplicates.
-
-    >>> MigrationCommand('cmd')._find_duplicates([1, 2, 3, 4, 5])
-    []
-
-    >>> MigrationCommand('cmd')._find_duplicates([1, 2, 3, 4, 3, 1, 1])
-    [1, 3]
-
-    >>> MigrationCommand('cmd')._find_duplicates(['one', 'two', 'three', 'four', 'two', 'three'])
-    ['two', 'three']
-    '''
-    return list(set(x for x in lst if lst.count(x) >= 2))
-
-
-def _gen_new_title(title, related_id):
-    name = munge_title_to_name(title)
-    pkg_obj = model.Session.query(model.Package).filter_by(name=name).first()
-    if pkg_obj:
-        title.replace('duplicate_', '')
-        return 'duplicate_' + title + '_' + related_id
-    else:
-        return title
-
 
 def _add_dataset_search(showcase_id, showcase_name):
     '''
@@ -306,8 +201,8 @@ def _add_dataset_search(showcase_id, showcase_name):
     package_type = 'dataset'
 
     # unicode format (decoded from utf8)
-    q = c.q = tk.request.params.get('q', u'')
-    c.query_error = False
+    q = tk.g.q = tk.request.params.get('q', u'')
+    tk.g.query_error = False
     page = h.get_page_number(tk.request.params)
 
     limit = int(tk.config.get('ckan.datasets_per_page', 20))
@@ -315,15 +210,6 @@ def _add_dataset_search(showcase_id, showcase_name):
     # most search operations should reset the page counter:
     params_nopage = [(k, v) for k, v in tk.request.params.items()
                      if k != 'page']
-
-    def drill_down_url(alternative_url=None, **by):
-        return h.add_url_param(alternative_url=alternative_url,
-                               controller='dataset'
-                               if tk.check_ckan_version('2.9') else 'package',
-                               action='search',
-                               new_params=by)
-
-    c.drill_down_url = drill_down_url
 
     def remove_field(key, value=None, replace=None):
         return h.remove_url_param(key,
@@ -333,7 +219,7 @@ def _add_dataset_search(showcase_id, showcase_name):
                                   tk.check_ckan_version('2.9') else 'package',
                                   action='search')
 
-    c.remove_field = remove_field
+    tk.g.remove_field = remove_field
 
     sort_by = tk.request.params.get('sort', None)
     params_nosort = [(k, v) for k, v in params_nopage if k != 'sort']
@@ -355,56 +241,66 @@ def _add_dataset_search(showcase_id, showcase_name):
             params.append(('sort', sort_string))
         return _search_url(params, showcase_name)
 
-    c.sort_by = _sort_by
+    tk.g.sort_by = _sort_by
     if sort_by is None:
-        c.sort_by_fields = []
+        tk.g.sort_by_fields = []
     else:
-        c.sort_by_fields = [field.split()[0] for field in sort_by.split(',')]
+        tk.g.sort_by_fields = [field.split()[0] for field in sort_by.split(',')]
 
     def pager_url(q=None, page=None):
         params = list(params_nopage)
         params.append(('page', page))
         return _search_url(params, showcase_name)
 
-    c.search_url_params = urlencode(_encode_params(params_nopage))
+    tk.g.search_url_params = urlencode(_encode_params(params_nopage))
 
     try:
-        c.fields = []
-        # c.fields_grouped will contain a dict of params containing
+        tk.g.fields = []
+        # tk.g.fields_grouped will contain a dict of params containing
         # a list of values eg {'tags':['tag1', 'tag2']}
-        c.fields_grouped = {}
+        tk.g.fields_grouped = {}
         search_extras = {}
         fq = ''
         for (param, value) in tk.request.params.items():
             if param not in ['q', 'page', 'sort'] \
                     and len(value) and not param.startswith('_'):
                 if not param.startswith('ext_'):
-                    c.fields.append((param, value))
+                    tk.g.fields.append((param, value))
                     fq += ' %s:"%s"' % (param, value)
-                    if param not in c.fields_grouped:
-                        c.fields_grouped[param] = [value]
+                    if param not in tk.g.fields_grouped:
+                        tk.g.fields_grouped[param] = [value]
                     else:
-                        c.fields_grouped[param].append(value)
+                        tk.g.fields_grouped[param].append(value)
                 else:
                     search_extras[param] = value
 
         context = {
             'model': model,
             'session': model.Session,
-            'user': c.user or c.author,
+            'user': tk.g.user or tk.g.author,
             'for_view': True,
-            'auth_user_obj': c.userobj
+            'auth_user_obj': tk.g.userobj
         }
 
-        if package_type and package_type != 'dataset':
+        # Unless changed via config options, don't show other dataset
+        # types any search page. Potential alternatives are do show them
+        # on the default search page (dataset) or on one other search page
+        search_all_type = tk.config.get('ckan.search.show_all_types')
+        search_all = False
+
+        try:
+            # If the "type" is set to True or False, convert to bool
+            # and we know that no type was specified, so use traditional
+            # behaviour of applying this only to dataset type
+            search_all = tk.asbool(search_all_type)
+            search_all_type = 'dataset'
+        # Otherwise we treat as a string representing a type
+        except ValueError:
+            search_all = True
+
+        if not search_all or package_type != search_all_type:
             # Only show datasets of this particular type
             fq += ' +dataset_type:{type}'.format(type=package_type)
-        else:
-            # Unless changed via config options, don't show non standard
-            # dataset types on the default search page
-            if not tk.asbool(
-                    tk.config.get('ckan.search.show_all_types', 'False')):
-                fq += ' +dataset_type:dataset'
 
         # Only search for packages that aren't already associated with the
         # Showcase
@@ -444,7 +340,7 @@ def _add_dataset_search(showcase_id, showcase_name):
         for plugin in p.PluginImplementations(p.IFacets):
             facets = plugin.dataset_facets(facets, package_type)
 
-        c.facet_titles = facets
+        tk.g.facet_titles = facets
 
         data_dict = {
             'q': q,
@@ -457,24 +353,24 @@ def _add_dataset_search(showcase_id, showcase_name):
         }
 
         query = tk.get_action('package_search')(context, data_dict)
-        c.sort_by_selected = query['sort']
+        tk.g.sort_by_selected = query['sort']
 
-        c.page = h.Page(collection=query['results'],
+        tk.g.page = h.Page(collection=query['results'],
                         page=page,
                         url=pager_url,
                         item_count=query['count'],
                         items_per_page=limit)
-        c.facets = query['facets']
-        c.search_facets = query['search_facets']
-        c.page.items = query['results']
+        tk.g.facets = query['facets']
+        tk.g.search_facets = query['search_facets']
+        tk.g.page.items = query['results']
     except SearchError as se:
         log.error('Dataset search error: %r', se.args)
-        c.query_error = True
-        c.facets = {}
-        c.search_facets = {}
-        c.page = h.Page(collection=[])
-    c.search_facets_limits = {}
-    for facet in c.search_facets.keys():
+        tk.g.query_error = True
+        tk.g.facets = {}
+        tk.g.search_facets = {}
+        tk.g.page = h.Page(collection=[])
+    tk.g.search_facets_limits = {}
+    for facet in tk.g.search_facets.keys():
         try:
             limit = int(
                 tk.request.params.get(
@@ -485,7 +381,7 @@ def _add_dataset_search(showcase_id, showcase_name):
                 400,
                 _("Parameter '{parameter_name}' is not an integer").format(
                     parameter_name='_%s_limit' % facet))
-        c.search_facets_limits[facet] = limit
+        tk.g.search_facets_limits[facet] = limit
 
 
 def _search_url(params, name):
@@ -511,8 +407,8 @@ def delete_view(id):
     context = {
         'model': model,
         'session': model.Session,
-        'user': c.user or c.author,
-        'auth_user_obj': c.userobj
+        'user': tk.g.user or tk.g.author,
+        'auth_user_obj': tk.g.userobj
     }
 
     try:
@@ -525,16 +421,18 @@ def delete_view(id):
     else:
         index_route = 'showcase_index'
 
+    context = {'user': tk.g.user}
     try:
         if tk.request.method == 'POST':
             tk.get_action('ckanext_showcase_delete')(context, {'id': id})
             h.flash_notice(_('Showcase has been deleted.'))
             return tk.redirect_to(index_route)
-        c.pkg_dict = tk.get_action('package_show')(context, {'id': id})
+        tk.g.pkg_dict = tk.get_action('package_show')(context, {'id': id})
     except tk.NotAuthorized:
         tk.abort(401, _('Unauthorized to delete showcase'))
     except tk.ObjectNotFound:
         tk.abort(404, _('Showcase not found'))
+    
     return tk.render('showcase/confirm_delete.html',
                      extra_vars={'dataset_type': DATASET_TYPE_NAME})
 
@@ -543,9 +441,9 @@ def dataset_showcase_list(id):
     context = {
         'model': model,
         'session': model.Session,
-        'user': c.user or c.author,
+        'user': tk.g.user or tk.g.author,
         'for_view': True,
-        'auth_user_obj': c.userobj
+        'auth_user_obj': tk.g.userobj
     }
     data_dict = {'id': id}
 
@@ -557,10 +455,10 @@ def dataset_showcase_list(id):
         return tk.abort(401, _('Not authorized to see this page'))
 
     try:
-        c.pkg_dict = tk.get_action('package_show')(context, data_dict)
-        c.showcase_list = tk.get_action('ckanext_package_showcase_list')(
+        tk.g.pkg_dict = tk.get_action('package_show')(context, data_dict)
+        tk.g.showcase_list = tk.get_action('ckanext_package_showcase_list')(
             context, {
-                'package_id': c.pkg_dict['id']
+                'package_id': tk.g.pkg_dict['id']
             })
     except tk.ObjectNotFound:
         return tk.abort(404, _('Dataset not found'))
@@ -581,7 +479,7 @@ def dataset_showcase_list(id):
         if new_showcase:
             data_dict = {
                 "showcase_id": new_showcase,
-                "package_id": c.pkg_dict['id']
+                "package_id": tk.g.pkg_dict['id']
             }
             try:
                 tk.get_action('ckanext_showcase_package_association_create')(
@@ -597,7 +495,7 @@ def dataset_showcase_list(id):
         if showcase_to_remove:
             data_dict = {
                 "showcase_id": showcase_to_remove,
-                "package_id": c.pkg_dict['id']
+                "package_id": tk.g.pkg_dict['id']
             }
             try:
                 tk.get_action('ckanext_showcase_package_association_delete')(
@@ -608,24 +506,24 @@ def dataset_showcase_list(id):
                 h.flash_success(
                     _("The dataset has been removed from the showcase."))
         return h.redirect_to(
-            h.url_for(list_route, id=c.pkg_dict['name']))
+            h.url_for(list_route, id=tk.g.pkg_dict['name']))
 
-    pkg_showcase_ids = [showcase['id'] for showcase in c.showcase_list]
+    pkg_showcase_ids = [showcase['id'] for showcase in tk.g.showcase_list]
     site_showcases = tk.get_action('ckanext_showcase_list')(context, {})
 
-    c.showcase_dropdown = [[showcase['id'], showcase['title']]
+    tk.g.showcase_dropdown = [[showcase['id'], showcase['title']]
                            for showcase in site_showcases
                            if showcase['id'] not in pkg_showcase_ids]
 
     return tk.render("package/dataset_showcase_list.html",
-                     extra_vars={'pkg_dict': c.pkg_dict})
+                     extra_vars={'pkg_dict': tk.g.pkg_dict})
 
 
 def manage_showcase_admins():
     context = {
         'model': model,
         'session': model.Session,
-        'user': c.user or c.author
+        'user': tk.g.user or tk.g.author
     }
 
     try:
@@ -645,9 +543,9 @@ def manage_showcase_admins():
     if tk.request.method == 'POST' and form_data['username']:
         username = form_data['username']
         try:
-            tk.get_action('ckanext_showcase_admin_add')(data_dict={
-                'username': username
-            })
+            tk.get_action('ckanext_showcase_admin_add')(
+                {}, {'username': username}
+                )
         except tk.NotAuthorized:
             abort(401, _('Unauthorized to perform that action'))
         except tk.ObjectNotFound:
@@ -660,7 +558,7 @@ def manage_showcase_admins():
 
         return tk.redirect_to(h.url_for(admins_route))
 
-    c.showcase_admins = tk.get_action('ckanext_showcase_admin_list')()
+    tk.g.showcase_admins = tk.get_action('ckanext_showcase_admin_list')({},{})
 
     return tk.render('admin/manage_showcase_admins.html')
 
@@ -672,7 +570,7 @@ def remove_showcase_admin():
     context = {
         'model': model,
         'session': model.Session,
-        'user': c.user or c.author
+        'user': tk.g.user or tk.g.author
     }
 
     try:
@@ -695,9 +593,9 @@ def remove_showcase_admin():
     if tk.request.method == 'POST' and user_id:
         user_id = tk.request.params['user']
         try:
-            tk.get_action('ckanext_showcase_admin_remove')(data_dict={
-                'username': user_id
-            })
+            tk.get_action('ckanext_showcase_admin_remove')(
+                {}, {'username': user_id}
+                )
         except tk.NotAuthorized:
             return tk.abort(401, _('Unauthorized to perform that action'))
         except tk.ObjectNotFound:
@@ -707,9 +605,10 @@ def remove_showcase_admin():
 
         return tk.redirect_to(h.url_for(admins_route))
 
-    c.user_dict = tk.get_action('user_show')(data_dict={'id': user_id})
-    c.user_id = user_id
+    tk.g.user_dict = tk.get_action('user_show')({}, {'id': user_id})
+    tk.g.user_id = user_id
     return tk.render('admin/confirm_remove_showcase_admin.html')
+
 
 def markdown_to_html():
     ''' Migrates the notes of all showcases from markdown to html.
@@ -718,7 +617,7 @@ def markdown_to_html():
     markdown, this command will migrate all nothes using CKAN's
     render_markdown core helper.
     '''
-    showcases = tk.get_action('ckanext_showcase_list')(data_dict={})
+    showcases = tk.get_action('ckanext_showcase_list')({},{})
 
     site_user = tk.get_action('get_site_user')({
         'model': model,

@@ -36,7 +36,7 @@
           {%
             set ckeditor_attrs = {
               'data-module': 'showcase-ckeditor',
-              'data-module-site_url': h.url('/', qualified=true)}
+              'data-module-site_url': h.url_for('/', qualified=true)}
           %}
           {{ form.textarea('notes', id='editor', label=_('Description'), placeholder=_('eg. Some useful notes about the data'), value=data.notes, error=errors.notes, attrs=ckeditor_attrs)}}
         {% else %}

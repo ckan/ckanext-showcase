@@ -66,7 +66,7 @@
                         </td>
                         <td class="context">
                             <h3 class="dataset-heading">
-                                {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
+                                {{ h.link_to(title|truncate(truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
                             </h3>
                             {% if notes %}
                                 <p>{{ notes|urlize }}</p>
@@ -124,7 +124,7 @@
                                       </td>
                                       <td class="context">
                                           <h3 class="dataset-heading">
-                                              {{ h.link_to(h.truncate(title, truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
+                                              {{ h.link_to(title|truncate(truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
                         </h3>
                         {% if notes %}
                           <p>{{ notes|urlize }}</p>
