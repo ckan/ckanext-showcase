@@ -382,8 +382,10 @@ def delete_view(id):
             'showcase_blueprint.edit' if tk.check_ckan_version(min_version='2.9.0')
             else 'showcase_edit', id=id)
 
+    context = {'user': tk.g.user}
+
     try:
-        tk.check_access('ckanext_showcase_delete', {}, {'id': id})
+        tk.check_access('ckanext_showcase_delete', context, {'id': id})
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to delete showcase'))
 
