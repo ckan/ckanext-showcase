@@ -9,7 +9,6 @@ import six
 from six.moves.urllib.parse import urlencode
 
 import ckan.plugins as p
-from ckan import model
 import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.helpers as h
