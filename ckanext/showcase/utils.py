@@ -10,7 +10,6 @@ from six.moves.urllib.parse import urlencode
 
 import ckan.plugins as p
 from ckan import model
-from ckan.lib.munge import munge_title_to_name, substitute_ascii_equivalents
 import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.helpers as h
