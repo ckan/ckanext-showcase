@@ -382,21 +382,15 @@ def delete_view(id):
             'showcase_blueprint.edit' if tk.check_ckan_version(min_version='2.9.0')
             else 'showcase_edit', id=id)
 
-    context = {'user': tk.g.user}
-
-    try:
-        tk.check_access('ckanext_showcase_delete', context, {'id': id})
-    except tk.NotAuthorized:
-        return tk.abort(401, _('Unauthorized to delete showcase'))
-
     if tk.check_ckan_version(min_version='2.9.0'):
         index_route = 'showcase_blueprint.index'
     else:
         index_route = 'showcase_index'
 
+    context = {'user': tk.g.user}
     try:
         if tk.request.method == 'POST':
-            tk.get_action('ckanext_showcase_delete')({}, {'id': id})
+            tk.get_action('ckanext_showcase_delete')(context, {'id': id})
             h.flash_notice(_('Showcase has been deleted.'))
             return tk.redirect_to(index_route)
         c.pkg_dict = tk.get_action('package_show')({}, {'id': id})
@@ -404,6 +398,7 @@ def delete_view(id):
         tk.abort(401, _('Unauthorized to delete showcase'))
     except tk.ObjectNotFound:
         tk.abort(404, _('Showcase not found'))
+    
     return tk.render('showcase/confirm_delete.html',
                      extra_vars={'dataset_type': DATASET_TYPE_NAME})
 
