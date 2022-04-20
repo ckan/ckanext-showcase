@@ -29,6 +29,16 @@ class TestShowcaseIndex(object):
         assert "1 showcase found" in response.body
         assert "my-showcase" in response.body
 
+    def test_tags_facets_are_being_shown(self, app):
+        factories.Dataset(
+            type="showcase", 
+            name="my-showcase",
+            tags=[{"name": "this-must-be-shown"}]
+            )
+
+        response = app.get("/showcase", status=200)
+        assert '<span class="item-label">this-must-be-shown</span>' in response.body
+
 
 @pytest.mark.usefixtures("clean_db")
 class TestShowcaseNewView(object):
