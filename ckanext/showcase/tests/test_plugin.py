@@ -37,7 +37,7 @@ class TestShowcaseIndex(object):
             )
 
         response = app.get("/showcase", status=200)
-        assert '<span class="item-label">this-must-be-shown</span>' in response.body
+        assert 'this-must-be-shown</span>' in response.body
 
 
 @pytest.mark.usefixtures("clean_db")
