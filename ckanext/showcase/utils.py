@@ -287,7 +287,7 @@ def _add_dataset_search(showcase_id, showcase_name):
         # Unless changed via config options, don't show other dataset
         # types any search page. Potential alternatives are do show them
         # on the default search page (dataset) or on one other search page
-        search_all_type = tk.config.get_value(u'ckan.search.show_all_types')
+        search_all_type = tk.config.get('ckan.search.show_all_types')
         search_all = False
 
         try:
@@ -295,14 +295,14 @@ def _add_dataset_search(showcase_id, showcase_name):
             # and we know that no type was specified, so use traditional
             # behaviour of applying this only to dataset type
             search_all = tk.asbool(search_all_type)
-            search_all_type = u'dataset'
+            search_all_type = 'dataset'
         # Otherwise we treat as a string representing a type
         except ValueError:
             search_all = True
 
         if not search_all or package_type != search_all_type:
             # Only show datasets of this particular type
-            fq += u' +dataset_type:{type}'.format(type=package_type)
+            fq += ' +dataset_type:{type}'.format(type=package_type)
 
         # Only search for packages that aren't already associated with the
         # Showcase
