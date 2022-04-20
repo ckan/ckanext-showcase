@@ -30,8 +30,7 @@ ckanext-showcase is intended to be a more powerful replacement for the
 Requirements
 ------------
 
-
-Compatible with CKAN 2.9.
+Tested on CKAN 2.7 to 2.10..
 
 ------------
 Installation
