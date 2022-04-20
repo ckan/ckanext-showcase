@@ -70,7 +70,7 @@ class EditView(dataset.EditView):
                                          errors, error_summary)
 
     def post(self, id):
-        context = self._prepare(id)
+        context = self._prepare()
         utils.check_edit_view_auth(id)
 
         data_dict = dataset.clean_dict(
