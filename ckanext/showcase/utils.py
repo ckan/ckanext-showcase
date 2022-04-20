@@ -26,6 +26,7 @@ ckan_29_or_higher = tk.check_ckan_version(min_version='2.9.0')
 
 def check_edit_view_auth(id):
     context = {
+        'user': tk.g.user,
         'save': 'save' in tk.request.params,
         'pending': True
     }
@@ -41,6 +42,7 @@ def check_edit_view_auth(id):
 
 def check_new_view_auth():
     context = {
+        'user': tk.g.user,
         'save': 'save' in tk.request.params
     }
 
@@ -80,7 +82,7 @@ def read_view(id):
 
 def manage_datasets_view(id):
 
-    context = {}
+    context = {'user': tk.g.user}
     data_dict = {'id': id}
 
     try:
@@ -405,7 +407,10 @@ def delete_view(id):
 
 
 def dataset_showcase_list(id):
-    context = {'for_view': True}
+    context = {
+        'user': tk.g.user,
+        'for_view': True
+        }
     data_dict = {'id': id}
 
     try:
