@@ -33,7 +33,6 @@ def check_edit_view_auth(id):
         'user': c.user or c.author,
         'auth_user_obj': c.userobj,
         'save': 'save' in tk.request.params,
-        'moderated': tk.config.get('moderated'),
         'pending': True
     }
 
