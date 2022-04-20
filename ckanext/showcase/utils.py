@@ -28,10 +28,6 @@ ckan_29_or_higher = tk.check_ckan_version(min_version='2.9.0')
 
 def check_edit_view_auth(id):
     context = {
-        'model': model,
-        'session': model.Session,
-        'user': c.user or c.author,
-        'auth_user_obj': c.userobj,
         'save': 'save' in tk.request.params,
         'pending': True
     }
@@ -47,10 +43,6 @@ def check_edit_view_auth(id):
 
 def check_new_view_auth():
     context = {
-        'model': model,
-        'session': model.Session,
-        'user': tk.c.user or tk.c.author,
-        'auth_user_obj': tk.c.userobj,
         'save': 'save' in tk.request.params
     }
 
@@ -66,13 +58,7 @@ def check_new_view_auth():
 
 
 def read_view(id):
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': c.user or c.author,
-        'for_view': True,
-        'auth_user_obj': c.userobj
-    }
+    context = {'for_view': True}
     data_dict = {'id': id}
 
     # check if showcase exists
@@ -96,11 +82,7 @@ def read_view(id):
 
 def manage_datasets_view(id):
 
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': tk.c.user or tk.c.author
-    }
+    context = {}
     data_dict = {'id': id}
 
     try:
@@ -276,13 +258,7 @@ def _add_dataset_search(showcase_id, showcase_name):
                 else:
                     search_extras[param] = value
 
-        context = {
-            'model': model,
-            'session': model.Session,
-            'user': c.user or c.author,
-            'for_view': True,
-            'auth_user_obj': c.userobj
-        }
+        context = {'for_view': True}
 
         # Unless changed via config options, don't show other dataset
         # types any search page. Potential alternatives are do show them
@@ -406,15 +382,8 @@ def delete_view(id):
             'showcase_blueprint.edit' if tk.check_ckan_version(min_version='2.9.0')
             else 'showcase_edit', id=id)
 
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': c.user or c.author,
-        'auth_user_obj': c.userobj
-    }
-
     try:
-        tk.check_access('ckanext_showcase_delete', context, {'id': id})
+        tk.check_access('ckanext_showcase_delete', {}, {'id': id})
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to delete showcase'))
 
@@ -425,10 +394,10 @@ def delete_view(id):
 
     try:
         if tk.request.method == 'POST':
-            tk.get_action('ckanext_showcase_delete')(context, {'id': id})
+            tk.get_action('ckanext_showcase_delete')({}, {'id': id})
             h.flash_notice(_('Showcase has been deleted.'))
             return tk.redirect_to(index_route)
-        c.pkg_dict = tk.get_action('package_show')(context, {'id': id})
+        c.pkg_dict = tk.get_action('package_show')({}, {'id': id})
     except tk.NotAuthorized:
         tk.abort(401, _('Unauthorized to delete showcase'))
     except tk.ObjectNotFound:
@@ -438,13 +407,7 @@ def delete_view(id):
 
 
 def dataset_showcase_list(id):
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': c.user or c.author,
-        'for_view': True,
-        'auth_user_obj': c.userobj
-    }
+    context = {'for_view': True}
     data_dict = {'id': id}
 
     try:
@@ -520,14 +483,8 @@ def dataset_showcase_list(id):
 
 
 def manage_showcase_admins():
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': c.user or c.author
-    }
-
     try:
-        tk.check_access('sysadmin', context, {})
+        tk.check_access('sysadmin', {}, {})
     except tk.NotAuthorized:
         return tk.abort(401, _('User not authorized to view page'))
 
@@ -567,14 +524,8 @@ def remove_showcase_admin():
     '''
     Remove a user from the Showcase Admin list.
     '''
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': c.user or c.author
-    }
-
     try:
-        tk.check_access('sysadmin', context, {})
+        tk.check_access('sysadmin', {}, {})
     except tk.NotAuthorized:
         return tk.abort(401, _('User not authorized to view page'))
 
@@ -619,17 +570,11 @@ def markdown_to_html():
     '''
     showcases = tk.get_action('ckanext_showcase_list')({},{})
 
-    site_user = tk.get_action('get_site_user')({
-        'model': model,
-        'ignore_auth': True},
+    site_user = tk.get_action('get_site_user')(
+        {'ignore_auth': True},
         {}
     )
-    context = {
-        'model': model,
-        'session': model.Session,
-        'ignore_auth': True,
-        'user': site_user['name'],
-    }
+    context = {'ignore_auth': True, 'user': site_user['name']}
 
     for showcase in showcases:
         tk.get_action('package_patch')(
@@ -659,7 +604,7 @@ def upload():
     try:
 
         url = tk.get_action('ckanext_showcase_upload')(
-            None,
+            {},
             data_dict
         )
     except tk.NotAuthorized:
