@@ -162,9 +162,8 @@ class ShowcasePlugin(
                                  qualified=True)
 
         # Add dataset count
-        pkg_dict[u'num_datasets'] = len(
-            tk.get_action('ckanext_showcase_package_list')(
-                context, {'showcase_id': pkg_dict['id']}))
+        pkg_dict[u'num_datasets'] = tk.get_action('ckanext_showcase_package_list_count')(
+                context, {'showcase_id': pkg_dict['id']})
 
         # Rendered notes
         if showcase_helpers.get_wysiwyg_editor() == 'ckeditor':

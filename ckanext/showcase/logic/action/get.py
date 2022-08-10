@@ -45,6 +45,33 @@ def showcase_list(context, data_dict):
 
 
 @toolkit.side_effect_free
+def showcase_package_list_count(context, data_dict):
+    '''Get number of packages associated with a showcase.
+
+    :param showcase_id: id or name of the showcase
+    :type showcase_id: string
+
+    :rtype: int
+    '''
+
+    toolkit.check_access('ckanext_showcase_package_list', context, data_dict)
+
+    # validate the incoming data_dict
+    validated_data_dict, errors = validate(data_dict,
+                                           showcase_package_list_schema(),
+                                           context)
+
+    if errors:
+        raise toolkit.ValidationError(errors)
+
+    # get a list of package ids associated with showcase id
+    pkg_id_list = ShowcasePackageAssociation.get_package_ids_for_showcase(
+        validated_data_dict['showcase_id'])
+
+    return len(pkg_id_list)
+
+
+@toolkit.side_effect_free
 def showcase_package_list(context, data_dict):
     '''Get paginated list of packages associated with a showcase.
 
