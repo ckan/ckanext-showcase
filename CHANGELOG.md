@@ -1,5 +1,8 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.5.1 2022-08-10
+
+* Dependency update
 
 ## v1.5.0 2022-04-20
 
