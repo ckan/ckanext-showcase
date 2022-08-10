@@ -64,6 +64,7 @@ def check_new_view_auth():
 
 
 def read_view(id):
+    page_number = h.get_page_number(tk.request.params)
     context = {
         'model': model,
         'session': model.Session,
@@ -82,14 +83,32 @@ def read_view(id):
         return tk.abort(401, _('Unauthorized to read showcase'))
 
     # get showcase packages
-    tk.g.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
+    num_datasets = tk.get_action('ckanext_showcase_package_list_count')(
         context, {
             'showcase_id': tk.g.pkg_dict['id']
         })
+    limit = int(tk.config.get(u'ckan.datasets_per_page', 20))
+    offset = (page_number - 1) * limit
+
+    showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
+        context, {
+            'showcase_id': tk.g.pkg_dict['id'],
+            'limit': limit,
+            'offset': offset
+        })
+
+    page = h.Page(
+        collection=showcase_pkgs,
+        page=page_number,
+        url=h.pager_url,
+        item_count=num_datasets,
+        items_per_page=limit,
+        presliced_list=True
+    )
 
     package_type = DATASET_TYPE_NAME
     return tk.render('showcase/read.html',
-                     extra_vars={'dataset_type': package_type})
+                     extra_vars={'dataset_type': package_type, 'page': page})
 
 
 def manage_datasets_view(id):

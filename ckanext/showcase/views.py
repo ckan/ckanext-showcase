@@ -2,7 +2,6 @@
 
 from flask import Blueprint
 
-
 import ckan.lib.helpers as h
 import ckan.plugins.toolkit as tk
 import ckan.views.dataset as dataset

@@ -46,10 +46,17 @@ def showcase_list(context, data_dict):
 
 @toolkit.side_effect_free
 def showcase_package_list(context, data_dict):
-    '''List packages associated with a showcase.
+    '''Get paginated list of packages associated with a showcase.
 
     :param showcase_id: id or name of the showcase
     :type showcase_id: string
+    :param limit: the list of datasets will be broken into pages of at most
+        ``limit`` datasets per page and only one page will be returned at a
+        time (optional, default: ckan.datasets_per_page or 20)
+    :type limit: int
+    :param offset: when ``limit`` is given, the offset to start
+        returning packages from
+    :type offset: int
 
     :rtype: list of dictionaries
     '''
@@ -64,16 +71,20 @@ def showcase_package_list(context, data_dict):
     if errors:
         raise toolkit.ValidationError(errors)
 
+    # Todo: Add separate config option for this instead of reusing this one.
+    limit = data_dict.get('limit', toolkit.config.get('ckan.datasets_per_page', 20))
+    offset = data_dict.get('offset', 0)
+
     # get a list of package ids associated with showcase id
     pkg_id_list = ShowcasePackageAssociation.get_package_ids_for_showcase(
         validated_data_dict['showcase_id'])
 
     pkg_list = []
     if pkg_id_list:
-        # for each package id, get the package dict and append to list if
-        # active
+        # for each package id in the range given by limit and offset,
+        # get the package dict and append to list if active
         id_list = []
-        for pkg_id in pkg_id_list:
+        for pkg_id in pkg_id_list[offset:offset + limit]:
             id_list.append(pkg_id[0])
         fq = 'id:(' + ' OR '.join(['{0}'.format(x) for x in id_list]) + ')'
         _pkg_list = toolkit.get_action('package_search')(
