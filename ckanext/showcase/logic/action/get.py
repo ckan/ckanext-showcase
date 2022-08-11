@@ -99,7 +99,8 @@ def showcase_package_list(context, data_dict):
         raise toolkit.ValidationError(errors)
 
     # Todo: Add separate config option for this instead of reusing this one.
-    limit = data_dict.get('limit', toolkit.config.get('ckan.datasets_per_page', 20))
+    limit = data_dict.get(
+        'limit', int(toolkit.config.get('ckan.datasets_per_page', 20)))
     offset = data_dict.get('offset', 0)
 
     # get a list of package ids associated with showcase id
