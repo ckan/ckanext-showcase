@@ -5,9 +5,11 @@ import json
 import logging
 
 from collections import OrderedDict
+from pylons import url as _pylons_default_url
 import six
 from six.moves.urllib.parse import urlencode
 
+from ckan.common import is_flask_request
 import ckan.model as model
 import ckan.plugins as p
 import ckan.logic as logic
@@ -83,32 +85,49 @@ def read_view(id):
         return tk.abort(401, _('Unauthorized to read showcase'))
 
     # get showcase packages
+    page = _get_showcase_packages_page(context, page_number)
+
+    package_type = DATASET_TYPE_NAME
+    return tk.render('showcase/read.html',
+                     extra_vars={'dataset_type': package_type, 'page': page})
+
+
+def _get_showcase_packages_page(context, page_number):
     num_datasets = tk.get_action('ckanext_showcase_package_list_count')(
         context, {
             'showcase_id': tk.g.pkg_dict['id']
         })
     limit = int(tk.config.get(u'ckan.datasets_per_page', 20))
     offset = (page_number - 1) * limit
-
     showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
         context, {
             'showcase_id': tk.g.pkg_dict['id'],
             'limit': limit,
             'offset': offset
         })
-
     page = h.Page(
         collection=showcase_pkgs,
         page=page_number,
-        url=h.pager_url,
+        url=_pager_url,
         item_count=num_datasets,
         items_per_page=limit,
         presliced_list=True
     )
+    return page
 
-    package_type = DATASET_TYPE_NAME
-    return tk.render('showcase/read.html',
-                     extra_vars={'dataset_type': package_type, 'page': page})
+
+def _pager_url(page, **kwargs):
+    pargs = []
+    if is_flask_request():
+        pargs.append(tk.request.endpoint)
+    else:
+        routes_dict = _pylons_default_url.environ['pylons.routes_dict']
+        kwargs['controller'] = routes_dict['controller']
+        kwargs['action'] = routes_dict['action']
+        if routes_dict.get('id'):
+            kwargs['id'] = routes_dict['id']
+    kwargs['page'] = page
+    return tk.url_for(*pargs, **kwargs)
 
 
 def manage_datasets_view(id):
@@ -202,13 +221,13 @@ def manage_datasets_view(id):
 
     _add_dataset_search(tk.g.pkg_dict['id'], tk.g.pkg_dict['name'])
 
-    # get showcase packages
-    tk.g.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
-        context, {
-            'showcase_id': tk.g.pkg_dict['id']
-        })
+    # get showcase packages page
+    pkg_page_number = h.get_page_number(tk.request.params, key='pkg_page')
+    log.warn(pkg_page_number)
+    pkg_page = _get_showcase_packages_page(context, pkg_page_number)
+    log.warn(pkg_page)
 
-    return tk.render('showcase/manage_datasets.html')
+    return tk.render('showcase/manage_datasets.html', extra_vars={'pkg_page': pkg_page})
 
 def _add_dataset_search(showcase_id, showcase_name):
     '''
