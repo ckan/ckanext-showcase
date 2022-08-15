@@ -75,10 +75,10 @@ def showcase_package_list(context, data_dict):
         id_list = []
         for pkg_id in pkg_id_list:
             id_list.append(pkg_id[0])
-        q = 'id:(' + ' OR '.join(['{0}'.format(x) for x in id_list]) + ')'
+        fq = 'id:(' + ' OR '.join(['{0}'.format(x) for x in id_list]) + ')'
         _pkg_list = toolkit.get_action('package_search')(
             context,
-            {'q': q, 'rows': 100})
+            {'fq': fq, 'rows': 100})
         pkg_list = _pkg_list['results']
     return pkg_list
 
