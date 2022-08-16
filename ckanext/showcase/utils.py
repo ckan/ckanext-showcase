@@ -66,7 +66,7 @@ def check_new_view_auth():
 
 
 def read_view(id):
-    page_number = h.get_page_number(tk.request.params)
+    page_number = h.get_page_number(tk.request.params, key='pkg_page')
     context = {
         'model': model,
         'session': model.Session,
@@ -111,12 +111,14 @@ def _get_showcase_packages_page(context, page_number):
         url=_pager_url,
         item_count=num_datasets,
         items_per_page=limit,
-        presliced_list=True
+        presliced_list=True,
+        page_param='pkg_page'
     )
     return page
 
 
-def _pager_url(page, **kwargs):
+def _pager_url(**kwargs):
+    log.warn(kwargs)
     pargs = []
     if is_flask_request():
         pargs.append(tk.request.endpoint)
@@ -126,7 +128,8 @@ def _pager_url(page, **kwargs):
         kwargs['action'] = routes_dict['action']
         if routes_dict.get('id'):
             kwargs['id'] = routes_dict['id']
-    kwargs['page'] = page
+    page_param = kwargs['page_param']
+    kwargs[page_param] = kwargs['page']
     return tk.url_for(*pargs, **kwargs)
 
 
@@ -223,9 +226,7 @@ def manage_datasets_view(id):
 
     # get showcase packages page
     pkg_page_number = h.get_page_number(tk.request.params, key='pkg_page')
-    log.warn(pkg_page_number)
     pkg_page = _get_showcase_packages_page(context, pkg_page_number)
-    log.warn(pkg_page)
 
     return tk.render('showcase/manage_datasets.html', extra_vars={'pkg_page': pkg_page})
 
