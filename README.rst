@@ -26,11 +26,14 @@ ckanext-showcase is intended to be a more powerful replacement for the
 'Related Item' feature.
 
 
-------------
-Requirements
-------------
+-------------
+Compatibility
+-------------
 
-Tested on CKAN 2.7 to 2.10..
+| ckanext-showcase | CKAN      |
+|------------------|-----------|
+| 1.4              | 2.7 - 2.9 |
+| 1.5              | 2.10      |
 
 ------------
 Installation
