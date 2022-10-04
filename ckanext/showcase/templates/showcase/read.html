@@ -57,7 +57,7 @@
         </div>
     {% endif %}
     {% block package_description %}
-        {% if pkg.private %}
+        {% if pkg.private == 'True' %}
             <span class="dataset-private label label-inverse pull-right">
                 <i class="fa fa-lock icon-lock"></i>
                 {{ _('Private') }}
