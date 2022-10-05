@@ -257,3 +257,4 @@ See: "Internationalizing strings in extensions" : http://docs.ckan.org/en/latest
 3. Compile your language catalog ( You can force pybabel compile to compile messages marked as fuzzy with the -f)
 
        python setup.py compile_catalog -f -l es
+
