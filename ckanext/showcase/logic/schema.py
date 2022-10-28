@@ -32,6 +32,8 @@ def showcase_base_schema():
         'title': [if_empty_same_as("name"), six.text_type],
         'author': [ignore_missing, six.text_type],
         'author_email': [ignore_missing, six.text_type],
+        'twitter': [ignore_missing, six.text_type],
+        'github': [ignore_missing, six.text_type],
         'notes': [ignore_missing, six.text_type],
         'url': [ignore_missing, six.text_type],
         'state': [ignore_not_package_admin, ignore_missing],
