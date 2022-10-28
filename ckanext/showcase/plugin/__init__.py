@@ -9,11 +9,9 @@ from collections import OrderedDict
 from six import string_types
 
 import ckan.plugins as plugins
+import ckan.plugins.toolkit as tk
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
-from ckan import model as ckan_model
-
-import ckantoolkit as tk
 
 
 import ckanext.showcase.utils as utils
@@ -28,7 +26,6 @@ if tk.check_ckan_version(u'2.9'):
 else:
     from ckanext.showcase.plugin.pylons_plugin import MixinPlugin
 
-c = tk.c
 _ = tk._
 
 log = logging.getLogger(__name__)
@@ -46,12 +43,7 @@ class ShowcasePlugin(
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.ITemplateHelpers)
-
-    # ITranslation only available in 2.5+
-    try:
-        plugins.implements(plugins.ITranslation)
-    except AttributeError:
-        pass
+    plugins.implements(plugins.ITranslation)
 
     # IConfigurer
 
@@ -59,7 +51,7 @@ class ShowcasePlugin(
         tk.add_template_directory(config, '../templates')
         tk.add_public_directory(config, '../public')
         tk.add_resource('../fanstatic', 'showcase')
-        if tk.check_ckan_version(min_version='2.4', max_version='2.9.0'):
+        if tk.check_ckan_version(min_version='2.7', max_version='2.9.0'):
             tk.add_ckan_admin_tab(config, 'showcase_admins',
                                   'Showcase Config')
         elif tk.check_ckan_version(min_version='2.9.0'):
@@ -183,23 +175,22 @@ class ShowcasePlugin(
 
         return pkg_dict
 
-    def after_show(self, context, pkg_dict):
+    # CKAN >= 2.10
+    def after_dataset_show(self, context, pkg_dict):
         '''
         Modify package_show pkg_dict.
         '''
         pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
-    def before_view(self, pkg_dict):
+    def before_dataset_view(self, pkg_dict):
         '''
         Modify pkg_dict that is sent to templates.
         '''
-
-        context = {'model': ckan_model, 'session': ckan_model.Session,
-                   'user': c.user or c.author}
+        context = {'user': tk.g.user or tk.g.author}
 
         return self._add_to_pkg_dict(context, pkg_dict)
 
-    def before_search(self, search_params):
+    def before_dataset_search(self, search_params):
         '''
         Unless the query is already being filtered by this dataset_type
         (either positively, or negatively), exclude datasets of type
@@ -210,13 +201,29 @@ class ShowcasePlugin(
         if filter not in fq:
             search_params.update({'fq': fq + " -" + filter})
         return search_params
+    
+    # CKAN < 2.10 (Remove when dropping support for 2.9)
+    def after_show(self, context, pkg_dict):
+        '''
+        Modify package_show pkg_dict.
+        '''
+        pkg_dict = self.after_dataset_show(context, pkg_dict)
+
+    def before_view(self, pkg_dict):
+        '''
+        Modify pkg_dict that is sent to templates.
+        '''
+        return self.before_dataset_view(pkg_dict)
+
+    def before_search(self, search_params):
+        '''
+        Unless the query is already being filtered by this dataset_type
+        (either positively, or negatively), exclude datasets of type
+        `showcase`.
+        '''
+        return self.before_dataset_search(search_params)
 
     # ITranslation
-
-    # The following methods copied from ckan.lib.plugins.DefaultTranslation so
-    # we don't have to mix it into the class. This means we can use Showcase
-    # even if ITranslation isn't available (less than 2.5).
-
     def i18n_directory(self):
         '''Change the directory of the *.mo translation files
 

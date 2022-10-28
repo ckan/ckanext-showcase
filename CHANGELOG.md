@@ -1,5 +1,14 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.5.1 2022-08-10
+
+* Dependency update
+
+## v1.5.0 2022-04-20
+
+* Support for CKAN 2.10 (#143)
+* Fix message in Add to showcase button (#139)
+
 ## v1.4.8 2022-01-17
 
 * Add Chinese (Traditional, Taiwan) translations (#136)

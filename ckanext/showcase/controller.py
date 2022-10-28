@@ -61,7 +61,6 @@ class ShowcaseController(PackageController):
             dict_fns.unflatten(tuplize_dict(parse_params(request.POST))))
 
         data_dict['type'] = package_type
-        context['message'] = data_dict.get('log_message', '')
 
         try:
             pkg_dict = get_action('ckanext_showcase_create')(context,

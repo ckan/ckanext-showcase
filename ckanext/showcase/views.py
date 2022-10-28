@@ -2,9 +2,9 @@
 
 from flask import Blueprint
 
-import ckantoolkit as tk
 
 import ckan.lib.helpers as h
+import ckan.plugins.toolkit as tk
 import ckan.views.dataset as dataset
 
 import ckanext.showcase.utils as utils
@@ -34,7 +34,6 @@ class CreateView(dataset.CreateView):
                         tk.request.files)))))
         context = self._prepare()
         data_dict['type'] = utils.DATASET_TYPE_NAME
-        context['message'] = data_dict.get('log_message', '')
 
         try:
             pkg_dict = tk.get_action('ckanext_showcase_create')(context,
@@ -71,7 +70,7 @@ class EditView(dataset.EditView):
                                          errors, error_summary)
 
     def post(self, id):
-        context = self._prepare(id)
+        context = self._prepare()
         utils.check_edit_view_auth(id)
 
         data_dict = dataset.clean_dict(

@@ -14,7 +14,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/distributing.html#version
-    version='1.4.8',
+    version='1.5.1',
 
     description='''A ckan extension to showcase datasets in use''',
     long_description=long_description,
@@ -56,7 +56,6 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=[
-        'ckantoolkit>=0.0.3',
         'six>=1.12.0'
     ],
 
