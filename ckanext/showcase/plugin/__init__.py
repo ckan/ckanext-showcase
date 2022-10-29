@@ -175,14 +175,13 @@ class ShowcasePlugin(
 
         return pkg_dict
 
-    # CKAN >= 2.10
-    def after_dataset_show(self, context, pkg_dict):
+    def _after_dataset_show(self, context, pkg_dict):
         '''
         Modify package_show pkg_dict.
         '''
         pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
-    def before_dataset_view(self, pkg_dict):
+    def _before_dataset_view(self, pkg_dict):
         '''
         Modify pkg_dict that is sent to templates.
         '''
@@ -190,7 +189,7 @@ class ShowcasePlugin(
 
         return self._add_to_pkg_dict(context, pkg_dict)
 
-    def before_dataset_search(self, search_params):
+    def _before_dataset_search(self, search_params):
         '''
         Unless the query is already being filtered by this dataset_type
         (either positively, or negatively), exclude datasets of type
@@ -201,27 +200,15 @@ class ShowcasePlugin(
         if filter not in fq:
             search_params.update({'fq': fq + " -" + filter})
         return search_params
-    
+
+    after_dataset_show = _after_dataset_show
+    before_dataset_view = _before_dataset_view
+    before_dataset_search = _before_dataset_search
+
     # CKAN < 2.10 (Remove when dropping support for 2.9)
-    def after_show(self, context, pkg_dict):
-        '''
-        Modify package_show pkg_dict.
-        '''
-        pkg_dict = self.after_dataset_show(context, pkg_dict)
-
-    def before_view(self, pkg_dict):
-        '''
-        Modify pkg_dict that is sent to templates.
-        '''
-        return self.before_dataset_view(pkg_dict)
-
-    def before_search(self, search_params):
-        '''
-        Unless the query is already being filtered by this dataset_type
-        (either positively, or negatively), exclude datasets of type
-        `showcase`.
-        '''
-        return self.before_dataset_search(search_params)
+    after_show = _after_dataset_show
+    before_view = _before_dataset_view
+    before_search = _before_dataset_search
 
     # ITranslation
     def i18n_directory(self):
