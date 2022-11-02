@@ -42,7 +42,7 @@
     "@ckeditor/ckeditor5-paragraph": "^27.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^27.0.0",
     "@ckeditor/ckeditor5-table": "^27.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^27.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^35.2.1",
     "@ckeditor/ckeditor5-typing": "^27.0.0",
     "@ckeditor/ckeditor5-upload": "^27.0.0",
     "eslint": "^5.5.0",
