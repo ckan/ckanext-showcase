@@ -66,7 +66,8 @@ class TestShowcaseNewView(object):
         )
 
     def test_create_showcase(self, app):
-        if tk.check_ckan_version("2.8"):
+        if not tk.check_ckan_version(min_version='2.9.0'):
+            # Remove when dropping support for 2.8
             pytest.skip("data argument not supported in post()")
 
         sysadmin = factories.Sysadmin()
@@ -132,7 +133,8 @@ class TestShowcaseEditView(object):
         )
 
     def test_edit_showcase(self, app):
-        if tk.check_ckan_version("2.8"):
+        if not tk.check_ckan_version(min_version='2.9.0'):
+            # Remove when dropping support for 2.8
             pytest.skip("data argument not supported in post()")
 
         sysadmin = factories.Sysadmin()
