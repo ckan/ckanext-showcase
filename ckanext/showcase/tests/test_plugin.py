@@ -30,7 +30,7 @@ class TestShowcaseIndex(object):
         assert "my-showcase" in response.body
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("clean_db", "clean_index")
 class TestShowcaseNewView(object):
     def test_showcase_create_form_renders(self, app):
 
@@ -65,8 +65,34 @@ class TestShowcaseNewView(object):
             == create_response.request.path
         )
 
+    def test_create_showcase(self, app):
+        if not tk.check_ckan_version(min_version='2.9.0'):
+            # Remove when dropping support for 2.8
+            pytest.skip("data argument not supported in post()")
 
-@pytest.mark.usefixtures("clean_db")
+        sysadmin = factories.Sysadmin()
+
+        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
+        app.post(
+            url=url_for("showcase_new"),
+            extra_environ=env,
+            data={
+                "name": "my-test-showcase",
+                "image_url": "",
+                "notes": "My new description!"
+                }
+            )
+
+        res = app.get(
+            url=url_for("showcase_read", id="my-test-showcase"),
+            extra_environ=env,
+        )
+        assert "my-test-showcase" in res.body
+        assert "My new description!" in res.body
+
+
+
+@pytest.mark.usefixtures("clean_db", "clean_index")
 class TestShowcaseEditView(object):
     def test_showcase_edit_form_renders(self, app):
         """
@@ -106,8 +132,33 @@ class TestShowcaseEditView(object):
             == edit_response.request.path
         )
 
+    def test_edit_showcase(self, app):
+        if not tk.check_ckan_version(min_version='2.9.0'):
+            # Remove when dropping support for 2.8
+            pytest.skip("data argument not supported in post()")
 
-@pytest.mark.usefixtures("clean_db")
+        sysadmin = factories.Sysadmin()
+        factories.Dataset(name="my-showcase", type="showcase")
+        env = {"REMOTE_USER": sysadmin["name"]}
+
+        app.post(
+            url=url_for("showcase_edit", id="my-showcase"),
+            extra_environ=env,
+            data={
+                "name": "my-edited-showcase",
+                "notes": "My new description!",
+                "image_url": ""
+            }
+        )
+        res = app.get(
+            url=url_for("showcase_edit", id="my-edited-showcase"),
+            extra_environ=env,
+        )
+        assert "my-edited-showcase" in res.body
+        assert "My new description!" in res.body
+
+
+@pytest.mark.usefixtures("clean_db", "clean_index")
 class TestDatasetView(object):
 
     """Plugin adds a new showcases view for datasets."""

@@ -70,7 +70,12 @@ class EditView(dataset.EditView):
                                          errors, error_summary)
 
     def post(self, id):
-        context = self._prepare()
+        if tk.check_ckan_version(min_version='2.10.0'):
+            context = self._prepare()
+        else:
+            # Remove when dropping support for 2.9
+            context = self._prepare(id)
+
         utils.check_edit_view_auth(id)
 
         data_dict = dataset.clean_dict(
