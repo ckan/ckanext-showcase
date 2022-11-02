@@ -66,6 +66,9 @@ class TestShowcaseNewView(object):
         )
 
     def test_create_showcase(self, app):
+        if tk.check_ckan_version("2.8"):
+            pytest.skip("data argument not supported in post()")
+
         sysadmin = factories.Sysadmin()
 
         env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
@@ -129,6 +132,9 @@ class TestShowcaseEditView(object):
         )
 
     def test_edit_showcase(self, app):
+        if tk.check_ckan_version("2.8"):
+            pytest.skip("data argument not supported in post()")
+
         sysadmin = factories.Sysadmin()
         factories.Dataset(name="my-showcase", type="showcase")
         env = {"REMOTE_USER": sysadmin["name"]}
@@ -136,7 +142,7 @@ class TestShowcaseEditView(object):
         app.post(
             url=url_for("showcase_edit", id="my-showcase"),
             extra_environ=env,
-            data = {
+            data={
                 "name": "my-edited-showcase",
                 "notes": "My new description!",
                 "image_url": ""
