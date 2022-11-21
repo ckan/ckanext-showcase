@@ -22,6 +22,8 @@ def get_actions():
             ckanext.showcase.logic.action.delete.showcase_package_association_delete,
         'ckanext_showcase_package_list':
             ckanext.showcase.logic.action.get.showcase_package_list,
+        'ckanext_showcase_package_list_count':
+            ckanext.showcase.logic.action.get.showcase_package_list_count,
         'ckanext_package_showcase_list':
             ckanext.showcase.logic.action.get.package_showcase_list,
         'ckanext_showcase_admin_add':
