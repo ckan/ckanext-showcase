@@ -14,17 +14,14 @@ import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
 
 
-import ckanext.showcase.utils as utils
+from ckanext.showcase import cli
+from ckanext.showcase import utils
+from ckanext.showcase import views
 from ckanext.showcase.logic import auth, action
+from ckanext.showcase.model import setup as model_setup
 
 import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
-from ckanext.showcase.model import setup as model_setup
-
-if tk.check_ckan_version(u'2.9'):
-    from ckanext.showcase.plugin.flask_plugin import MixinPlugin
-else:
-    from ckanext.showcase.plugin.pylons_plugin import MixinPlugin
 
 _ = tk._
 
@@ -33,8 +30,7 @@ log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = utils.DATASET_TYPE_NAME
 
 
-class ShowcasePlugin(
-        MixinPlugin, plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
+class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
@@ -44,13 +40,25 @@ class ShowcasePlugin(
     plugins.implements(plugins.IPackageController, inherit=True)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.ITranslation)
+    plugins.implements(plugins.IBlueprint)
+    plugins.implements(plugins.IClick)
+
+    # IBlueprint
+
+    def get_blueprint(self):
+        return views.get_blueprints()
+
+    # IClick
+
+    def get_commands(self):
+        return cli.get_commands()
 
     # IConfigurer
 
     def update_config(self, config):
-        tk.add_template_directory(config, '../templates')
-        tk.add_public_directory(config, '../public')
-        tk.add_resource('../fanstatic', 'showcase')
+        tk.add_template_directory(config, 'templates')
+        tk.add_public_directory(config, 'public')
+        tk.add_resource('fanstatic', 'showcase')
         if tk.check_ckan_version(min_version='2.7', max_version='2.9.0'):
             tk.add_ckan_admin_tab(config, 'showcase_admins',
                                   'Showcase Config')
@@ -201,7 +209,7 @@ class ShowcasePlugin(
         if filter not in fq:
             search_params.update({'fq': fq + " -" + filter})
         return search_params
-    
+
     # CKAN < 2.10 (Remove when dropping support for 2.9)
     def after_show(self, context, pkg_dict):
         '''
