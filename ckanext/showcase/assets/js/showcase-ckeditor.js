@@ -41,8 +41,11 @@ ckan.module('showcase-ckeditor', function ($) {
 
         config.language = 'en'
 
+        var csrf_field = $('meta[name=csrf_field_name]').attr('content');
+        var csrf_token = $('meta[name='+ csrf_field +']').attr('content');
         config.simpleUpload = {
-            uploadUrl: this.options.site_url + 'showcase_upload'
+            uploadUrl: this.options.site_url + 'showcase_upload',
+            headers: {'X-CSRFToken': csrf_token}
         }
 
         ClassicEditor
