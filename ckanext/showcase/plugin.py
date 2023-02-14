@@ -2,11 +2,8 @@
 
 import os
 import sys
-import json
 import logging
 from collections import OrderedDict
-
-from six import string_types
 
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as tk

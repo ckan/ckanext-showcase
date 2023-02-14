@@ -21,7 +21,6 @@ abort = tk.abort
 
 log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = 'showcase'
-ckan_29_or_higher = tk.check_ckan_version(min_version='2.9.0')
 
 
 def check_edit_view_auth(id):
@@ -117,15 +116,10 @@ def manage_datasets_view(id):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read showcase'))
 
+    form_data = tk.request.form
+    manage_route = 'showcase_blueprint.manage_datasets'
+
     # Are we removing a showcase/dataset association?
-    form_data = tk.request.form if tk.check_ckan_version(
-        '2.9') else tk.request.params
-
-    if tk.check_ckan_version(min_version='2.9.0'):
-        manage_route = 'showcase_blueprint.manage_datasets'
-    else:
-        manage_route = 'showcase_manage_datasets'
-
     if (tk.request.method == 'POST'
             and 'bulk_action.showcase_remove' in form_data):
         # Find the datasets to perform the action on, they are prefixed by
@@ -190,6 +184,7 @@ def manage_datasets_view(id):
         })
 
     return tk.render('showcase/manage_datasets.html')
+
 
 def _add_dataset_search(showcase_id, showcase_name):
     '''
@@ -399,10 +394,8 @@ def url_with_params(url, params):
 
 
 def delete_view(id):
-    if 'cancel' in tk.request.params:
-        tk.redirect_to(
-            'showcase_blueprint.edit' if tk.check_ckan_version(min_version='2.9.0')
-            else 'showcase_edit', id=id)
+    if 'cancel' in tk.request.args:
+        tk.redirect_to('showcase_blueprint.edit', id=id)
 
     context = {
         'model': model,
@@ -416,10 +409,7 @@ def delete_view(id):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to delete showcase'))
 
-    if tk.check_ckan_version(min_version='2.9.0'):
-        index_route = 'showcase_blueprint.index'
-    else:
-        index_route = 'showcase_index'
+    index_route = 'showcase_blueprint.index'
 
     context = {'user': tk.g.user}
     try:
@@ -432,7 +422,7 @@ def delete_view(id):
         tk.abort(401, _('Unauthorized to delete showcase'))
     except tk.ObjectNotFound:
         tk.abort(404, _('Showcase not found'))
-    
+
     return tk.render('showcase/confirm_delete.html',
                      extra_vars={'dataset_type': DATASET_TYPE_NAME})
 
@@ -465,15 +455,11 @@ def dataset_showcase_list(id):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to read package'))
 
-    if tk.check_ckan_version(min_version='2.9.0'):
-        list_route = 'showcase_blueprint.dataset_showcase_list'
-    else:
-        list_route = 'showcase_dataset_showcase_list'
+    list_route = 'showcase_blueprint.dataset_showcase_list'
 
     if tk.request.method == 'POST':
         # Are we adding the dataset to a showcase?
-        form_data = tk.request.form if tk.check_ckan_version(
-            '2.9') else tk.request.params
+        form_data = tk.request.form
 
         new_showcase = form_data.get('showcase_added')
         if new_showcase:
@@ -531,13 +517,8 @@ def manage_showcase_admins():
     except tk.NotAuthorized:
         return tk.abort(401, _('User not authorized to view page'))
 
-    form_data = tk.request.form if tk.check_ckan_version(
-        '2.9') else tk.request.params
-
-    if tk.check_ckan_version(min_version='2.9.0'):
-        admins_route = 'showcase_blueprint.admins'
-    else:
-        admins_route = 'showcase_admins'
+    form_data = tk.request.form
+    admins_route = 'showcase_blueprint.admins'
 
     # We're trying to add a user to the showcase admins list.
     if tk.request.method == 'POST' and form_data['username']:
@@ -578,13 +559,8 @@ def remove_showcase_admin():
     except tk.NotAuthorized:
         return tk.abort(401, _('User not authorized to view page'))
 
-    form_data = tk.request.form if tk.check_ckan_version(
-        '2.9') else tk.request.params
-
-    if tk.check_ckan_version(min_version='2.9.0'):
-        admins_route = 'showcase_blueprint.admins'
-    else:
-        admins_route = 'showcase_admins'
+    form_data = tk.request.form
+    admins_route = 'showcase_blueprint.admins'
 
     if 'cancel' in form_data:
         return tk.redirect_to(admins_route)
@@ -646,16 +622,14 @@ def upload():
     if not tk.request.method == 'POST':
         tk.abort(409, _('Only Posting is availiable'))
 
-    if ckan_29_or_higher:
-        data_dict = logic.clean_dict(
-            dict_fns.unflatten(
-                logic.tuplize_dict(
-                    logic.parse_params(tk.request.files)
-                )
+    data_dict = logic.clean_dict(
+        dict_fns.unflatten(
+            logic.tuplize_dict(
+                logic.parse_params(tk.request.files)
             )
         )
-    else:
-        data_dict = tk.request.POST
+    )
+
     try:
 
         url = tk.get_action('ckanext_showcase_upload')(
