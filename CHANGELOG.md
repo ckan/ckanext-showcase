@@ -5,6 +5,7 @@
 * Dropped support for CKAN 2.7 and 2.8
 * Dropped support for Python 2
 * Add support for CSRF token
+* Sanitize blueprint names. All views should be called using `showcase_blueprint.<endpoint>`
 
 ## v1.5.1 2022-08-10
 
