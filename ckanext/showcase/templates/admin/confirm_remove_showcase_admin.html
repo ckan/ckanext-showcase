@@ -1,6 +1,5 @@
 {% extends "page.html" %}
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_admin_remove_route = 'showcase_blueprint.admin_remove' if ckan_29_or_higher else 'showcase_admin_remove' %}
+{% set showcase_admin_remove_route = 'showcase_blueprint.admin_remove' %}
 
 {% block subtitle %}{{ _("Confirm Remove") }}{% endblock %}
 

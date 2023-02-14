@@ -13,9 +13,7 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
 {% set title = package.title or package.name %}
 {% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
 
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-
-{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
+{% set showcase_read_route = 'showcase_blueprint.read' %}
 
 {% block package_item %}
 

@@ -1,5 +1,4 @@
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_admins_route = 'showcase_blueprint.admins' if ckan_29_or_higher else 'showcase_admins' %}
+{% set showcase_admins_route = 'showcase_blueprint.admins' %}
 
 <div class="module module-narrow module-shallow">
   <h2 class="module-heading">

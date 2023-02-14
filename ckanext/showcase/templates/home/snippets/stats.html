@@ -1,8 +1,7 @@
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
-{% set search_route = 'dataset.search' if ckan_29_or_higher else 'package_search' %}
-{% set organization_route = 'organization.index' if ckan_29_or_higher else 'organization_index' %}
-{% set group_route = 'group.index' if ckan_29_or_higher else 'group_index' %}
+{% set showcase_index_route = 'showcase_blueprint.index' %}
+{% set search_route = 'dataset.search' %}
+{% set organization_route = 'organization.index' %}
+{% set group_route = 'group.index' %}
 
 {% set stats = h.get_site_statistics() %}
 
