@@ -30,7 +30,9 @@ ckanext-showcase is intended to be a more powerful replacement for the
 Requirements
 ------------
 
-Tested on CKAN 2.7 to 2.10..
+Tested on CKAN 2.9 and 2.10.
+
+Note: Use `1.5.2` for older CKAN versions (2.7 and 2.8).
 
 ------------
 Installation
@@ -68,7 +70,7 @@ do::
 
     git clone https://github.com/ckan/ckanext-showcase.git
     cd ckanext-showcase
-    python setup.py develop
+    pip install -e .
     pip install -r dev-requirements.txt
 
 
@@ -168,7 +170,7 @@ HTML you can use the ```showcase markdown_to_html``` command.
 
 From the ``ckanext-showcase`` directory::
 
-    paster showcase markdown-to-html -c {path to production.ini}
+    ckan -c {path to production.ini} showcase markdown-to-html
 
 -----------------
 Running the Tests
@@ -176,12 +178,7 @@ Running the Tests
 
 To run the tests, do::
 
-    nosetests --ckan --nologcapture --with-pylons=test.ini
-
-To run the tests and produce a coverage report, first make sure you have
-coverage installed in your virtualenv (``pip install coverage``) then run::
-
-    nosetests --ckan --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.showcase --cover-inclusive --cover-erase --cover-tests
+    pytest --ckan-ini=test.ini ckanext/showcase/tests
 
 
 ------------------------------------

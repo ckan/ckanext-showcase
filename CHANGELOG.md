@@ -1,5 +1,11 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.6.0 2023-02-14
+
+* Dropped support for CKAN 2.7 and 2.8
+* Dropped support for Python 2
+* Add support for CSRF token
+
 ## v1.5.1 2022-08-10
 
 * Dependency update
