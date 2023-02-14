@@ -36,10 +36,10 @@ setup(
 
         'Development Status :: 5 - Production/Stable',
 
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
+        # Specify the Python versions you support here.
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 
 
@@ -56,7 +56,6 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
     install_requires=[
-        'six>=1.12.0'
     ],
 
     # If there are data files included in your packages that need to be

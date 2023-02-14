@@ -5,8 +5,7 @@ import json
 import logging
 
 from collections import OrderedDict
-import six
-from six.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 
 import ckan.model as model
 import ckan.plugins as p
@@ -385,7 +384,7 @@ def _search_url(params, name):
 
 
 def _encode_params(params):
-    return [(k, six.ensure_str(six.text_type(v))) for k, v in params]
+    return [(k, str(v)) for k, v in params]
 
 
 def url_with_params(url, params):
