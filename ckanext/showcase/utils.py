@@ -380,7 +380,7 @@ def _add_dataset_search(showcase_id, showcase_name):
 
 
 def _search_url(params, name):
-    url = h.url_for('showcase_manage_datasets', id=name)
+    url = h.url_for('showcase_blueprint.manage_datasets', id=name)
     return url_with_params(url, params)
 
 
