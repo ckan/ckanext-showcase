@@ -2,7 +2,7 @@
 
 {% set pkg = pkg_dict or c.pkg_dict %}
 {% set name = pkg.title or pkg.name %}
-{% set editor = h.get_wysiwyg_editor() %}
+{% set editor = h.showcase_get_wysiwyg_editor() %}
 
 {% set showcase_read_route = 'showcase_blueprint.read' %}
 {% set showcase_index_route = 'showcase_blueprint.index' %}

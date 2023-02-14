@@ -6,6 +6,7 @@
 * Dropped support for Python 2
 * Add support for CSRF token
 * Sanitize blueprint names. All views should be called using `showcase_blueprint.<endpoint>`
+* Rename get_showcase_wysiwyg_editor to avoid name clashes with other extensions (like `ckanext-pages`)
 
 ## v1.5.1 2022-08-10
 
