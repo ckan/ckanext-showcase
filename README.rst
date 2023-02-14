@@ -81,11 +81,14 @@ repository contains all the files needed to edit and customize it if needed::
     npm install
     npx webpack --config webpack.config.js
 
-The webpack will use as entrypoint a file located in `ckanext/showcase/fanstatic/src/ckeditor.js`,
-create a build and save it to `ckanext/showcase/fanstatic/dist/ckeditor.js`
+Build anatomy
+ * assets/build/ckeditor.js - The ready-to-use editor bundle, containing the editor and all plugins.
+ * assets/js/showcase-editor - The CKAN module that will load and config the bundle when using it as data-module attribute.
+ * assets/src/ckeditor.js - The source entry point of the build. Based on it the build/ckeditor.js file is created by webpack. It defines the editor creator, the list of plugins and the default configuration of a build.
+ * webpack.config.js - The webpack configuration used to build the editor.
 
 More info on how to build CKEditor from source:
-https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source
+https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start-other.html#building-the-editor-from-source
 
 
 ---

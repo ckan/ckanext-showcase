@@ -12,7 +12,7 @@ module.exports = {
 
     // https://webpack.js.org/configuration/output/
     output: {
-        path: path.resolve(__dirname, assetPath, 'dist'),
+        path: path.resolve(__dirname, assetPath, 'build'),
         filename: 'ckeditor.js'
     },
 

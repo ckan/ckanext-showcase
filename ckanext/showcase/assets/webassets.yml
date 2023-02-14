@@ -5,7 +5,7 @@ ckeditor:
     preload:
       - base/main
   contents:
-    - dist/ckeditor.js
+    - build/ckeditor.js
     - js/showcase-ckeditor.js
 
 ckanext-showcase-css:
