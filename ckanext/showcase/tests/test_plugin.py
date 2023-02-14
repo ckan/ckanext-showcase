@@ -188,7 +188,7 @@ class TestDatasetView(object):
         dataset = factories.Dataset(name="my-dataset")
 
         response = app.get(
-            url=url_for("showcase_dataset_showcase_list", id=dataset["id"])
+            url=url_for("showcase_blueprint.dataset_showcase_list", id=dataset["id"])
         )
 
         assert (
@@ -230,7 +230,7 @@ class TestDatasetView(object):
         )
 
         response = app.get(
-            url=url_for("showcase_dataset_showcase_list", id=dataset["id"])
+            url=url_for("showcase_blueprint.dataset_showcase_list", id=dataset["id"])
         )
 
         assert len(BeautifulSoup(response.body).select("li.media-item")) == 2
@@ -390,7 +390,7 @@ class TestShowcaseAdminManageView(object):
         sysadmin = factories.Sysadmin()
 
         env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
-        app.get(url=url_for("showcase_admins"), status=200, extra_environ=env)
+        app.get(url=url_for("showcase_blueprint.admins"), status=200, extra_environ=env)
 
     def test_showcase_admin_manage_page_lists_showcase_admins(self, app):
         """
@@ -412,7 +412,7 @@ class TestShowcaseAdminManageView(object):
 
         env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         response = app.get(
-            url=url_for("showcase_admins"), status=200, extra_environ=env
+            url=url_for("showcase_blueprint.admins"), status=200, extra_environ=env
         )
 
         assert "/user/{0}".format(user_one["name"]) in response
@@ -428,7 +428,7 @@ class TestShowcaseAdminManageView(object):
 
         env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         response = app.get(
-            url=url_for("showcase_admins"), status=200, extra_environ=env
+            url=url_for("showcase_blueprint.admins"), status=200, extra_environ=env
         )
 
         assert "There are currently no Showcase Admins" in response

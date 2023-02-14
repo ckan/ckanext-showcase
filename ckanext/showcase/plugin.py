@@ -59,29 +59,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         tk.add_template_directory(config, 'templates')
         tk.add_public_directory(config, 'public')
         tk.add_resource('fanstatic', 'showcase')
-        if tk.check_ckan_version(min_version='2.7', max_version='2.9.0'):
-            tk.add_ckan_admin_tab(config, 'showcase_admins',
-                                  'Showcase Config')
-        elif tk.check_ckan_version(min_version='2.9.0'):
-            tk.add_ckan_admin_tab(config, 'showcase_blueprint.admins',
-                                  'Showcase Config')
-
-        if tk.check_ckan_version(min_version='2.9.0'):
-            mappings = config.get('ckan.legacy_route_mappings', {})
-            if isinstance(mappings, string_types):
-                mappings = json.loads(mappings)
-
-            bp_routes = [
-                'index', 'new', 'delete',
-                'read', 'edit', 'manage_datasets',
-                'dataset_showcase_list', 'admins', 'admin_remove'
-            ]
-            mappings.update({
-                'showcase_' + route: 'showcase_blueprint.' + route
-                for route in bp_routes
-            })
-            # https://github.com/ckan/ckan/pull/4521
-            config['ckan.legacy_route_mappings'] = json.dumps(mappings)
+        tk.add_ckan_admin_tab(config, 'showcase_blueprint.admins', 'Showcase Config')
 
     # IConfigurable
 
