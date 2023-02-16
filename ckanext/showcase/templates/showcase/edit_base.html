@@ -1,11 +1,11 @@
 {% extends 'page.html' %}
 
 {% set pkg = pkg_dict or c.pkg_dict  %}
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
-{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
-{% set showcase_edit_route = 'showcase_blueprint.edit' if ckan_29_or_higher else 'showcase_edit' %}
-{% set showcase_manage_route = 'showcase_blueprint.manage_datasets' if ckan_29_or_higher else 'showcase_manage_datasets' %}
+
+{% set showcase_index_route = 'showcase_blueprint.index' %}
+{% set showcase_read_route = 'showcase_blueprint.read' %}
+{% set showcase_edit_route = 'showcase_blueprint.edit' %}
+{% set showcase_manage_route = 'showcase_blueprint.manage_datasets' %}
 
 
 
@@ -13,8 +13,7 @@
 
 {% block styles %}
   {{ super() }}
-  {% set _type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource'  %}
-  {% snippet 'showcase/snippets/showcase_css_' ~ _type ~ '.html' %}
+  {% asset "showcase/ckanext-showcase-css" %}
 {% endblock %}
 
 {% block breadcrumb_content_selected %}{% endblock %}

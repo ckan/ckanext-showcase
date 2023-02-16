@@ -1,9 +1,7 @@
 {% extends "page.html" %}
 
 {% set pkg = pkg_dict or c.pkg_dict %}
-
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_delete_route = 'showcase_blueprint.delete' if ckan_29_or_higher else 'showcase_delete' %}
+{% set showcase_delete_route = 'showcase_blueprint.delete' %}
 
 {% block subtitle %}{{ _("Confirm Delete") }}{% endblock %}
 

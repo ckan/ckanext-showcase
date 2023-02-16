@@ -40,7 +40,7 @@ Example:
                         {% for package in showcase_pkgs %}
                             {% set truncate_title = truncate_title or 80 %}
                             {% set title = package.title or package.name %}
-                            <li class="nav-item">{{ h.link_to(title|truncate(truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}</li>
+                            <li class="nav-item">{{ h.link_to(title|truncate(truncate_title), h.url_for('dataset.read', id=package.name)) }}</li>
                         {% endfor %}
                     </ul>
                 {% else %}

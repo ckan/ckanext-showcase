@@ -12,9 +12,7 @@ from ckanext.showcase.logic.validators import (
 if toolkit.check_ckan_version("2.10"):
     unicode_safe = toolkit.get_validator("unicode_safe")
 else:
-    import six
-    unicode_safe = six.text_type
-
+    unicode_safe = str
 
 not_empty = toolkit.get_validator("not_empty")
 empty = toolkit.get_validator("empty")
@@ -30,6 +28,7 @@ package_name_validator = toolkit.get_validator("package_name_validator")
 tag_string_convert = toolkit.get_validator("tag_string_convert")
 ignore_not_package_admin = toolkit.get_validator("ignore_not_package_admin")
 url_validator = toolkit.get_validator("url_validator")
+
 
 def showcase_base_schema():
     schema = {

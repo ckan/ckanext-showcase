@@ -1,12 +1,10 @@
 {% ckan_extends %}
 
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-
-{% set search_route = 'dataset.search' if ckan_29_or_higher else 'search' %}
-{% set org_route = 'organization.index' if ckan_29_or_higher else 'organizations_index' %}
-{% set group_route = 'group.index' if ckan_29_or_higher else 'group_index' %}
-{% set showcase_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
-{% set about_route = 'home.about' if ckan_29_or_higher else 'about' %}
+{% set search_route = 'dataset.search' %}
+{% set org_route = 'organization.index' %}
+{% set group_route = 'group.index' %}
+{% set showcase_route = 'showcase_blueprint.index' %}
+{% set about_route = 'home.about' %}
 
 
 {% block header_site_navigation_tabs %}

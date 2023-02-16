@@ -30,7 +30,9 @@ ckanext-showcase is intended to be a more powerful replacement for the
 Requirements
 ------------
 
-Tested on CKAN 2.7 to 2.10..
+Tested on CKAN 2.9 and 2.10.
+
+Note: Use `1.5.2` for older CKAN versions (2.7 and 2.8).
 
 ------------
 Installation
@@ -68,7 +70,7 @@ do::
 
     git clone https://github.com/ckan/ckanext-showcase.git
     cd ckanext-showcase
-    python setup.py develop
+    pip install -e .
     pip install -r dev-requirements.txt
 
 
@@ -79,11 +81,14 @@ repository contains all the files needed to edit and customize it if needed::
     npm install
     npx webpack --config webpack.config.js
 
-The webpack will use as entrypoint a file located in `ckanext/showcase/fanstatic/src/ckeditor.js`,
-create a build and save it to `ckanext/showcase/fanstatic/dist/ckeditor.js`
+Build anatomy
+ * assets/build/ckeditor.js - The ready-to-use editor bundle, containing the editor and all plugins.
+ * assets/js/showcase-editor - The CKAN module that will load and config the bundle when using it as data-module attribute.
+ * assets/src/ckeditor.js - The source entry point of the build. Based on it the build/ckeditor.js file is created by webpack. It defines the editor creator, the list of plugins and the default configuration of a build.
+ * webpack.config.js - The webpack configuration used to build the editor.
 
 More info on how to build CKEditor from source:
-https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html#scenario-2-building-from-source
+https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/quick-start-other.html#building-the-editor-from-source
 
 
 ---
@@ -168,7 +173,7 @@ HTML you can use the ```showcase markdown_to_html``` command.
 
 From the ``ckanext-showcase`` directory::
 
-    paster showcase markdown-to-html -c {path to production.ini}
+    ckan -c {path to production.ini} showcase markdown-to-html
 
 -----------------
 Running the Tests
@@ -176,12 +181,7 @@ Running the Tests
 
 To run the tests, do::
 
-    nosetests --ckan --nologcapture --with-pylons=test.ini
-
-To run the tests and produce a coverage report, first make sure you have
-coverage installed in your virtualenv (``pip install coverage``) then run::
-
-    nosetests --ckan --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.showcase --cover-inclusive --cover-erase --cover-tests
+    pytest --ckan-ini=test.ini ckanext/showcase/tests
 
 
 ------------------------------------

@@ -1,0 +1,51 @@
+/* Custom style rules for ckanext-showcase */
+
+.context-info .module-content .smallest {
+    font-size: 13px;
+}
+
+.context-info .module-content .info .btn {
+    margin-top: 18px;
+}
+
+.actions {
+    top: 36px;
+    right: 25px;
+}
+
+.ckanext-showcase-edit-wrapper {
+    background-image: none;
+}
+
+.ckanext-showcase-image-container {
+    text-align: center;
+}
+
+.ckanext-showcase-image {
+    margin-bottom: 25px;
+}
+
+.ckanext-showcase-notes {
+    margin-bottom: 25px;
+}
+
+.ckanext-showcase-launch {
+    margin-bottom: 25px;
+}
+
+
+td.ckanext_showcase_pagination_footer {
+    padding: 0;
+}
+.ckanext_showcase_pagination_footer .pagination {
+    margin: 0;
+    border-top: none 0;
+}
+
+.module-narrow .nav-item > a {
+    word-break: break-word;
+}
+
+.ck-editor__editable_inline {
+    min-height: 200px;
+}

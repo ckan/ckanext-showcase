@@ -1,5 +1,14 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.6.0 2023-02-14
+
+* Dropped support for CKAN 2.7 and 2.8
+* Dropped support for Python 2
+* Add support for CSRF token
+* Sanitize blueprint names. All views should be called using `showcase_blueprint.<endpoint>`
+* Rename get_showcase_wysiwyg_editor to avoid name clashes with other extensions (like `ckanext-pages`)
+* Update CKEditor to it's latest version: 36.0.1
+
 ## v1.5.1 2022-08-10
 
 * Dependency update

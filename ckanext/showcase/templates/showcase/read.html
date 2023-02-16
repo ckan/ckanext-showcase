@@ -2,21 +2,19 @@
 
 {% set pkg = pkg_dict or c.pkg_dict %}
 {% set name = pkg.title or pkg.name %}
-{% set editor = h.get_wysiwyg_editor() %}
+{% set editor = h.showcase_get_wysiwyg_editor() %}
 
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
-{% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
-{% set showcase_edit_route = 'showcase_blueprint.edit' if ckan_29_or_higher else 'showcase_edit' %}
+{% set showcase_read_route = 'showcase_blueprint.read' %}
+{% set showcase_index_route = 'showcase_blueprint.index' %}
+{% set showcase_edit_route = 'showcase_blueprint.edit' %}
 
 {% block subtitle %}{{ pkg.title or pkg.name }} - {{ _('Showcases') }}{% endblock %}
 
 {% block styles %}
   {{ super() }}
-  {% set _type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource'  %}
-  {% snippet 'showcase/snippets/showcase_css_' ~ _type ~ '.html' %}
+  {% asset "showcase/ckanext-showcase-css" %}
   {% if editor == 'ckeditor' %}
-    {% snippet 'showcase/snippets/ckeditor_content_css_' ~ _type ~ '.html' %}
+    {% asset 'showcase/ckeditor' %}
   {% endif %}
 {% endblock %}
 
@@ -73,7 +71,7 @@
         </h1>
 
         {% if pkg.image_display_url %}
-            <p class="ckanext-showcase-image-container"><img src="{{ pkg.image_display_url }}" alt="{{ name }}" class="media-image ckanext-showcase-image img-responsive"></p>
+            <p class="ckanext-showcase-image-container"><img src="{{ pkg.image_display_url }}" alt="{{ name }}" class="media-image ckanext-showcase-image img-fluid"></p>
         {% endif %}
 
     {% block package_notes %}

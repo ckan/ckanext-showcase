@@ -1,6 +1,5 @@
 {% if tags %}
-  {% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-  {% set showcase_index_route = 'showcase_blueprint.index' if ckan_29_or_higher else 'showcase_index' %}
+  {% set showcase_index_route = 'showcase_blueprint.index' %}
 
   <section class="tags">
   {% set _class = 'tag-list well' %}

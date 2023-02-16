@@ -27,7 +27,7 @@
         (_('Last Modified'), 'metadata_modified desc'),
         (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
       %}
-      {% snippet 'snippets/search_form.html', type='dataset', query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, show_empty=request.params, error=c.query_error, fields=c.fields %}
+      {% snippet 'snippets/search_form.html', type='dataset', query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, show_empty=request.args, error=c.query_error, fields=c.fields %}
     </div>
 
     <div class="row row2">
@@ -66,7 +66,7 @@
                         </td>
                         <td class="context">
                             <h3 class="dataset-heading">
-                                {{ h.link_to(title|truncate(truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
+                                {{ h.link_to(title|truncate(truncate_title), h.url_for('dataset.read', id=package.name)) }}
                             </h3>
                             {% if notes %}
                                 <p>{{ notes|urlize }}</p>
@@ -124,7 +124,7 @@
                                       </td>
                                       <td class="context">
                                           <h3 class="dataset-heading">
-                                              {{ h.link_to(title|truncate(truncate_title), h.url_for(controller='dataset' if h.ckan_version().split('.')[1] | int >= 9 else 'package', action='read', id=package.name)) }}
+                                              {{ h.link_to(title|truncate(truncate_title), h.url_for('dataset.read', id=package.name)) }}
                         </h3>
                         {% if notes %}
                           <p>{{ notes|urlize }}</p>

@@ -1,13 +1,12 @@
 {% import 'macros/form.html' as form %}
 {% set action = c.form_action or '' %}
 {% set form_style = c.form_style or c.action %}
-{% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
-{% set showcase_read_route = 'showcase_blueprint.read' if ckan_29_or_higher else 'showcase_read' %}
-{% set showcase_delete_route = 'showcase_blueprint.delete' if ckan_29_or_higher else 'showcase_delete' %}
+{% set showcase_read_route = 'showcase_blueprint.read' %}
+{% set showcase_delete_route = 'showcase_blueprint.delete' %}
 
 
 <form id="dataset-edit" class="dataset-form form-horizontal" method="post" action="{{ action }}" data-module="basic-form" enctype="multipart/form-data">
-
+  {{ h.csrf_input() if 'csrf_input' in h }}
   <input type="hidden" name="_ckan_phase" value="dataset_new_1" />
   {# pkg_name used in 3 stage edit #}
   <input type="hidden" name="pkg_name" value="{{ data.id }}" />
@@ -29,10 +28,9 @@
       {% endblock %}
 
       {% block package_basic_fields_description %}
-        {% set editor = h.get_wysiwyg_editor() %}
+        {% set editor = h.showcase_get_wysiwyg_editor() %}
         {% if editor == 'ckeditor' %}
-          {% set _type = 'asset' if h.ckan_version().split('.')[1] | int >= 9 else 'resource'  %}
-          {% snippet 'showcase/snippets/ckeditor_' ~ _type ~ '.html' %}
+          {% asset 'showcase/ckeditor' %}
           {%
             set ckeditor_attrs = {
               'data-module': 'showcase-ckeditor',
