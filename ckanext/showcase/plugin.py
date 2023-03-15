@@ -125,9 +125,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # IPackageController
 
     def _add_to_pkg_dict(self, context, pkg_dict):
-        '''
-        Add key/values to pkg_dict and return it.
-        '''
+        '''Add key/values to pkg_dict and return it.'''
 
         if pkg_dict['type'] != 'showcase':
             return pkg_dict
@@ -135,40 +133,36 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         # Add a display url for the Showcase image to the pkg dict so template
         # has access to it.
         image_url = pkg_dict.get('image_url')
-        pkg_dict[u'image_display_url'] = image_url
+        pkg_dict['image_display_url'] = image_url
         if image_url and not image_url.startswith('http'):
-            pkg_dict[u'image_url'] = image_url
-            pkg_dict[u'image_display_url'] = \
+            pkg_dict['image_url'] = image_url
+            pkg_dict['image_display_url'] = \
                 h.url_for_static('uploads/{0}/{1}'
                                  .format(DATASET_TYPE_NAME,
                                          pkg_dict.get('image_url')),
                                  qualified=True)
 
         # Add dataset count
-        pkg_dict[u'num_datasets'] = len(
+        pkg_dict['num_datasets'] = len(
             tk.get_action('ckanext_showcase_package_list')(
                 context, {'showcase_id': pkg_dict['id']}))
 
         # Rendered notes
         if showcase_helpers.showcase_get_wysiwyg_editor() == 'ckeditor':
-            pkg_dict[u'showcase_notes_formatted'] = pkg_dict['notes']
+            pkg_dict['showcase_notes_formatted'] = pkg_dict['notes']
         else:
-            pkg_dict[u'showcase_notes_formatted'] = \
+            pkg_dict['showcase_notes_formatted'] = \
                 h.render_markdown(pkg_dict['notes'])
 
         return pkg_dict
 
     # CKAN >= 2.10
     def after_dataset_show(self, context, pkg_dict):
-        '''
-        Modify package_show pkg_dict.
-        '''
+        '''Modify package_show pkg_dict.'''
         pkg_dict = self._add_to_pkg_dict(context, pkg_dict)
 
     def before_dataset_view(self, pkg_dict):
-        '''
-        Modify pkg_dict that is sent to templates.
-        '''
+        '''Modify pkg_dict that is sent to templates.'''
         context = {'user': tk.g.user or tk.g.author}
 
         return self._add_to_pkg_dict(context, pkg_dict)
@@ -187,15 +181,11 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
 
     # CKAN < 2.10 (Remove when dropping support for 2.9)
     def after_show(self, context, pkg_dict):
-        '''
-        Modify package_show pkg_dict.
-        '''
+        '''Modify package_show pkg_dict.'''
         pkg_dict = self.after_dataset_show(context, pkg_dict)
 
     def before_view(self, pkg_dict):
-        '''
-        Modify pkg_dict that is sent to templates.
-        '''
+        '''Modify pkg_dict that is sent to templates.'''
         return self.before_dataset_view(pkg_dict)
 
     def before_search(self, search_params):
