@@ -195,7 +195,7 @@ def _add_dataset_search(showcase_id, showcase_name):
     package_type = 'dataset'
 
     # unicode format (decoded from utf8)
-    q = tk.g.q = tk.request.args.get('q', u'')
+    q = tk.g.q = tk.request.args.get('q', '')
     tk.g.query_error = False
     page = h.get_page_number(tk.request.args)
 
@@ -389,7 +389,7 @@ def _encode_params(params):
 
 def url_with_params(url, params):
     params = _encode_params(params)
-    return url + u'?' + urlencode(params)
+    return url + '?' + urlencode(params)
 
 
 def delete_view(id):
