@@ -45,7 +45,11 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
       </a>
     {% endblock %}
     {% if show_remove %}
-      <form method="post"><input type="hidden" value="{{ package.id }}" name="remove_showcase_id" /><input value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-small media-edit" title="{{ _('Remove dataset from this showcase') }}"/></form>
+      <form method="post">
+        {{ h.csrf_input() if 'csrf_input' in h }}
+        <input type="hidden" value="{{ package.id }}" name="remove_showcase_id" />
+        <input value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-sm media-edit" title="{{ _('Remove dataset from this showcase') }}"/>
+      </form>
     {% endif %}
   {% endblock %}
 </li>
