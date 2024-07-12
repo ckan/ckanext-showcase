@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 
 import ckan.model as model
@@ -10,14 +12,15 @@ from ckanext.showcase.logic.converters import (
 )
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestNameOrIdToTitleConverter(object):
     def test_name_to_title(self):
         """
         Package correctly returns title.
         """
+        my_id = str(uuid.uuid4())
         context = {"session": model.Session}
-        factories.Dataset(id="my-id", title="My Title", name="my-name")
+        factories.Dataset(id=my_id, title="My Title", name="my-name")
 
         result = convert_package_name_or_id_to_title_or_name(
             "my-name", context
@@ -28,8 +31,10 @@ class TestNameOrIdToTitleConverter(object):
         """
         Package with no title correctly returns name.
         """
+
+        my_id = str(uuid.uuid4())
         context = {"session": model.Session}
-        factories.Dataset(id="my-id", title="", name="my-name")
+        factories.Dataset(id=my_id, title="", name="my-name")
 
         result = convert_package_name_or_id_to_title_or_name(
             "my-name", context
@@ -40,20 +45,24 @@ class TestNameOrIdToTitleConverter(object):
         """
         Package correctly returns title.
         """
-        context = {"session": model.Session}
-        factories.Dataset(id="my-id", title="My Title", name="my-name")
 
-        result = convert_package_name_or_id_to_title_or_name("my-id", context)
+        my_id = str(uuid.uuid4())
+        context = {"session": model.Session}
+        factories.Dataset(id=my_id, title="My Title", name="my-name")
+
+        result = convert_package_name_or_id_to_title_or_name(my_id, context)
         assert "My Title" == result
 
     def test_id_to_name(self):
         """
         Package with no title correctly returns name.
         """
-        context = {"session": model.Session}
-        factories.Dataset(id="my-id", title="", name="my-name")
 
-        result = convert_package_name_or_id_to_title_or_name("my-id", context)
+        my_id = str(uuid.uuid4())
+        context = {"session": model.Session}
+        factories.Dataset(id=my_id, title="", name="my-name")
+
+        result = convert_package_name_or_id_to_title_or_name(my_id, context)
         assert "my-name" == result
 
     def test_with_no_package_id_exists(self):

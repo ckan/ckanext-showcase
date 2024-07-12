@@ -3,8 +3,6 @@ import pytest
 import ckan.model as model
 from ckan.plugins import toolkit
 
-from ckanext.showcase.model import setup as model_setup
-
 
 @pytest.fixture
 def clean_db(reset_db, migrate_db_for):
