@@ -6,7 +6,7 @@ from ckan.tests import factories, helpers
 import ckan.plugins.toolkit as toolkit
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseShow(object):
     def test_showcase_show_no_args(self):
         """
@@ -201,7 +201,7 @@ class TestShowcaseShow(object):
         app.get("/dataset", status=200)
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseList(object):
     def test_showcase_list(self):
         """Showcase list action returns names of showcases in site."""
@@ -254,7 +254,7 @@ class TestShowcaseList(object):
         ) not in showcase_list_name_id
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcasePackageList(object):
 
     """Tests for ckanext_showcase_package_list"""
@@ -437,7 +437,7 @@ class TestShowcasePackageList(object):
             )
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestPackageShowcaseList(object):
 
     """Tests for ckanext_package_showcase_list"""
@@ -567,7 +567,7 @@ class TestPackageShowcaseList(object):
             )
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseAdminList(object):
 
     """Tests for ckanext_showcase_admin_list"""
@@ -644,7 +644,7 @@ class TestShowcaseAdminList(object):
         } not in showcase_admin_list
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestPackageSearchBeforeSearch(object):
 
     """
@@ -693,7 +693,7 @@ class TestPackageSearchBeforeSearch(object):
         assert "dataset" not in types
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestUserShowBeforeSearch(object):
 
     """

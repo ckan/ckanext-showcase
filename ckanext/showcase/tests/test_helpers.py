@@ -7,7 +7,7 @@ from ckan.tests import factories
 import ckanext.showcase.logic.helpers as showcase_helpers
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestGetSiteStatistics(object):
     def test_dataset_count_no_datasets(self):
         """

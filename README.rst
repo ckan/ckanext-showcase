@@ -30,7 +30,7 @@ ckanext-showcase is intended to be a more powerful replacement for the
 Requirements
 ------------
 
-Tested on CKAN 2.9 and 2.10.
+Tested on CKAN 2.9 to 2.11.
 
 Note: Use `1.5.2` for older CKAN versions (2.7 and 2.8).
 
@@ -56,10 +56,12 @@ To install ckanext-showcase:
    config file (by default the config file is located at
    ``/etc/ckan/default/production.ini``).
 
-4. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
+4. Create the database tables::
 
-     sudo service apache2 reload
+    ckan db upgrade -p showcase
 
+
+5. Restart CKAN. 
 
 ------------------------
 Development Installation

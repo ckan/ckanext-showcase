@@ -9,7 +9,7 @@ from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseAdmin
 from ckan.model.package import Package
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeleteShowcase(object):
     def test_showcase_delete_no_args(self):
         """
@@ -121,7 +121,7 @@ class TestDeleteShowcase(object):
         assert model.Session.query(ShowcasePackageAssociation).count() == 0
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeletePackage(object):
     def test_package_delete_retains_associations(self):
         """
@@ -192,7 +192,7 @@ class TestDeletePackage(object):
         assert model.Session.query(ShowcasePackageAssociation).count() == 1
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeleteShowcasePackageAssociation(object):
     def test_association_delete_no_args(self):
         """
@@ -328,7 +328,7 @@ class TestDeleteShowcasePackageAssociation(object):
         )
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestRemoveShowcaseAdmin(object):
     def test_showcase_admin_remove_deletes_showcase_admin_user(self):
         """

@@ -16,7 +16,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseIndex(object):
     def test_showcase_listed_on_index(self, app):
         """
@@ -30,7 +30,7 @@ class TestShowcaseIndex(object):
         assert "my-showcase" in response.body
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseNewView(object):
     def test_showcase_create_form_renders(self, app):
 
@@ -83,7 +83,7 @@ class TestShowcaseNewView(object):
 
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseEditView(object):
     def test_showcase_edit_form_renders(self, app):
         """
@@ -145,7 +145,7 @@ class TestShowcaseEditView(object):
         assert "My new description!" in res.body
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestDatasetView(object):
 
     """Plugin adds a new showcases view for datasets."""
@@ -322,7 +322,7 @@ class TestDatasetView(object):
         assert model.Session.query(ShowcasePackageAssociation).count() == 0
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestShowcaseAdminManageView(object):
 
     """Plugin adds a showcase admin management page to ckan-admin section."""
@@ -392,7 +392,7 @@ class TestShowcaseAdminManageView(object):
         assert "There are currently no Showcase Admins" in response
 
 
-@pytest.mark.usefixtures("clean_db", "clean_index")
+@pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestSearch(object):
     def test_search_with_nonascii_filter_query(self, app):
         """
@@ -407,7 +407,7 @@ class TestSearch(object):
         assert result["count"] == 1
 
 
-@pytest.mark.usefixtures('clean_db')
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestCKEditor(object):
     @pytest.mark.ckan_config("ckanext.showcase.editor", "ckeditor")
     def test_rich_text_editor_is_shown_when_configured(self, app):

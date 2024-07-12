@@ -15,7 +15,6 @@ from ckanext.showcase import cli
 from ckanext.showcase import utils
 from ckanext.showcase import views
 from ckanext.showcase.logic import auth, action
-from ckanext.showcase.model import setup as model_setup
 
 import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
@@ -28,7 +27,6 @@ DATASET_TYPE_NAME = utils.DATASET_TYPE_NAME
 
 
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
-    plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IFacets, inherit=True)
@@ -56,12 +54,6 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         tk.add_template_directory(config, 'templates')
         tk.add_public_directory(config, 'public')
         tk.add_resource('assets', 'showcase')
-        tk.add_ckan_admin_tab(config, 'showcase_blueprint.admins', 'Showcase Config')
-
-    # IConfigurable
-
-    def configure(self, config):
-        model_setup()
 
     # IDatasetForm
 

@@ -8,7 +8,7 @@ from ckan.tests import factories, helpers as test_helpers
 from ckanext.showcase.utils import markdown_to_html
 
 
-@pytest.mark.usefixtures("clean_db")
+@pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestUtils(object):
 
     def test_markdown_to_html(self):
