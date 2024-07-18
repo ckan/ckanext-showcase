@@ -29,7 +29,7 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
       {% if notes %}
         <div>{{ notes|urlize }}</div>
       {% else %}
-        <p class="empty">{{ _("This showcase has no description") }}</p>
+        <p class="empty">{{ _("This reuse has no description") }}</p>
       {% endif %}
     {% endblock %}
     {% block datasets %}
@@ -48,7 +48,7 @@ show_remove    - If True, show the remove button to remove showcase/dataset asso
       <form method="post">
         {{ h.csrf_input() if 'csrf_input' in h }}
         <input type="hidden" value="{{ package.id }}" name="remove_showcase_id" />
-        <input value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-sm media-edit" title="{{ _('Remove dataset from this showcase') }}"/>
+        <input value="{{ _('Remove') }}" type="submit" class="btn btn-danger btn-sm media-edit" title="{{ _('Remove dataset from this reuse') }}"/>
       </form>
     {% endif %}
   {% endblock %}
