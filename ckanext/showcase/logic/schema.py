@@ -7,7 +7,9 @@ from ckan.logic.schema import (default_tags_schema,
 
 from ckanext.showcase.logic.validators import (
     convert_package_name_or_id_to_id_for_type_dataset,
-    convert_package_name_or_id_to_id_for_type_showcase)
+    convert_package_name_or_id_to_id_for_type_showcase,
+    is_valid_status
+    )
 
 if toolkit.check_ckan_version("2.10"):
     unicode_safe = toolkit.get_validator("unicode_safe")
@@ -149,12 +151,18 @@ def package_showcase_list_schema():
     return schema
 
 
-def showcase_admin_add_schema():
+
+def showcase_status_update_schema():
     schema = {
-        'username': [not_empty, user_id_or_name_exists, unicode_safe],
+        'showcase_id': [
+            not_empty, 
+            unicode_safe,
+            convert_package_name_or_id_to_id_for_type_showcase
+        ],
+        "status": [
+            ignore_missing,
+            is_valid_status
+        ],
+        "feedback": [ignore_missing, unicode_safe]
     }
     return schema
-
-
-def showcase_admin_remove_schema():
-    return showcase_admin_add_schema()

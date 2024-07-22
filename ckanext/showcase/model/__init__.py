@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, types
 
 from ckan.model.domain_object import DomainObject
 from ckan.model.meta import Session
+from ckanext.showcase.data.constants import *
 
 import logging
 
@@ -75,7 +76,11 @@ class ShowcasePackageAssociation(ShowcaseBaseModel, BaseModel):
         Return a list of showcase ids associated with the passed package_id.
         """
         showcase_package_association_list = (
-            Session.query(cls.showcase_id).filter_by(package_id=package_id).all()
+            Session.query(cls.showcase_id) \
+            .filter_by(package_id=package_id) \
+            .join(ShowcaseApprovalStatus, cls.showcase_id == ShowcaseApprovalStatus.showcase_id)
+            .filter(ShowcaseApprovalStatus.status == ApprovalStatus.PENDING)
+            .all()
         )
         return showcase_package_association_list
 
@@ -104,3 +109,50 @@ class ShowcaseAdmin(ShowcaseBaseModel, BaseModel):
         Determine whether passed user is in the showcase admin list.
         """
         return user.id in cls.get_showcase_admin_ids()
+
+class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
+    __tablename__ = "showcase_approval"
+
+    # TODO Check if date fields are required
+    
+    showcase_id = Column(
+        types.UnicodeText,
+        ForeignKey("package.id", ondelete="CASCADE", onupdate="CASCADE"),
+        nullable=False,
+        primary_key=True,
+    )
+    feedback = Column(types.UnicodeText, nullable=True)
+    status = Column(
+        types.Enum(
+            ApprovalStatus, 
+            name="status_enum"
+            ), 
+        nullable=False, 
+        default=ApprovalStatus.PENDING
+    )
+
+
+    @classmethod
+    def get_status_for_showcase(cls, showcase_id):
+        """
+        Return the feedback associated with the given showcase_id.
+        """
+        return cls.filter(showcase_id=showcase_id).all()
+
+    @classmethod
+    def update_status(cls, showcase_id, feedback, status=ApprovalStatus.PENDING):
+        """
+        Update feedback for the given feedback_id.
+        """
+        feedback_instance = cls.get(showcase_id=showcase_id)
+        if feedback_instance:
+            feedback_instance.feedback = feedback
+            feedback_instance.status = status
+            Session.commit()
+            return feedback_instance.as_dict()
+        else:
+            return cls.create(
+                showcase_id=showcase_id,
+                feedback = feedback,
+                status = status
+            )

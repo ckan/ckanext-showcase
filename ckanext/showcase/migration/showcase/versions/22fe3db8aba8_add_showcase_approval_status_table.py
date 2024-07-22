@@ -1,8 +1,8 @@
-"""Add ckanext-showcase tables
+"""Add showcase approval status table
 
-Revision ID: 02b006cb222c
-Revises:
-Create Date: 2024-07-12 12:04:18.803072
+Revision ID: 22fe3db8aba8
+Revises: 02b006cb222c
+Create Date: 2024-07-21 10:49:16.978530
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from ckanext.showcase.data.constants import *
 
 # revision identifiers, used by Alembic.
-revision = "02b006cb222c"
-down_revision = None
+revision = '22fe3db8aba8'
+down_revision = '02b006cb222c'
 branch_labels = None
 depends_on = None
 
@@ -69,7 +69,7 @@ def upgrade():
                     ), 
                 nullable=False, 
                 default=ApprovalStatus.PENDING
-        )
+            )
         )
 
 

@@ -1,5 +1,5 @@
 from ckan.plugins import toolkit as tk
-
+from ckanext.showcase.data.constants import *
 _ = tk._
 Invalid = tk.Invalid
 
@@ -42,3 +42,9 @@ def convert_package_name_or_id_to_id_for_type_showcase(package_name_or_id,
     return convert_package_name_or_id_to_id_for_type(package_name_or_id,
                                                      context,
                                                      package_type='showcase')
+
+
+def is_valid_status(value, context):
+    if value not in ApprovalStatus.__members__.values():
+        raise Invalid(_(f"Invalid status: {value}. Must be one of: {[status.value for status in ApprovalStatus]}"))
+    return value

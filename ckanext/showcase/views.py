@@ -106,14 +106,6 @@ def dataset_showcase_list(id):
     return utils.dataset_showcase_list(id)
 
 
-def admins():
-    return utils.manage_showcase_admins()
-
-
-def admin_remove():
-    return utils.remove_showcase_admin()
-
-
 def upload():
     return utils.upload()
 
@@ -137,14 +129,6 @@ showcase.add_url_rule('/dataset/showcases/<id>',
                       view_func=dataset_showcase_list,
                       methods=['GET', 'POST'],
                       endpoint="dataset_showcase_list")
-showcase.add_url_rule('/ckan-admin/showcase_admins',
-                      view_func=admins,
-                      methods=['GET', 'POST'],
-                      endpoint="admins")
-showcase.add_url_rule('/ckan-admin/showcase_admin_remove',
-                      view_func=admin_remove,
-                      methods=['GET', 'POST'],
-                      endpoint='admin_remove')
 showcase.add_url_rule('/showcase_upload',
                       view_func=upload,
                       methods=['POST'])

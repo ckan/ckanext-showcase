@@ -33,7 +33,7 @@ def check_edit_view_auth(id):
     }
 
     try:
-        tk.check_access('ckanext_showcase_update', context)
+        tk.check_access('ckanext_showcase_update', context, {'id':id})
     except tk.NotAuthorized:
         return tk.abort(
             401,
@@ -100,7 +100,7 @@ def manage_datasets_view(id):
     data_dict = {'id': id}
 
     try:
-        tk.check_access('ckanext_showcase_update', context)
+        tk.check_access('ckanext_showcase_update', context, data_dict)
     except tk.NotAuthorized:
         return tk.abort(
             401,
@@ -493,96 +493,11 @@ def dataset_showcase_list(id):
         return h.redirect_to(
             h.url_for(list_route, id=tk.g.pkg_dict['name']))
 
-    pkg_showcase_ids = [showcase['id'] for showcase in tk.g.showcase_list]
-    site_showcases = tk.get_action('ckanext_showcase_list')(context, {})
-
-    tk.g.showcase_dropdown = [[showcase['id'], showcase['title']]
-                           for showcase in site_showcases
-                           if showcase['id'] not in pkg_showcase_ids]
+    tk.g.showcase_dropdown = []
 
     return tk.render("package/dataset_showcase_list.html",
                      extra_vars={'pkg_dict': tk.g.pkg_dict})
 
-
-def manage_showcase_admins():
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': tk.g.user or tk.g.author
-    }
-
-    try:
-        tk.check_access('sysadmin', context, {})
-    except tk.NotAuthorized:
-        return tk.abort(401, _('User not authorized to view page'))
-
-    form_data = tk.request.form
-    admins_route = 'showcase_blueprint.admins'
-
-    # We're trying to add a user to the showcase admins list.
-    if tk.request.method == 'POST' and form_data['username']:
-        username = form_data['username']
-        try:
-            tk.get_action('ckanext_showcase_admin_add')(
-                {}, {'username': username}
-                )
-        except tk.NotAuthorized:
-            abort(401, _('Unauthorized to perform that action'))
-        except tk.ObjectNotFound:
-            h.flash_error(
-                _("User '{user_name}' not found.").format(user_name=username))
-        except tk.ValidationError as e:
-            h.flash_notice(e.error_summary)
-        else:
-            h.flash_success(_("The user is now a Showcase Admin"))
-
-        return tk.redirect_to(h.url_for(admins_route))
-
-    tk.g.showcase_admins = tk.get_action('ckanext_showcase_admin_list')({},{})
-
-    return tk.render('admin/manage_showcase_admins.html')
-
-
-def remove_showcase_admin():
-    '''
-    Remove a user from the Showcase Admin list.
-    '''
-    context = {
-        'model': model,
-        'session': model.Session,
-        'user': tk.g.user or tk.g.author
-    }
-
-    try:
-        tk.check_access('sysadmin', context, {})
-    except tk.NotAuthorized:
-        return tk.abort(401, _('User not authorized to view page'))
-
-    form_data = tk.request.form
-    admins_route = 'showcase_blueprint.admins'
-
-    if 'cancel' in form_data:
-        return tk.redirect_to(admins_route)
-
-    user_id = tk.request.args['user']
-    if tk.request.method == 'POST' and user_id:
-        user_id = tk.request.args['user']
-        try:
-            tk.get_action('ckanext_showcase_admin_remove')(
-                {}, {'username': user_id}
-                )
-        except tk.NotAuthorized:
-            return tk.abort(401, _('Unauthorized to perform that action'))
-        except tk.ObjectNotFound:
-            h.flash_error(_('The user is not a Showcase Admin'))
-        else:
-            h.flash_success(_('The user is no longer a Showcase Admin'))
-
-        return tk.redirect_to(h.url_for(admins_route))
-
-    tk.g.user_dict = tk.get_action('user_show')({}, {'id': user_id})
-    tk.g.user_id = user_id
-    return tk.render('admin/confirm_remove_showcase_admin.html')
 
 
 def markdown_to_html():
