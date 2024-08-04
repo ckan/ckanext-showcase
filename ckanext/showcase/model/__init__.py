@@ -1,10 +1,21 @@
 from sqlalchemy import Column, ForeignKey, types
-
+import datetime
 from ckan.model.domain_object import DomainObject
 from ckan.model.meta import Session
 from ckanext.showcase.data.constants import *
 
 import logging
+
+from six import text_type
+from sqlalchemy.orm import class_mapper
+try:
+    from sqlalchemy.engine import Row
+except ImportError:
+    try:
+        from sqlalchemy.engine.result import RowProxy as Row
+    except ImportError:
+        from sqlalchemy.engine.base import RowProxy as Row
+
 
 try:
     from ckan.plugins.toolkit import BaseModel
@@ -72,9 +83,6 @@ class ShowcasePackageAssociation(ShowcaseBaseModel, BaseModel):
 
     @classmethod
     def get_showcase_ids_for_package(cls, package_id):
-        """
-        Return a list of showcase ids associated with the passed package_id.
-        """
         showcase_package_association_list = (
             Session.query(cls.showcase_id) \
             .filter_by(package_id=package_id) \
@@ -130,24 +138,20 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
         nullable=False, 
         default=ApprovalStatus.PENDING
     )
+    status_modified = Column(types.DateTime, default=datetime.datetime.utcnow)
 
 
     @classmethod
     def get_status_for_showcase(cls, showcase_id):
-        """
-        Return the feedback associated with the given showcase_id.
-        """
-        return cls.filter(showcase_id=showcase_id).all()
+        return cls.filter(showcase_id=showcase_id).first()
 
     @classmethod
     def update_status(cls, showcase_id, feedback, status=ApprovalStatus.PENDING):
-        """
-        Update feedback for the given feedback_id.
-        """
         feedback_instance = cls.get(showcase_id=showcase_id)
         if feedback_instance:
             feedback_instance.feedback = feedback
             feedback_instance.status = status
+            feedback_instance.status_modified = datetime.datetime.now()
             Session.commit()
             return feedback_instance.as_dict()
         else:
@@ -156,3 +160,34 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
                 feedback = feedback,
                 status = status
             )
+        
+
+    def as_dict(self):
+        result_dict = {}
+
+        if isinstance(self, Row):
+            fields = self.keys()
+        else:
+            ModelClass = self.__class__
+            table = class_mapper(ModelClass).mapped_table
+            fields = [field.name for field in table.c]
+
+        for name in fields:
+            value = getattr(self, name)
+
+            if value is None:
+                result_dict[name] = value
+            elif isinstance(value, ApprovalStatus):
+                result_dict[name] = value.value
+            elif isinstance(value, dict):
+                result_dict[name] = value
+            elif isinstance(value, int):
+                result_dict[name] = value
+            elif isinstance(value, datetime.datetime):
+                result_dict[name] = value.isoformat()
+            elif isinstance(value, list):
+                result_dict[name] = value
+            else:
+                result_dict[name] = text_type(value)
+
+        return result_dict

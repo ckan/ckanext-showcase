@@ -34,12 +34,12 @@ def showcase_create(context, data_dict):
     site_user = toolkit.get_action("get_site_user")({"ignore_auth": True}, {})
     updated_context = {'ignore_auth': True, 'user':site_user['name']}
     pkg = toolkit.get_action('package_create')(
-        context.update(updated_context), 
+        context.copy().update(updated_context), 
         data_dict
     )
 
     toolkit.get_action('ckanext_showcase_status_update')(
-        context.update(updated_context),
+        context.copy().update(updated_context),
         {"showcase_id": pkg.get("id",pkg.get("name", '')) }
     )
 

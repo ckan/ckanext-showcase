@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 from ckan.logic.schema import (default_tags_schema,
                                default_extras_schema,
@@ -11,25 +11,25 @@ from ckanext.showcase.logic.validators import (
     is_valid_status
     )
 
-if toolkit.check_ckan_version("2.10"):
-    unicode_safe = toolkit.get_validator("unicode_safe")
+if tk.check_ckan_version("2.10"):
+    unicode_safe = tk.get_validator("unicode_safe")
 else:
     unicode_safe = str
 
-not_empty = toolkit.get_validator("not_empty")
-empty = toolkit.get_validator("empty")
-if_empty_same_as = toolkit.get_validator("if_empty_same_as")
-ignore_missing = toolkit.get_validator("ignore_missing")
-ignore = toolkit.get_validator("ignore")
-keep_extras = toolkit.get_validator("keep_extras")
+not_empty = tk.get_validator("not_empty")
+empty = tk.get_validator("empty")
+if_empty_same_as = tk.get_validator("if_empty_same_as")
+ignore_missing = tk.get_validator("ignore_missing")
+ignore = tk.get_validator("ignore")
+keep_extras = tk.get_validator("keep_extras")
 
-package_id_not_changed = toolkit.get_validator("package_id_not_changed")
-name_validator = toolkit.get_validator("name_validator")
-user_id_or_name_exists = toolkit.get_validator("user_id_or_name_exists")
-package_name_validator = toolkit.get_validator("package_name_validator")
-tag_string_convert = toolkit.get_validator("tag_string_convert")
-ignore_not_package_admin = toolkit.get_validator("ignore_not_package_admin")
-url_validator = toolkit.get_validator("url_validator")
+package_id_not_changed = tk.get_validator("package_id_not_changed")
+name_validator = tk.get_validator("name_validator")
+user_id_or_name_exists = tk.get_validator("user_id_or_name_exists")
+package_name_validator = tk.get_validator("package_name_validator")
+tag_string_convert = tk.get_validator("tag_string_convert")
+ignore_not_package_admin = tk.get_validator("ignore_not_package_admin")
+url_validator = tk.get_validator("url_validator")
 
 
 def showcase_base_schema():
@@ -52,8 +52,8 @@ def showcase_base_schema():
         'extras': default_extras_schema(),
         'save': [ignore],
         'return_to': [ignore],
-        'image_url': [toolkit.get_validator('ignore_missing'),
-                      toolkit.get_converter('convert_to_extras')]
+        'image_url': [tk.get_validator('ignore_missing'),
+                      tk.get_converter('convert_to_extras')]
     }
     return schema
 
@@ -111,11 +111,11 @@ def showcase_show_schema():
     schema['tracking_summary'] = [ignore_missing]
 
     schema.update({
-        'image_url': [toolkit.get_converter('convert_from_extras'),
-                      toolkit.get_validator('ignore_missing')],
+        'image_url': [tk.get_converter('convert_from_extras'),
+                      tk.get_validator('ignore_missing')],
         'original_related_item_id': [
-            toolkit.get_converter('convert_from_extras'),
-            toolkit.get_validator('ignore_missing')]
+            tk.get_converter('convert_from_extras'),
+            tk.get_validator('ignore_missing')]
     })
 
     return schema
@@ -160,7 +160,7 @@ def showcase_status_update_schema():
             convert_package_name_or_id_to_id_for_type_showcase
         ],
         "status": [
-            ignore_missing,
+            not_empty,
             is_valid_status
         ],
         "feedback": [ignore_missing, unicode_safe]

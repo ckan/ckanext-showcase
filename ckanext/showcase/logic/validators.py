@@ -44,7 +44,9 @@ def convert_package_name_or_id_to_id_for_type_showcase(package_name_or_id,
                                                      package_type='showcase')
 
 
-def is_valid_status(value, context):
-    if value not in ApprovalStatus.__members__.values():
-        raise Invalid(_(f"Invalid status: {value}. Must be one of: {[status.value for status in ApprovalStatus]}"))
-    return value
+def is_valid_status(applied_status, context):
+    status_map = {status.value: status.name for status in ApprovalStatus}
+    if applied_status not in status_map:
+        raise Invalid(_(f"Invalid status: {applied_status}. Must be one of: {list(status_map.keys())}"))
+    
+    return ApprovalStatus[status_map[applied_status]]

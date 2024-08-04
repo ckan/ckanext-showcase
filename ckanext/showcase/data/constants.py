@@ -1,7 +1,8 @@
 from enum import Enum
+from ckan.plugins.toolkit import _
 
 class ApprovalStatus(Enum):
-    PENDING = "Pending"
-    NEEDS_REVISION = "Needs Revision"
-    REJECTED = "Rejected"
-    APPROVED = "Approved"
+    PENDING = _("Pending")
+    NEEDS_REVISION = _("Needs Revision")
+    REJECTED = _("Rejected")
+    APPROVED = _("Approved")
