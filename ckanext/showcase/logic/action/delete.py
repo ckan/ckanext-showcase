@@ -1,6 +1,6 @@
 import logging
 
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions
 
 from ckanext.showcase.logic.schema import (
@@ -23,14 +23,14 @@ def showcase_delete(context, data_dict):
     '''
 
     model = context['model']
-    id = toolkit.get_or_bust(data_dict, 'id')
+    id = tk.get_or_bust(data_dict, 'id')
 
     entity = model.Package.get(id)
 
     if entity is None:
-        raise toolkit.ObjectNotFound
+        raise tk.ObjectNotFound
 
-    toolkit.check_access('ckanext_showcase_delete', context, data_dict)
+    tk.check_access('ckanext_showcase_delete', context, data_dict)
 
     entity.purge()
     model.repo.commit()
@@ -48,7 +48,7 @@ def showcase_package_association_delete(context, data_dict):
 
     model = context['model']
 
-    toolkit.check_access('ckanext_showcase_package_association_delete',
+    tk.check_access('ckanext_showcase_package_association_delete',
                          context, data_dict)
 
     # validate the incoming data_dict
@@ -56,9 +56,9 @@ def showcase_package_association_delete(context, data_dict):
         data_dict, showcase_package_association_delete_schema(), context)
 
     if errors:
-        raise toolkit.ValidationError(errors)
+        raise tk.ValidationError(errors)
 
-    package_id, showcase_id = toolkit.get_or_bust(validated_data_dict,
+    package_id, showcase_id = tk.get_or_bust(validated_data_dict,
                                                   ['package_id',
                                                    'showcase_id'])
 
@@ -66,7 +66,7 @@ def showcase_package_association_delete(context, data_dict):
         package_id=package_id, showcase_id=showcase_id)
 
     if showcase_package_association is None:
-        raise toolkit.ObjectNotFound("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' doesn't exist.".format(package_id, showcase_id))
+        raise tk.ObjectNotFound("ShowcasePackageAssociation with package_id '{0}' and showcase_id '{1}' doesn't exist.".format(package_id, showcase_id))
 
     # delete the association
     showcase_package_association.delete()

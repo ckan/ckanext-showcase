@@ -3,7 +3,7 @@
 import pytest
 
 from ckan.tests import factories, helpers
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
@@ -12,7 +12,7 @@ class TestShowcaseShow(object):
         """
         Calling showcase show with no args raises a ValidationError.
         """
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action("ckanext_showcase_show")
 
     def test_showcase_show_with_id(self):
@@ -45,7 +45,7 @@ class TestShowcaseShow(object):
         """
         factories.Dataset(type="showcase", name="my-showcase")
 
-        with pytest.raises(toolkit.ObjectNotFound):
+        with pytest.raises(tk.ObjectNotFound):
             helpers.call_action(
                 "ckanext_showcase_show", id="my-bad-name",
             )
@@ -292,7 +292,7 @@ class TestShowcasePackageList(object):
         """
         factories.Dataset(type="showcase")["id"]
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_list", showcase_id="a-bad-id",
             )
@@ -431,7 +431,7 @@ class TestShowcasePackageList(object):
             showcase_id=showcase_id,
         )
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_list", showcase_id=package["id"],
             )
@@ -475,7 +475,7 @@ class TestPackageShowcaseList(object):
         """
         factories.Dataset()["id"]
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_package_showcase_list", showcase_id="a-bad-id",
             )
@@ -561,7 +561,7 @@ class TestPackageShowcaseList(object):
             showcase_id=showcase["id"],
         )
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_package_showcase_list", package_id=showcase["id"],
             )

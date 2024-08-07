@@ -1,7 +1,7 @@
 import pytest
 
 import ckan.model as model
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 from ckan.tests import factories, helpers
 
@@ -17,7 +17,7 @@ class TestDeleteShowcase(object):
         """
         sysadmin = factories.Sysadmin()
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_delete", context=context,
             )
@@ -29,7 +29,7 @@ class TestDeleteShowcase(object):
         sysadmin = factories.Sysadmin()
         context = {"user": sysadmin["name"]}
         factories.Dataset(type="showcase")
-        with pytest.raises(toolkit.ObjectNotFound):
+        with pytest.raises(tk.ObjectNotFound):
             helpers.call_action(
                 "ckanext_showcase_delete", context=context, id="blah-blah",
             )
@@ -200,7 +200,7 @@ class TestDeleteShowcasePackageAssociation(object):
         """
         sysadmin = factories.User(sysadmin=True)
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_association_delete", context=context,
             )
@@ -214,7 +214,7 @@ class TestDeleteShowcasePackageAssociation(object):
         package_id = factories.Dataset()["id"]
 
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_association_delete",
                 context=context,
@@ -261,7 +261,7 @@ class TestDeleteShowcasePackageAssociation(object):
         assert model.Session.query(ShowcasePackageAssociation).count() == 0
 
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ObjectNotFound):
+        with pytest.raises(tk.ObjectNotFound):
             helpers.call_action(
                 "ckanext_showcase_package_association_delete",
                 context=context,
@@ -280,7 +280,7 @@ class TestDeleteShowcasePackageAssociation(object):
         assert model.Session.query(ShowcasePackageAssociation).count() == 0
 
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_association_delete",
                 context=context,
@@ -404,7 +404,7 @@ class TestRemoveShowcaseAdmin(object):
         ValidationError.
         """
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_admin_remove",
                 context={},
@@ -416,7 +416,7 @@ class TestRemoveShowcaseAdmin(object):
         Calling showcase admin remove with no arg raises ValidationError.
         """
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_admin_remove", context={},
             )

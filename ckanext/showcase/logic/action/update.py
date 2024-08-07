@@ -1,7 +1,7 @@
 import logging
 
 import ckan.lib.uploader as uploader
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 from ckanext.showcase.model import ShowcaseApprovalStatus
 from ckan.common import _
 import ckanext.showcase.logic.schema as showcase_schema
@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 
 def showcase_update(context, data_dict):
-    toolkit.check_access('ckanext_showcase_update',context, data_dict)
+    tk.check_access('ckanext_showcase_update',context, data_dict)
 
     upload = uploader.get_uploader('showcase', data_dict['image_url'])
 
@@ -21,14 +21,14 @@ def showcase_update(context, data_dict):
 
     upload.upload(uploader.get_max_image_size())
 
-    site_user = toolkit.get_action("get_site_user")({"ignore_auth": True}, {})
+    site_user = tk.get_action("get_site_user")({"ignore_auth": True}, {})
     updated_context = {'ignore_auth': True, 'user':site_user['name']}
-    pkg = toolkit.get_action('package_update')(
+    pkg = tk.get_action('package_update')(
         context.copy().update(updated_context), 
         data_dict
         )
 
-    toolkit.get_action('ckanext_showcase_status_update')(
+    tk.get_action('ckanext_showcase_status_update')(
         context.copy().update(updated_context),
         {"showcase_id": pkg.get("id",pkg.get("name", '')) }
     )
@@ -38,7 +38,7 @@ def showcase_update(context, data_dict):
 
 @validate_decorator(showcase_schema.showcase_status_update_schema)
 def status_update(context, data_dict):
-    toolkit.check_access('ckanext_showcase_status_update',context, data_dict)
+    tk.check_access('ckanext_showcase_status_update',context, data_dict)
     
     showcase_id = data_dict.get('showcase_id')
     status = data_dict.get('status', ApprovalStatus.PENDING)

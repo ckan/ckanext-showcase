@@ -1,8 +1,11 @@
-from sqlalchemy import Column, ForeignKey, types
+from sqlalchemy import Column, ForeignKey, types, or_, func
 import datetime
 from ckan.model.domain_object import DomainObject
 from ckan.model.meta import Session
 from ckanext.showcase.data.constants import *
+from ckan.model.meta import Session
+from ckan import model
+from ckanext.showcase import utils
 
 import logging
 
@@ -175,19 +178,46 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
         for name in fields:
             value = getattr(self, name)
 
-            if value is None:
+            if value is None\
+            or isinstance(value, dict)\
+            or isinstance(value, int)\
+            or isinstance(value, list):
                 result_dict[name] = value
-            elif isinstance(value, ApprovalStatus):
+            elif isinstance(value, Enum):
                 result_dict[name] = value.value
-            elif isinstance(value, dict):
-                result_dict[name] = value
-            elif isinstance(value, int):
-                result_dict[name] = value
             elif isinstance(value, datetime.datetime):
                 result_dict[name] = value.isoformat()
-            elif isinstance(value, list):
-                result_dict[name] = value
             else:
                 result_dict[name] = text_type(value)
 
         return result_dict
+
+
+    @classmethod
+    def generate_statistics(cls, creator_user_id=None):
+        session = Session()
+        
+        # Base query
+        query = session.query(cls)\
+            .join(model.Package, model.Package.id == cls.showcase_id)\
+            .filter(model.Package.type == utils.DATASET_TYPE_NAME)\
+            .filter(model.Package.state == 'active')
+
+        if creator_user_id:
+            query = query.filter(model.Package.creator_user_id == creator_user_id)
+
+        total_count = query.count()
+        
+        # Breakdown by status
+        status_breakdown = query.with_entities(
+            cls.status, func.count(cls.showcase_id)
+        ).group_by(cls.status).all()
+        
+        status_dict = {status.value: count for status, count in status_breakdown}
+        
+        statistics = {
+            'total': total_count,
+            'status_breakdown': status_dict,
+        }
+        
+        return statistics

@@ -3,7 +3,7 @@ import uuid
 import pytest
 
 import ckan.model as model
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 from ckan.tests import factories
 
@@ -71,7 +71,7 @@ class TestNameOrIdToTitleConverter(object):
         """
         context = {"session": model.Session}
 
-        with pytest.raises(toolkit.Invalid):
+        with pytest.raises(tk.Invalid):
             convert_package_name_or_id_to_title_or_name(
                 "my-non-existent-id", context=context,
             )

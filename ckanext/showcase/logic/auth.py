@@ -1,4 +1,4 @@
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 import ckan.model as model
 from ckan.common import _
 from ckanext.showcase import utils
@@ -78,7 +78,7 @@ def update(context, data_dict):
         return {'success': False, 'msg': _('User not authorized to delete a submitted Reuse')}
 
 
-@toolkit.auth_allow_anonymous_access
+@tk.auth_allow_anonymous_access
 def show(context, data_dict):
     '''All users can access a showcase show'''
     showcase_id = data_dict.get('id','')
@@ -94,13 +94,13 @@ def show(context, data_dict):
 
     status_obj = ShowcaseApprovalStatus.get(showcase_id=showcase_id) or ShowcaseApprovalStatus.update_status(showcase_id,'')
 
-    if status_obj['status'] == ApprovalStatus.APPROVED or _is_user_the_creator(context, data_dict) or toolkit.check_access('is_portal_admin')(context, data_dict):
+    if status_obj['status'] == ApprovalStatus.APPROVED or _is_user_the_creator(context, data_dict) or tk.check_access('is_portal_admin')(context, data_dict):
         return {'Success': True}
     else:
         return {'success': False, 'msg': _('User not authorized to view this Reuse')}
 
 
-@toolkit.auth_allow_anonymous_access
+@tk.auth_allow_anonymous_access
 def showcase_list(context, data_dict):
     '''All users can access a showcase list'''
     return {'success': True}
@@ -124,11 +124,11 @@ def package_association_delete(context, data_dict):
     return {'success': _is_user_the_creator(context, data_dict, 'showcase_id')}
 
 
-@toolkit.auth_allow_anonymous_access
+@tk.auth_allow_anonymous_access
 def showcase_package_list(context, data_dict):
     '''All users can access a showcase's package list'''
     showcase_id = data_dict.get('showcase_id', None)
-    if toolkit.check_access('ckanext_showcase_show')(
+    if tk.check_access('ckanext_showcase_show')(
         context,
         data_dict.update({"showcase_id":showcase_id})
     ):
@@ -137,7 +137,7 @@ def showcase_package_list(context, data_dict):
         return {'success': False, 'msg': _('User not authorized to view this Reuse')}
 
 
-@toolkit.auth_allow_anonymous_access
+@tk.auth_allow_anonymous_access
 def package_showcase_list(context, data_dict):
     '''All users can access a packages's showcase list'''
     return {'success': True}
@@ -150,7 +150,7 @@ def showcase_upload(context, data_dict):
 
 def status_show(context, data_dict):
     showcase_id = data_dict.get('id','')
-    showcase = toolkit.get_action('ckanext_showcase_show')(
+    showcase = tk.get_action('ckanext_showcase_show')(
         context, 
         {'id': data_dict['id']}
     )
@@ -162,14 +162,14 @@ def status_show(context, data_dict):
 
     if status_obj['status'] == ApprovalStatus.APPROVED \
         or _is_user_the_creator(context, data_dict) \
-        or toolkit.check_access('is_portal_admin')(context, data_dict):
+        or tk.check_access('is_portal_admin')(context, data_dict):
         return {'Success': True}
     else:
         return {'success': False, 'msg': _('User not authorized to view the status')}
 
 
 def status_update(context, data_dict):
-    if toolkit.check_access('is_portal_admin')(context, data_dict):
+    if tk.check_access('is_portal_admin')(context, data_dict):
         return {'success': True}
 
     return {'success': False, 'msg': _('User not authorized to update Reuse status')}
