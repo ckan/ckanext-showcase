@@ -4,6 +4,7 @@ from ckan.lib.navl.dictization_functions import validate
 from ckanext.showcase import utils
 from sqlalchemy import or_
 from ckanext.showcase.data.constants import *
+import ckan.authz as authz
 
 from ckanext.showcase.logic.schema import (showcase_package_list_schema,
                                            package_showcase_list_schema)
@@ -40,7 +41,7 @@ def showcase_list(context, data_dict):
         .filter(model.Package.state == 'active')\
         .join(ShowcaseApprovalStatus, model.Package.id == ShowcaseApprovalStatus.showcase_id)
 
-    if tk.get_action('is_portal_admin')(context, data_dict) or user_obj.sysadmin:
+    if authz.is_authorized_boolean('is_portal_admin', context):
         pass
         # q = q.filter(ShowcaseApprovalStatus.status != ApprovalStatus.REJECTED)
     else:
@@ -75,7 +76,7 @@ def showcase_filtered(context, data_dict):
         .filter(model.Package.state == 'active')\
         .join(ShowcaseApprovalStatus, model.Package.id == ShowcaseApprovalStatus.showcase_id)
 
-    if not (tk.get_action('is_portal_admin')(context, data_dict) and user_obj.sysadmin):
+    if not authz.is_authorized_boolean('is_portal_admin', context):
         q = q.filter(or_(
                 ShowcaseApprovalStatus.status == ApprovalStatus.APPROVED,
                 model.Package.creator_user_id == user_obj.id
@@ -193,7 +194,7 @@ def showcase_statics(context, data_dict):
     user = context.get('user')
     user_obj = model.User.get(user)
     
-    if utils.tk.get_action('is_portal_admin')(context, data_dict):
+    if authz.is_authorized_boolean('is_portal_admin', context):
         return ShowcaseApprovalStatus.generate_statistics()
     else:
         return ShowcaseApprovalStatus.generate_statistics(
