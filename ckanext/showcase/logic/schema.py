@@ -30,6 +30,8 @@ package_name_validator = tk.get_validator("package_name_validator")
 tag_string_convert = tk.get_validator("tag_string_convert")
 ignore_not_package_admin = tk.get_validator("ignore_not_package_admin")
 url_validator = tk.get_validator("url_validator")
+convert_to_extras = tk.get_validator("convert_to_extras")
+convert_from_extras = tk.get_validator("convert_from_extras")
 
 
 def showcase_base_schema():
@@ -37,10 +39,12 @@ def showcase_base_schema():
         'id': [empty],
         'revision_id': [ignore],
         'name': [not_empty, name_validator, package_name_validator],
-        'title': [if_empty_same_as("name"), unicode_safe],
+        'title': [not_empty, unicode_safe],
+        'title_ar': [convert_to_extras, not_empty, unicode_safe],
         'author': [ignore_missing, unicode_safe],
         'author_email': [ignore_missing, unicode_safe],
-        'notes': [ignore_missing, unicode_safe],
+        'notes': [not_empty, unicode_safe],
+        'notes_ar': [convert_to_extras, not_empty, unicode_safe],
         'url': [ignore_missing, url_validator],
         'state': [ignore_not_package_admin, ignore_missing],
         'type': [ignore_missing, unicode_safe],
@@ -91,6 +95,8 @@ def showcase_show_schema():
 
     schema.update({
         'state': [ignore_missing],
+        'title_ar': [convert_from_extras, ignore_missing, unicode_safe],
+        'notes_ar': [convert_from_extras, ignore_missing, unicode_safe],
         })
 
     # Remove validators for several keys from the schema so validation doesn't
@@ -160,7 +166,7 @@ def showcase_status_update_schema():
             convert_package_name_or_id_to_id_for_type_showcase
         ],
         "status": [
-            not_empty,
+            ignore_missing,
             is_valid_status
         ],
         "feedback": [ignore_missing, unicode_safe]

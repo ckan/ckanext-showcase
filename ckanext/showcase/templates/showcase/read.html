@@ -1,14 +1,16 @@
 {% extends "page.html" %}
 
 {% set pkg = pkg_dict or c.pkg_dict %}
-{% set name = pkg.title or pkg.name %}
+{% set display_title = pkg.display_title %}
+{% set display_notes = pkg.display_notes %}
+{% set display_notes_formatted = pkg.display_notes_formatted %}
 {% set editor = h.showcase_get_wysiwyg_editor() %}
 
 {% set showcase_read_route = 'showcase_blueprint.read' %}
 {% set showcase_index_route = 'showcase_blueprint.index' %}
 {% set showcase_edit_route = 'showcase_blueprint.edit' %}
 
-{% block subtitle %}{{ pkg.title or pkg.name }} - {{ _('Reuses') }}{% endblock %}
+{% block subtitle %}{{ display_title }} - {{ _('Reuses') }}{% endblock %}
 
 {% block styles %}
   {{ super() }}
@@ -25,7 +27,7 @@
 
 {% block head_extras -%}
     {{ super() }}
-    {% set description = h.markdown_extract(pkg.notes, extract_length=200)|forceescape %}
+    {% set description = h.markdown_extract(display_notes, extract_length=200)|forceescape %}
     <meta property="og:title" content="{{ h.dataset_display_name(pkg) }} - {{ g.site_title }}">
     <meta property="og:description" content="{{ description }}">
     <meta property="og:url" content="{{ h.full_current_url() }}">
@@ -37,23 +39,27 @@
 {% block breadcrumb_content_selected %} class="active"{% endblock %}
 
 {% block breadcrumb_content %}
-    {% set showcase = pkg.title or pkg.name %}
+    {% set showcase = display_title %}
     <li>{{ h.nav_link(_('Reuses'), named_route=showcase_index_route) }}</li>
     <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route=showcase_read_route, id=pkg.name %}</li>
 {% endblock %}
 
-{% block page_header %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon(showcase_read_route, _('Reuse Details'), id=pkg.id, icon='info-circle') }}
 {% endblock %}
 
 {% block pre_primary %}
 {% endblock %}
 
-{% block primary_content_inner %}
+
+{% block content_action %}
     {% if h.check_access('ckanext_showcase_update', {'id':pkg.id }) %}
-        <div class="actions">
-            {% link_for _('Manage'), named_route=showcase_edit_route, id=pkg.name, class_='btn btn-default', icon='wrench' %}
-        </div>
+        {% link_for _('Manage'), named_route=showcase_edit_route, id=pkg.name, class_='btn btn-default', icon='wrench' %}
     {% endif %}
+{% endblock %}
+
+{% block primary_content_inner %}
     {% block package_description %}
         {% if pkg.private %}
             <span class="dataset-private label label-inverse pull-right">
@@ -63,7 +69,7 @@
         {% endif %}
         <h1>
             {% block page_heading %}
-                {{ name }}
+                {{ display_title }}
                 {% if pkg.state.startswith('draft') %}
                     [{{ _('Draft') }}]
                 {% endif %}
@@ -71,17 +77,17 @@
         </h1>
 
         {% if pkg.image_display_url %}
-            <p class="ckanext-showcase-image-container"><img src="{{ pkg.image_display_url }}" alt="{{ name }}" class="media-image ckanext-showcase-image img-fluid"></p>
+            <p class="ckanext-showcase-image-container"><img src="{{ pkg.image_display_url }}" alt="{{ display_title }}" class="media-image ckanext-showcase-image img-fluid"></p>
         {% endif %}
 
     {% block package_notes %}
-      {% if pkg.showcase_notes_formatted and editor == 'ckeditor' %}
+      {% if display_notes_formatted and editor == 'ckeditor' %}
         <div class="ck-content">
-          {{ pkg.showcase_notes_formatted|safe }}
+          {{ display_notes_formatted|safe }}
         </div>
-      {% elif pkg.showcase_notes_formatted %}
+      {% elif display_notes_formatted %}
         <div class="notes embedded-content ckanext-showcase-notes">
-          {{ pkg.showcase_notes_formatted }}
+          {{ display_notes_formatted }}
         </div>
       {% endif %}
     {% endblock %}
