@@ -46,12 +46,5 @@
 
 {% block secondary_content %}
 {{ h.snippet('showcase/snippets/helper.html') }}
-<div class="filters">
-  <div>
-    {% for facet in c.facet_titles %}
-      {{ h.snippet('snippets/facet_list.html', title=c.facet_titles[facet], name=facet) }}
-    {% endfor %}
-  </div>
-  <a class="close no-text hide-filters"><i class="fa fa-times-circle icon-remove-sign"></i><span class="text">close</span></a>
-</div>
+{{ super() }}
 {% endblock %}
