@@ -5,6 +5,8 @@ import ckan.lib.helpers as h
 import ckan.plugins.toolkit as tk
 from ckan.lib.navl.dictization_functions import validate
 
+from ckanext.showcase.logic import notifiy
+from ckanext.showcase.logic.action.action_decorator import notify_after_action
 import ckanext.showcase.logic.converters as showcase_converters
 import ckanext.showcase.logic.schema as showcase_schema
 from ckanext.showcase.model import ShowcasePackageAssociation
@@ -17,6 +19,7 @@ showcase_package_association_create_schema = \
 log = logging.getLogger(__name__)
 
 
+@notify_after_action(notifiy.showcase_create)
 def showcase_create(context, data_dict):
     '''Upload the image and continue with package creation.'''
 

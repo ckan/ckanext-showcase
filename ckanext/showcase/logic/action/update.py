@@ -2,6 +2,8 @@ import logging
 
 import ckan.lib.uploader as uploader
 import ckan.plugins.toolkit as tk
+from ckanext.showcase.logic import notifiy
+from ckanext.showcase.logic.action.action_decorator import notify_after_action
 from ckanext.showcase.model import ShowcaseApprovalStatus
 from ckan.common import _
 import ckanext.showcase.logic.schema as showcase_schema
@@ -37,6 +39,7 @@ def showcase_update(context, data_dict):
 
 
 @validate_decorator(showcase_schema.showcase_status_update_schema)
+@notify_after_action(notifiy.status_update)
 def status_update(context, data_dict):
     tk.check_access('ckanext_showcase_status_update',context, data_dict)
     

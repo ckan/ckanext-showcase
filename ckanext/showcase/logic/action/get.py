@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 
 @tk.side_effect_free
 def showcase_show(context, data_dict):
-
     tk.check_access('ckanext_showcase_show', context, data_dict)
 
     pkg_dict = tk.get_action('package_show')(context, data_dict)
