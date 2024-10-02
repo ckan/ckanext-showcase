@@ -19,3 +19,12 @@ ckeditor-content-css:
     - ckeditor-content-style.css
   output: showcase/%(version)s_ckeditor-content-style.css
   filter: cssrewrite
+
+showcase-actions:
+  filter: rjsmin
+  output: ckanext-showcase/%(version)s-showcase-actions.js
+  contents:
+    - js/showcase-actions.js
+  extra:
+    preload:
+      - base/main

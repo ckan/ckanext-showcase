@@ -95,6 +95,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'facet_remove_field': showcase_helpers.facet_remove_field,
             'get_site_statistics': showcase_helpers.get_site_statistics,
             'showcase_get_wysiwyg_editor': showcase_helpers.showcase_get_wysiwyg_editor,
+            'showcase_status_options': showcase_helpers.showcase_status_options,
+            'showcase_status_filter_options': showcase_helpers.showcase_status_filter_options,
         }
 
     # IFacets

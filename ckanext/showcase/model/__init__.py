@@ -149,7 +149,7 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
         return cls.filter(showcase_id=showcase_id).first()
 
     @classmethod
-    def update_status(cls, showcase_id, feedback, status=ApprovalStatus.PENDING):
+    def update_status(cls, showcase_id, feedback='', status=ApprovalStatus.PENDING):
         feedback_instance = cls.get(showcase_id=showcase_id)
         if feedback_instance:
             feedback_instance.feedback = feedback
@@ -185,6 +185,9 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
                 result_dict[name] = value
             elif isinstance(value, Enum):
                 result_dict[name] = value.value
+                if name == 'status':
+                    result_dict[name] = SHOWCASE_STATUS_OPTIONS[value.value]
+
             elif isinstance(value, datetime.datetime):
                 result_dict[name] = value.isoformat()
             else:
@@ -221,3 +224,96 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
         }
         
         return statistics
+    
+    @classmethod
+    def filter_showcases(cls, **kwargs):
+        query = Session.query(model.Package.id) \
+                .filter(model.Package.type == utils.DATASET_TYPE_NAME) \
+                .filter(model.Package.state == 'active') \
+                .join(cls, model.Package.id == ShowcaseApprovalStatus.showcase_id)
+                # TODO do we need an outer join
+
+        query = cls.filter_by_search_query(query, kwargs.pop('q', ''))
+        
+        query = cls.filter_by_date(
+            query,
+            created_start=kwargs.pop('created_start', None),
+            created_end=kwargs.pop('created_end', None),
+        )
+        
+        sort_fields = kwargs.pop('sort', 'metadata_created desc').split()
+        sort_field = sort_fields[0]
+        sort_order = sort_fields[1]
+
+        query = cls.filter_by_status(
+            query, 
+            status = kwargs.pop('status', '')        
+        )
+        
+        query = cls.filter_by_creator_user_id(
+            query,
+            creator_user_id=kwargs.pop('creator_user_id', '')
+        )
+        
+        
+        if sort_field:
+            if hasattr(cls, sort_field):
+                if sort_order == 'desc':
+                    query = query.order_by(getattr(model.Package, sort_field).desc())
+                else:
+                    query = query.order_by(getattr(model.Package, sort_field).asc())
+        
+        return query
+
+    @classmethod
+    def filter_by_search_query(cls, query, search_query):
+        search_terms = search_query.split()
+        
+        if search_terms:
+            title_conditions = [model.Package.title.ilike(f'%{word}%') for word in search_terms]
+            notes_conditions = [model.Package.notes.ilike(f'%{word}%') for word in search_terms]
+            name_conditions = [model.Package.name.ilike(f'%{word}%') for word in search_terms]
+
+            combined_conditions = or_(*title_conditions, *notes_conditions, *name_conditions)
+            query = query.filter(combined_conditions)
+        
+        return query
+    
+
+    @classmethod
+    def filter_by_status(cls, query, status = None):
+        if not status:  return query
+
+        status = cls.convert_status_to_enum(status)
+        query = query.filter(ShowcaseApprovalStatus.status==status)
+        return query
+
+
+    @classmethod
+    def convert_status_to_enum(cls, status=None):
+        if not status:  return ApprovalStatus.PENDING
+        print("DEBUG101", status)
+        showcase_status_map = {status_item.value: status_item.name for status_item in ApprovalStatus}
+        return ApprovalStatus[showcase_status_map[status]]
+    
+
+    @classmethod
+    def filter_by_date(cls, query, created_start=None, created_end=None):
+        if created_start:
+            created_start = created_start.date()
+            query = query.filter(func.date(model.Package.metadata_created) >= created_start)
+
+        if created_end:
+            created_end = created_end.date()
+            query = query.filter(func.date(model.Package.metadata_created) <= created_end)
+
+        return query
+    
+    @classmethod
+    def filter_by_creator_user_id(cls, query, creator_user_id=None):
+        print('DEBUG99', creator_user_id)
+        if creator_user_id:
+            query = query \
+                    .filter(model.Package.creator_user_id == creator_user_id)
+        
+        return query

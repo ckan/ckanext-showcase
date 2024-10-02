@@ -2,7 +2,7 @@ from ckan.plugins import toolkit as tk
 from ckanext.showcase.data.constants import *
 _ = tk._
 Invalid = tk.Invalid
-
+import datetime
 
 def convert_package_name_or_id_to_id_for_type(package_name_or_id,
                                               context, package_type='dataset'):
@@ -50,3 +50,36 @@ def is_valid_status(applied_status, context):
         raise Invalid(_(f"Invalid status: {applied_status}. Must be one of: {list(status_map.keys())}"))
     
     return ApprovalStatus[status_map[applied_status]]
+
+def is_valid_filter_status(applied_status, context):
+    status_map = {status.value: status.name for status in ApprovalStatus}
+    print("DEBUG100",applied_status)
+    if applied_status not in status_map:
+        raise Invalid(_(f"Invalid status: {applied_status}. Must be one of: {list(status_map.keys())}"))
+    
+    return applied_status
+
+def validate_date_range(value, context):
+    if not isinstance(value, dict):
+        return Invalid(_('Expected an object with "start" and/or "end" keys'))
+    
+
+    start = value.get('start')
+    end = value.get('end')
+
+    if not start and not end:
+        return Invalid(_('Expected an object with "start" and/or "end" keys'))
+    
+    if start:
+        try:
+            datetime.datetime.fromisoformat(start)
+        except ValueError:
+            return Invalid('Invalid date format for "start". Expected ISO format.')
+    
+    if end:
+        try:
+            datetime.datetime.fromisoformat(end)
+        except ValueError:
+            return Invalid('Invalid date format for "end". Expected ISO format.')
+    
+    return value

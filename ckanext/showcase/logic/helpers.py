@@ -1,5 +1,6 @@
 import ckan.lib.helpers as h
 from ckan.plugins import toolkit as tk
+from ckanext.showcase.data.constants import SHOWCASE_STATUS_OPTIONS, ApprovalStatus
 
 
 def facet_remove_field(key, value=None, replace=None):
@@ -34,3 +35,17 @@ def get_site_statistics():
 
 def showcase_get_wysiwyg_editor():
     return tk.config.get('ckanext.showcase.editor', '')
+
+
+def showcase_status_options():
+    return [
+        {'text': value, 'value':key}
+    for key, value in SHOWCASE_STATUS_OPTIONS.items()
+    ]
+
+
+
+def showcase_status_filter_options():
+    return [
+        {'text': tk._("Select Status"), 'value': ''}
+        ] + showcase_status_options()

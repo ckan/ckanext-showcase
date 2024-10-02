@@ -1,0 +1,46 @@
+
+{% block showcases_list %}
+{% if showcases %}
+{% asset 'showcase/showcase-actions' %}
+
+<div class="tablebody table-responsive mt-3 mb-3" data-module="showcase-actions">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col" style="font-weight: bold !important;">{{_('Date')}}</th>
+          <th scope="col" style="font-weight: bold !important;">{{_('Use Case Title')}}</th>
+          <th scope="col" style="font-weight: bold !important;">{{_('The User')}}</th>
+          <th scope="col" style="font-weight: bold !important;">{{_('Status')}}</th>
+          <th scope="col" style="font-weight: bold !important;">{{_('Actions')}}</th>
+          <th scope="col" style="font-weight: bold !important;"></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% block showcase_list_inner %}
+        {% for showcase in showcases %}
+          {% 
+            snippet 
+            'showcase/dashboard/snippets/showcase_item.html', 
+            showcase=showcase, 
+            item_class=item_class, 
+            truncate=truncate, 
+            truncate_title=truncate_title, 
+            show_remove=show_remove
+          %}
+        {% endfor %}
+      {% endblock %}
+      </tbody>
+    </table>
+  
+  {% if show_more %}
+  <div class="d-flex flex-row justify-content-end">
+    <a class="orderbtn" href="{{ h.url_for('showcase_blueprint.dashboard_index') }}">{{_('View All')}}</a>
+   </div>
+  {% endif %}
+
+  </div>
+{% endif %}
+{% endblock %}
+
+
+{% snippet 'showcase/dashboard/snippets/confirmation-modal.html' %}

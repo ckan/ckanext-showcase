@@ -1,0 +1,19 @@
+
+{% set text_query = ungettext("{number} reuse case found for '{query}'", "{number} reuse cases found for '{query}'", count) %}
+{% set text_query_none = _("No reuse cases found for '{query}'") %}
+{% set text_no_query = ungettext("{number} reuse case found", "{number} reuse cases found", count) %}
+{% set text_no_query_none = _("No reuse cases found") %}
+
+{% if query %}
+  {%- if count -%}
+    {{ text_query.format(number=h.localised_number(count), query=query) }}
+  {%- else -%}
+    {{ text_query_none.format(query=query) }}
+  {%- endif -%}
+{%- else -%}
+  {%- if count -%}
+    {{ text_no_query.format(number=h.localised_number(count)) }}
+  {%- else -%}
+    {{ text_no_query_none }}
+  {%- endif -%}
+{%- endif -%}

@@ -1,14 +1,19 @@
 import ckan.plugins.toolkit as tk
 import ckan.lib.dictization.model_dictize as model_dictize
 from ckan.lib.navl.dictization_functions import validate
+from ckan.logic import validate as validate_decorator
 from ckanext.showcase import utils
 from sqlalchemy import or_
 from ckanext.showcase.data.constants import *
 import ckan.authz as authz
-
+import datetime
 from ckanext.showcase.logic.schema import (showcase_package_list_schema,
-                                           package_showcase_list_schema)
+                                           package_showcase_list_schema,
+                                           showcase_search_schema)
 from ckanext.showcase.model import ShowcasePackageAssociation, ShowcaseApprovalStatus
+from sqlalchemy import Column, ForeignKey, types, or_, func
+import ckan.lib.dictization.model_dictize as md
+
 
 import logging
 log = logging.getLogger(__name__)
@@ -19,6 +24,21 @@ def showcase_show(context, data_dict):
     tk.check_access('ckanext_showcase_show', context, data_dict)
 
     pkg_dict = tk.get_action('package_show')(context, data_dict)
+    
+    approval_status = ShowcaseApprovalStatus.get_status_for_showcase(pkg_dict.get('id'))
+    
+    if approval_status:
+        approval_status = approval_status.as_dict()
+    else:
+        approval_status = ShowcaseApprovalStatus.update_status(pkg_dict.get('id'))
+
+    pkg_dict['approval_status'] = approval_status
+
+    model = context["model"]
+    user = context.get('user')
+    user_obj = model.User.get(user)
+
+    pkg_dict['creator'] = md.user_dictize(user_obj, context)
     return pkg_dict
 
 
@@ -28,37 +48,34 @@ def showcase_list(context, data_dict):
 
     tk.check_access('ckanext_showcase_list', context, data_dict)
 
-    model = context["model"]
-    user = context.get('user')
-    user_obj = model.User.get(user)
+    # model = context["model"]
+    # user = context.get('user')
+    # user_obj = model.User.get(user)
 
-    offset = data_dict.get('offset', 0)
-    limit = data_dict.get('limit', 20)
+    offset = data_dict.pop('page', 1) - 1 
+    limit = data_dict.pop('limit', 20)
 
-    q = model.Session.query(model.Package) \
-        .filter(model.Package.type == utils.DATASET_TYPE_NAME) \
-        .filter(model.Package.state == 'active')\
-        .join(ShowcaseApprovalStatus, model.Package.id == ShowcaseApprovalStatus.showcase_id)
+    data_dict['status'] = ApprovalStatus.APPROVED.value
+    q = ShowcaseApprovalStatus.filter_showcases(**data_dict)
+    total = q.count() 
 
-    if authz.is_authorized_boolean('is_portal_admin', context):
-        pass
-        # q = q.filter(ShowcaseApprovalStatus.status != ApprovalStatus.REJECTED)
-    else:
-        q = q.filter(or_(
-                ShowcaseApprovalStatus.status == ApprovalStatus.APPROVED,
-                model.Package.creator_user_id == user_obj.id
-            ))
-
-    if limit != -1: 
-        q = q.offset(offset).limit(limit)
+    if limit != -1:
+        q = q.offset(offset * limit).limit(limit)
     
-    showcase_list = []
+    showcase_ids_list = []
     for pkg in q.all():
-        showcase_list.append(model_dictize.package_dictize(pkg, context))
+        showcase_ids_list.append(
+            pkg.id
+        )
 
-    return showcase_list
+    return {
+        'items': showcase_ids_list,
+        'total': total
+        }
+
 
 @tk.side_effect_free
+@validate_decorator(showcase_search_schema)
 def showcase_filtered(context, data_dict):
     '''Return a list of all showcases in the site.'''
     tk.check_access('ckanext_showcase_list', context, data_dict)
@@ -66,32 +83,29 @@ def showcase_filtered(context, data_dict):
     user = context.get('user')
     user_obj = model.User.get(user)
 
-    offset = data_dict.get('offset', 0)
-    limit = data_dict.get('limit', 20)
+    offset = data_dict.pop('page', 1) - 1 
+    limit = data_dict.pop('limit', 20)
 
-    status = data_dict.get('status', None)
-    q = model.Session.query(model.Package) \
-        .filter(model.Package.type == utils.DATASET_TYPE_NAME) \
-        .filter(model.Package.state == 'active')\
-        .join(ShowcaseApprovalStatus, model.Package.id == ShowcaseApprovalStatus.showcase_id)
 
     if not authz.is_authorized_boolean('is_portal_admin', context):
-        q = q.filter(or_(
-                ShowcaseApprovalStatus.status == ApprovalStatus.APPROVED,
-                model.Package.creator_user_id == user_obj.id
-            ))
+        data_dict['creator_user_id'] = user_obj.id
+    
+    q = ShowcaseApprovalStatus.filter_showcases(**data_dict)
 
-    if status:
-        q = q.filter(ShowcaseApprovalStatus.status == status)
-
+    total = q.count() 
     if limit != -1:
-        q = q.offset(offset).limit(limit)
+        q = q.offset(offset * limit).limit(limit)
 
     showcase_list = []
     for pkg in q.all():
-        showcase_list.append(model_dictize.package_dictize(pkg, context))
+        showcase_list.append(
+            tk.get_action('ckanext_showcase_show')(context, {'id': pkg.id})
+            )
 
-    return showcase_list
+    return {
+        'items': showcase_list,
+        'total': total
+        }
 
 
 @tk.side_effect_free
@@ -174,12 +188,13 @@ def package_showcase_list(context, data_dict):
 
     return showcase_list
 
+
 @tk.side_effect_free
 def status_show(context, data_dict):
     tk.check_access('ckanext_showcase_status_show', context, data_dict)
 
     showcase_id = data_dict.get('showcase_id', None)
-    feedback_instance = ShowcaseApprovalStatus.get(showcase_id=showcase_id)
+    feedback_instance = ShowcaseApprovalStatus.get_status_for_showcase(showcase_id=showcase_id).as_dict()
 
     return feedback_instance
 
