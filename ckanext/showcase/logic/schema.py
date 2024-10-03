@@ -10,6 +10,7 @@ from ckanext.showcase.logic.validators import (
     convert_package_name_or_id_to_id_for_type_showcase,
     is_valid_filter_status,
     is_valid_status,
+    validate_reuse_types,
     validate_status_feedback
     )
 
@@ -53,6 +54,7 @@ def showcase_base_schema():
         'author_email': [ignore_missing, unicode_safe],
         'notes': [not_empty, unicode_safe],
         'notes_ar': [convert_to_extras, not_empty, unicode_safe],
+        'reuse_type': [convert_to_extras, not_empty, validate_reuse_types],
         'url': [ignore_missing, url_validator],
         'state': [ignore_not_package_admin, ignore_missing],
         'type': [ignore_missing, unicode_safe],
@@ -105,6 +107,7 @@ def showcase_show_schema():
         'state': [ignore_missing],
         'title_ar': [convert_from_extras, ignore_missing, unicode_safe],
         'notes_ar': [convert_from_extras, ignore_missing, unicode_safe],
+        'reuse_type': [convert_from_extras, ignore_missing, unicode_safe],
         })
 
     # Remove validators for several keys from the schema so validation doesn't

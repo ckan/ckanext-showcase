@@ -1,6 +1,22 @@
 import ckan.lib.helpers as h
 from ckan.plugins import toolkit as tk
-from ckanext.showcase.data.constants import SHOWCASE_STATUS_OPTIONS, ApprovalStatus
+from ckanext.showcase.data.constants import REUSE_CASE_TYPE_OPTIONS, SHOWCASE_STATUS_OPTIONS, ApprovalStatus
+
+
+
+def get_helpers():
+    return {
+        'facet_remove_field': facet_remove_field,
+        'get_site_statistics': get_site_statistics,
+        'showcase_get_wysiwyg_editor': showcase_get_wysiwyg_editor,
+        'showcase_status_options': showcase_status_options,
+        'showcase_status_filter_options': showcase_status_filter_options,
+        'ckanext_showcase_metatdata': ckanext_showcase_metatdata,
+        'ckanext_showcase_types': ckanext_showcase_types,
+    }
+
+
+#############################################
 
 
 def facet_remove_field(key, value=None, replace=None):
@@ -57,38 +73,37 @@ def ckanext_showcase_metatdata(showcase, showcase_datasets, user_info):
     return [
         {
             'label': _("Title En"),
-            'value': showcase['title'],
+            'value': showcase.get('title', ''),
             'type': 'text',
         },
         {
             'label': _("Title Ar"),
-            'value': showcase['title_ar'],
+            'value': showcase.get('title_ar', ''),
             'type': 'text',
         },
         {
             'label': _("Slug"),
-            'value': showcase['name'],
+            'value': showcase.get('name', ''),
             'type': 'text',
         },
         {
             'label': _("Description En"),
-            'value': h.render_markdown(showcase['notes']),
+            'value': h.render_markdown(showcase.get('notes', '')),
             'type': 'text',
         },
         {
             'label': _("Description Ar"),
-            'value': h.render_markdown(showcase['notes_ar']),
+            'value': h.render_markdown(showcase.get('notes_ar', '')),
             'type': 'text',
         },
         {
             'label': _("Date Created"),
-            'value': showcase['metadata_created'],
+            'value': showcase.get('metadata_created', ''),
             'type': 'date',
         },
         {
-            # TODO
             'label': _("Reuse Case Type"),
-            'value': [1,2],
+            'value': [REUSE_CASE_TYPE_OPTIONS[reuse_type] for reuse_type in showcase.get('reuse_type',[])],
             'type': 'list',
         },
         {
@@ -98,45 +113,45 @@ def ckanext_showcase_metatdata(showcase, showcase_datasets, user_info):
         },
         {
             'label': _("Status"),
-            'value': showcase['approval_status']['display_status'],
+            'value': showcase.get('approval_status', {})['display_status'],
             'type': 'text',
         },
         {
             'label': _("Admin Feedback"),
-            'value': showcase['approval_status'].get('feedback',''),
+            'value': showcase.get('approval_status', {}).get('feedback',''),
             'type': 'text',
         },
         {
             'label': _("Last Status Update"),
-            'value': showcase['approval_status'].get('status_modified',''),
+            'value': showcase.get('approval_status', {}).get('status_modified',''),
             'type': 'date',
         },
         {
             'label': _("Submitted Author Name"),
-            'value': showcase['author'],
+            'value': showcase.get('author', ''),
             'type': 'text',
         },
         {
             'label': _("Submitted Author Email"),
-            'value': showcase['author_email'],
+            'value': showcase.get('author_email', ''),
             'type': 'email',
         },
         {
             'label': _("Image Url"),
-            'value': showcase['image_display_url'],
+            'value': showcase.get('image_display_url', ''),
             'type': 'link',
-            'url': showcase['image_display_url'],
+            'url': showcase.get('image_display_url', ''),
         },
         {
             'label': _("External Link"),
-            'value': showcase['url'],
+            'value': showcase.get('url', ''),
             'type': 'link',
-            'url': showcase['url'],
+            'url': showcase.get('url', ''),
         },
         {
             'label': _("Associated Datasets"),
             'value': "<br>".join([
-                f"<a href=\"{h.url_for('dataset.read', id=dataset.get('id'))}\"> {dataset.get('display_name', dataset['title'] )}</a>"
+                f"<a href=\"{h.url_for('dataset.read', id=dataset.get('id'))}\"> {dataset.get('display_name', dataset.get('title', '') )}</a>"
                 for dataset in showcase_datasets
                 ]),
             'type': 'markup',
@@ -145,6 +160,13 @@ def ckanext_showcase_metatdata(showcase, showcase_datasets, user_info):
             'label': _("Reuse Case Public Display"),
             'value': "Link",
             'type': 'link',
-            'url': h.url_for('showcase_blueprint.read', id=showcase['id']),
+            'url': h.url_for('showcase_blueprint.read', id=showcase.get('id', '')),
         },
+    ]
+
+
+def ckanext_showcase_types():
+    return [
+        {'text': value, 'value':key}
+        for key, value in REUSE_CASE_TYPE_OPTIONS.items()
     ]

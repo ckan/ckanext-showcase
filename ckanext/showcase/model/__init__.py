@@ -227,7 +227,7 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
     
     @classmethod
     def filter_showcases(cls, **kwargs):
-        query = Session.query(model.Package) \
+        query = Session.query(model.Package.id) \
                 .filter(model.Package.type == utils.DATASET_TYPE_NAME) \
                 .filter(model.Package.state == 'active') \
                 .join(cls, model.Package.id == ShowcaseApprovalStatus.showcase_id)

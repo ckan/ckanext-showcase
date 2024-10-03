@@ -3,9 +3,9 @@
 
 {% import 'macros/form.html' as form %}
 
-{% set showcase_list_route = 'showcase_blueprint.index' %}
-{% set showcase_read_route = 'showcase_blueprint.read' %}
-{% set showcase_update_route = 'showcase_blueprint.status_update' %}
+{% set showcase_list_route = 'showcase_blueprint.dashboard_index' %}
+{% set showcase_read_route = 'showcase_blueprint.dashboard_read' %}
+{% set showcase_update_route = 'showcase_blueprint.dashboard_update' %}
 
 {% block styles %}
   {{super()}}
@@ -88,6 +88,7 @@
   {% endif %}
 
 
+  {% if showcase.image_display_url %}
   <div class="row">
     <label class="form-label" for="field-display_image">{{_('Reuse Case Image')}}</label>
     <div class="col">
@@ -97,28 +98,28 @@
         </div>
       </div>
     </div>
-
   </div>
+  {% endif %}
 
 
 
   <div class="form-group control-full">
-    <label class="form-label" for="field-request_type">
-      {{ _("Data Request Type") }}
+    <label class="form-label" for="field-reuse_type">
+      {{ _("Reuse Type") }}
     </label>
     <div class="controls">
-      <select id="field-request_type" name="request_type" multiple="multiple" data-module="autocomplete" disabled>
-        {% set existing_types = showcase.get('request_type', []) %}
+      <select id="field-reuse_type" name="reuse_type" multiple="multiple" data-module="autocomplete" disabled>
+        {% set existing_types = showcase.get('reuse_type', []) %}
         {% set missing_error = _('Missing value') %}
-        {% set empty_group = _('Please select the data sectors') %}
+        {% set empty_group = _('Please select the Reuse Type') %}
         <option value="" disabled>{{ empty_group }}</option>
-        {% for request_type in h.requests_request_types() %}
+        {% for reuse_type in h.ckanext_showcase_types() %}
           <option 
-            value="{{ request_type.value }}" 
-            {% if request_type.value in existing_types and error!=missing_error %}
+            value="{{ reuse_type.value }}" 
+            {% if reuse_type.value in existing_types and error!=missing_error %}
               selected="selected"
             {% endif %}>
-            {{ request_type.text }}
+            {{ reuse_type.text }}
           </option>
         {% endfor %}
       </select>

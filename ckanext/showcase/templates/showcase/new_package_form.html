@@ -4,7 +4,6 @@
 {% set showcase_read_route = 'showcase_blueprint.read' %}
 {% set showcase_delete_route = 'showcase_blueprint.delete' %}
 
-
 <form id="dataset-edit" class="dataset-form form-horizontal" method="post" action="{{ action }}" data-module="basic-form" enctype="multipart/form-data">
   {{ h.csrf_input() if 'csrf_input' in h }}
   <input type="hidden" name="_ckan_phase" value="dataset_new_1" />
@@ -65,6 +64,34 @@
   {% block metadata_fields %}
     {% block package_metadata_fields_url %}
       {{ form.input('url', label=_('External link'), id='field-url', placeholder=_('http://www.example.com'), value=data.url, error=errors.url, classes=['control-medium']) }}
+    {% endblock %}
+
+    {% block package_metadata_type_field %}
+    <div class="form-group control-full">
+      <label class="form-label" for="field-reuse_type">
+        {{ _("Reuse Type") }}
+      </label>
+      <div class="controls">
+        <select id="field-reuse_type" name="reuse_type" multiple="multiple" data-module="autocomplete">
+          {% set existing_types = data.get('reuse_type', []) %}
+          {% set missing_error = _('Missing value') %}
+          {% set empty_group = _('Please select the Reuse Type') %}
+          <option value="" disabled>{{ empty_group }}</option>
+          {% for reuse_type in h.ckanext_showcase_types() %}
+            <option 
+              value="{{ reuse_type.value }}" 
+              {% if reuse_type.value in existing_types and error!=missing_error %}
+                selected="selected"
+              {% endif %}>
+              {{ reuse_type.text }}
+            </option>
+          {% endfor %}
+        </select>
+        {% for error in errors.reuse_type %}
+          <span class="error-block">{{error}}</span>
+        {% endfor %}
+      </div>
+    </div>  
     {% endblock %}
 
     {% block package_metadata_author %}

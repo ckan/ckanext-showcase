@@ -13,7 +13,8 @@ import ckan.logic as logic
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.helpers as h
 import ckan.plugins.toolkit as tk
-from ckanext.showcase.model import ShowcasePackageAssociation
+from ckanext.showcase.data.constants import ApprovalStatus
+from ckanext.showcase.model import ShowcaseApprovalStatus, ShowcasePackageAssociation
 
 _ = tk._
 abort = tk.abort
@@ -75,9 +76,9 @@ def read_view(id):
     try:
         tk.g.pkg_dict = tk.get_action('ckanext_showcase_show')(context, data_dict)
     except tk.ObjectNotFound:
-        return tk.abort(404, _('Showcase not found'))
+        return tk.abort(404, _('Reuse Case not found'))
     except tk.NotAuthorized:
-        return tk.abort(401, _('Unauthorized to read showcase'))
+        return tk.abort(401, _('Unauthorized to read reuse case'))
 
     # get showcase packages
     tk.g.showcase_pkgs = tk.get_action('ckanext_showcase_package_list')(
@@ -608,3 +609,11 @@ def check_status_update_view_auth(id):
             401,
             _('User not authorized to update the Reuse Cases status')
         )
+    
+
+def get_approved_showcase_ids():
+    q = ShowcaseApprovalStatus.filter_showcases(status=ApprovalStatus.APPROVED.value)
+    return [
+        showcase.id
+        for showcase in q.all()
+    ]

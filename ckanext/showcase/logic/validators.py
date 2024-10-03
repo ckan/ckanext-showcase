@@ -71,3 +71,22 @@ def validate_status_feedback(key, flattened_data, errors, context):
         )
     else:
         flattened_data[key1] = feedback or '' 
+
+
+def validate_reuse_types(applied_types, context):
+    if isinstance(applied_types, str):
+        applied_types = [applied_types]
+
+    if not isinstance(applied_types, list):
+        raise Invalid(_("Invalid input: Reuse types must be a list"))
+
+    status_map = {status.value: status.name for status in ReuseCaseType}
+    selected_types = []
+    for c_type in applied_types:
+        if c_type in status_map:
+            selected_types.append(c_type)
+        else:
+            raise Invalid(_(f"Invalid type: {c_type}. Must be one of: {list(status_map.keys())}"))
+    
+    return selected_types
+

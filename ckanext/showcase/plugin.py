@@ -91,14 +91,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # ITemplateHelpers
 
     def get_helpers(self):
-        return {
-            'facet_remove_field': showcase_helpers.facet_remove_field,
-            'get_site_statistics': showcase_helpers.get_site_statistics,
-            'showcase_get_wysiwyg_editor': showcase_helpers.showcase_get_wysiwyg_editor,
-            'showcase_status_options': showcase_helpers.showcase_status_options,
-            'showcase_status_filter_options': showcase_helpers.showcase_status_filter_options,
-            'ckanext_showcase_metatdata': showcase_helpers.ckanext_showcase_metatdata,
-        }
+        return showcase_helpers.get_helpers()
+
 
     # IFacets
 
@@ -198,6 +192,16 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         filter = 'dataset_type:{0}'.format(DATASET_TYPE_NAME)
         if filter not in fq:
             search_params.update({'fq': fq + " -" + filter})
+
+        if "+" + filter in fq:
+            approved_ids = utils.get_approved_showcase_ids()
+            q = 'id:(' + ' OR '.join(['{0}'.format(x) for x in approved_ids]) + ')'
+
+            applied_query = search_params.get('q')
+            if applied_query:   q+=(' AND ' + applied_query)
+
+            search_params.update({'q':q})
+
         return search_params
 
     # CKAN < 2.10 (Remove when dropping support for 2.9)
