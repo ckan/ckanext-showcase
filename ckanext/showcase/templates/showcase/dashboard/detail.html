@@ -4,7 +4,9 @@
 {% set showcase_read_route = 'showcase_blueprint.dashboard_read' %}
 {% set showcase_update_route = 'showcase_blueprint.dashboard_update' %}
 {% set editor = h.showcase_get_wysiwyg_editor() %}
-
+{% set display_title = showcase.display_title %}
+{% set display_notes = showcase.display_notes %}
+{% set display_notes_formatted = showcase.display_notes_formatted %}
 
 {% block styles %}
   {{super()}}
@@ -53,24 +55,19 @@
     {% endif %}
 
 
-    {% if editor == 'ckeditor' %}
-        {% set display_notes_formatted = showcase.display_notes %}
-    {% else %}
-        {% set display_notes_formatted = h.render_markdown(showcase.display_notes) %}
-    {% endif %}
-
-
     {% block package_notes %}
-    {% if display_notes_formatted and editor == 'ckeditor' %}
-      <div class="ck-content">
-        {{ display_notes_formatted|safe }}
-      </div>
-    {% elif display_notes %}
-      <div class="notes embedded-content ckanext-showcase-notes">
-        {{ display_notes }}
-      </div>
-    {% endif %}
-  {% endblock %}
+      {% if display_notes_formatted and editor == 'ckeditor' %}
+        <div class="ck-content">
+          {{ display_notes_formatted|safe }}
+        </div>
+      {% elif display_notes_formatted %}
+        <div class="notes embedded-content ckanext-showcase-notes">
+          {{ display_notes_formatted }}
+        </div>
+      {% endif %}
+    {% endblock %}
+
+
     {% set metadata =  h.ckanext_showcase_metatdata(showcase, showcase_datasets, user_info) %}
     {% snippet 'package/snippets/metadata.html', extras = metadata, table_title = _('Showcase Metadata') %}
 
