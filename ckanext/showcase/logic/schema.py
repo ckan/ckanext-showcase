@@ -10,7 +10,7 @@ from ckanext.showcase.logic.validators import (
     convert_package_name_or_id_to_id_for_type_showcase,
     is_valid_filter_status,
     is_valid_status,
-    validate_date_range
+    validate_status_feedback
     )
 
 if tk.check_ckan_version("2.10"):
@@ -177,7 +177,8 @@ def showcase_status_update_schema():
             ignore_missing,
             is_valid_status
         ],
-        "feedback": [ignore_missing, unicode_safe]
+        "feedback": [ignore_missing, unicode_safe],
+        '__after': [validate_status_feedback],
     }
     return schema
 

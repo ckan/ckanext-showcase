@@ -53,33 +53,21 @@ def is_valid_status(applied_status, context):
 
 def is_valid_filter_status(applied_status, context):
     status_map = {status.value: status.name for status in ApprovalStatus}
-    print("DEBUG100",applied_status)
     if applied_status not in status_map:
         raise Invalid(_(f"Invalid status: {applied_status}. Must be one of: {list(status_map.keys())}"))
     
     return applied_status
 
-def validate_date_range(value, context):
-    if not isinstance(value, dict):
-        return Invalid(_('Expected an object with "start" and/or "end" keys'))
-    
 
-    start = value.get('start')
-    end = value.get('end')
+def validate_status_feedback(key, flattened_data, errors, context):
+    key1 = ('feedback',)
+    feedback = flattened_data.get(key1)
+    status = flattened_data.get(('status',))
 
-    if not start and not end:
-        return Invalid(_('Expected an object with "start" and/or "end" keys'))
-    
-    if start:
-        try:
-            datetime.datetime.fromisoformat(start)
-        except ValueError:
-            return Invalid('Invalid date format for "start". Expected ISO format.')
-    
-    if end:
-        try:
-            datetime.datetime.fromisoformat(end)
-        except ValueError:
-            return Invalid('Invalid date format for "end". Expected ISO format.')
-    
-    return value
+
+    if status == ApprovalStatus.NEEDS_REVISION and not feedback:
+        errors.get(key1, []).append(
+            _("Feedback must be provided with the selected status")
+        )
+    else:
+        flattened_data[key1] = feedback or '' 

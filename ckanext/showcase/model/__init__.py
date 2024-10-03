@@ -186,7 +186,7 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
             elif isinstance(value, Enum):
                 result_dict[name] = value.value
                 if name == 'status':
-                    result_dict[name] = SHOWCASE_STATUS_OPTIONS[value.value]
+                    result_dict['display_status'] = SHOWCASE_STATUS_OPTIONS[value.value]
 
             elif isinstance(value, datetime.datetime):
                 result_dict[name] = value.isoformat()
@@ -227,7 +227,7 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
     
     @classmethod
     def filter_showcases(cls, **kwargs):
-        query = Session.query(model.Package.id) \
+        query = Session.query(model.Package) \
                 .filter(model.Package.type == utils.DATASET_TYPE_NAME) \
                 .filter(model.Package.state == 'active') \
                 .join(cls, model.Package.id == ShowcaseApprovalStatus.showcase_id)
@@ -242,8 +242,7 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
         )
         
         sort_fields = kwargs.pop('sort', 'metadata_created desc').split()
-        sort_field = sort_fields[0]
-        sort_order = sort_fields[1]
+        sort_field, sort_order = sort_fields[0], sort_fields[1]
 
         query = cls.filter_by_status(
             query, 
@@ -257,11 +256,15 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
         
         
         if sort_field:
-            if hasattr(cls, sort_field):
+            if hasattr(model.Package, sort_field):
+                required_class = model.Package
+            elif hasattr(cls, sort_field):
+                required_class = cls
+            if required_class:
                 if sort_order == 'desc':
-                    query = query.order_by(getattr(model.Package, sort_field).desc())
+                    query = query.order_by(getattr(required_class, sort_field).desc())
                 else:
-                    query = query.order_by(getattr(model.Package, sort_field).asc())
+                    query = query.order_by(getattr(required_class, sort_field).asc())
         
         return query
 
@@ -292,7 +295,6 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
     @classmethod
     def convert_status_to_enum(cls, status=None):
         if not status:  return ApprovalStatus.PENDING
-        print("DEBUG101", status)
         showcase_status_map = {status_item.value: status_item.name for status_item in ApprovalStatus}
         return ApprovalStatus[showcase_status_map[status]]
     

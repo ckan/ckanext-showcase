@@ -97,6 +97,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             'showcase_get_wysiwyg_editor': showcase_helpers.showcase_get_wysiwyg_editor,
             'showcase_status_options': showcase_helpers.showcase_status_options,
             'showcase_status_filter_options': showcase_helpers.showcase_status_filter_options,
+            'ckanext_showcase_metatdata': showcase_helpers.ckanext_showcase_metatdata,
         }
 
     # IFacets

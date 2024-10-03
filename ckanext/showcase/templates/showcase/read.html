@@ -61,10 +61,10 @@
 
 {% block primary_content_inner %}
     {% block package_description %}
-        {% if pkg.approval_status.status != 'Approved' %}
+        {% if pkg.approval_status.status != 'd' %}
             <span class="dataset-private label label-inverse pull-right">
                 <i class="fa fa-lock icon-lock"></i>
-                {{ pkg.approval_status.status }}
+                {{ pkg.approval_status.display_status }}
             </span>
         {% endif %}
         <h1>

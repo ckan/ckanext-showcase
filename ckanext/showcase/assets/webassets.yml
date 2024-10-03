@@ -28,3 +28,12 @@ showcase-actions:
   extra:
     preload:
       - base/main
+
+showcase-conditional-fields:
+  filter: rjsmin
+  output: ckanext-showcase/%(version)s-showcase-conditional-fields.js
+  contents:
+    - js/showcase-conditional-fields.js
+  extra:
+    preload:
+      - base/main

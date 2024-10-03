@@ -139,7 +139,6 @@ showcase.add_url_rule('/showcase_upload',
 
 
 
-from urllib.parse import urlencode
 from flask import Blueprint, request
 from ckan.lib.helpers import helper_functions as h
 
@@ -153,12 +152,11 @@ import ckan.model as model
 
 import ckanext.showcase.logic.schema as schema
 
-from typing import Any, Optional, Union, cast
+from typing import  Union, cast
 from flask import Blueprint
 from flask.views import MethodView
 from ckan.common import current_user, _, request
 
-from ckan.views.home import CACHE_PARAMETERS
 from ckan.types import Context, Response
 from flask import request
 from functools import partial
@@ -294,17 +292,44 @@ class StatusUpdate(MethodView):
             return self.get(id, data_dict, errors, error_summary)
 
 
-        url = h.url_for('showcase_blueprint.read', id=id)
+        url = h.url_for('showcase_blueprint.dashboard_read', id=id)
         return h.redirect_to(url)
-
-
-
     
+
+
+def dashboard_read(id):
+    context = {
+        'model': model,
+        'session': model.Session,
+        'user': tk.g.user or tk.g.author,
+        'auth_user_obj': tk.g.userobj
+    }
+    data_dict = {'id': id}
+
+    try:
+        showcase = tk.get_action('ckanext_showcase_show')(context, data_dict)
+        showcase_datasets = _get_action(u'ckanext_showcase_package_list')(context, {u'showcase_id': id})
+        user_info = tk.get_action(u'user_management_show')({**context, 'ignore_auth': True}, {u'id': showcase.get('creator_user_id')})
+
+    except tk.ObjectNotFound:
+        return tk.abort(404, _('Reuse Case not found'))
+    except tk.NotAuthorized:
+        return tk.abort(401, _('User not authorized to view this Reuse Case'))
+
+    return tk.render(u'showcase/dashboard/detail.html', 
+        extra_vars={
+            "showcase": showcase,
+            "user_info": user_info,
+            "showcase_datasets": showcase_datasets,
+            }
+        )
+
 
 showcase.add_url_rule('/dashboard/showcase', view_func=dashboard_list, endpoint="dashboard_index")
 showcase.add_url_rule('/dashboard/showcase/status_update/<id>', view_func=StatusUpdate.as_view('edit'),
                       methods=['GET', 'POST'],
                       endpoint="status_update")
+showcase.add_url_rule('/dashboard/showcase/<id>', view_func=dashboard_read, endpoint="dashboard_read")
 
 
 

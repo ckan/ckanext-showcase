@@ -13,8 +13,9 @@
         <span>{{ h.date_str_to_datetime(submitted_date).strftime('%d/%m/%Y') }}</span> 
       </p>
       {% endif %}
-      {% if user_info.org_dict %}
-      <p>{{user_info.org_dict.display_name}}</p>
+
+      {% if user_info.org_dict and not user_info.user_dict.sysadmin %}
+        <p>{{user_info.org_dict.display_name}}</p>
       {% endif %}
     </div>
   </div>

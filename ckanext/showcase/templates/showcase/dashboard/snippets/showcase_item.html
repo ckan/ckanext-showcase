@@ -10,10 +10,11 @@
   <th scope="row"><strong>{{h.render_datetime(showcase.metadata_created, date_format='%d/%m/%Y')}}</strong></th>
   <td>{{ showcase.display_title }}</td>
   <td> {{ showcase.creator.fullname }}</td>
-  <td>{{ showcase.approval_status.status }}</td>
+  <td>{{ showcase.approval_status.display_status }}</td>
   <td>
 
-    <div class="d-flex flex-row showcase-actions" style="gap:2px;"> 
+    <div class="d-flex flex-row showcase-actions" style="gap:2px;">
+      {% if showcase.approval_status.status != 'd'  %} 
       <span 
         title="{{ _('Approve Reuse Case') }}" 
         class="showcase-actions approve-showcase"
@@ -23,7 +24,9 @@
         >
           <img src="/images/approved.png">  
       </span>
+      {% endif %}
 
+      {% if showcase.approval_status.status != 'c'  %} 
       <span
         title="{{ _('Reject Reuse Case') }}"
         class="showcase-actions reject-showcase"
@@ -33,13 +36,14 @@
         >
           <img src="/images/reject.png"> 
       </span>
-  </div>
+      {% endif %}
+    </div>
   
   
   </td>
 
   <td>
-    <a href="{{ h.url_for(showcase_read_route, id=showcase.id) }}">
+    <a href="{{ h.url_for(showcase_update_route, id=showcase.id) }}">
       {{_('More Details')}} 
     </a>
   </td>
