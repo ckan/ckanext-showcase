@@ -1,7 +1,7 @@
 import pytest
 import json
 
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 from ckan.tests import factories, helpers
 
@@ -222,7 +222,7 @@ class TestShowcaseAuthCreate(object):
         """
         An anon (not logged in) user can't access the create showcase page.
         """
-        if toolkit.check_ckan_version(min_version='2.10.0'):
+        if tk.check_ckan_version(min_version='2.10.0'):
             _get_request(app, "/showcase/new", status=401)
         else:
             # Remove when dropping support for 2.9
@@ -310,7 +310,7 @@ class TestShowcaseAuthEdit(object):
         An anon (not logged in) user can't access the showcase edit page.
         """
         factories.Dataset(type="showcase", name="my-showcase")
-        if toolkit.check_ckan_version(min_version='2.10.0'):
+        if tk.check_ckan_version(min_version='2.10.0'):
             _get_request(app, "/showcase/edit/my-showcase", status=401)
         else:
             # Remove when dropping support for 2.9
@@ -372,7 +372,7 @@ class TestShowcaseAuthEdit(object):
         """
 
         factories.Dataset(type="showcase", name="my-showcase")
-        if toolkit.check_ckan_version(min_version='2.10.0'):
+        if tk.check_ckan_version(min_version='2.10.0'):
             _get_request(app, "/showcase/manage_datasets/my-showcase", status=401)
         else:
             # Remove when dropping support for 2.9
@@ -434,7 +434,7 @@ class TestShowcaseAuthEdit(object):
         """
 
         factories.Dataset(type="showcase", name="my-showcase")
-        if toolkit.check_ckan_version(min_version='2.10.0'):
+        if tk.check_ckan_version(min_version='2.10.0'):
             _get_request(app, "/showcase/delete/my-showcase", status=401)
         else:
             # Remove when dropping support for 2.9
@@ -583,7 +583,7 @@ class TestShowcasePackageAssociationCreate(object):
         """
 
         context = {"user": None, "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_package_association_create", context=context,
             )
@@ -625,7 +625,7 @@ class TestShowcasePackageAssociationCreate(object):
         """
         not_a_sysadmin = factories.User()
         context = {"user": not_a_sysadmin["name"], "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_package_association_create", context=context,
             )
@@ -640,7 +640,7 @@ class TestShowcasePackageAssociationDelete(object):
         """
 
         context = {"user": None, "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_package_association_delete", context=context,
             )
@@ -682,7 +682,7 @@ class TestShowcasePackageAssociationDelete(object):
         """
         not_a_sysadmin = factories.User()
         context = {"user": not_a_sysadmin["name"], "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_package_association_delete", context=context,
             )
@@ -696,7 +696,7 @@ class TestShowcaseAdminAddAuth(object):
         """
 
         context = {"user": None, "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_admin_add", context=context,
             )
@@ -717,7 +717,7 @@ class TestShowcaseAdminAddAuth(object):
         """
         not_a_sysadmin = factories.User()
         context = {"user": not_a_sysadmin["name"], "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_admin_add", context=context,
             )
@@ -731,7 +731,7 @@ class TestShowcaseAdminRemoveAuth(object):
         """
 
         context = {"user": None, "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_admin_remove", context=context,
             )
@@ -752,7 +752,7 @@ class TestShowcaseAdminRemoveAuth(object):
         """
         not_a_sysadmin = factories.User()
         context = {"user": not_a_sysadmin["name"], "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_admin_remove", context=context,
             )
@@ -766,7 +766,7 @@ class TestShowcaseAdminListAuth(object):
         """
 
         context = {"user": None, "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_admin_list", context=context,
             )
@@ -787,7 +787,7 @@ class TestShowcaseAdminListAuth(object):
         """
         not_a_sysadmin = factories.User()
         context = {"user": not_a_sysadmin["name"], "model": None}
-        with pytest.raises(toolkit.NotAuthorized):
+        with pytest.raises(tk.NotAuthorized):
             helpers.call_auth(
                 "ckanext_showcase_admin_list", context=context,
             )
@@ -800,7 +800,7 @@ class TestShowcaseAuthManageShowcaseAdmins(object):
         An anon (not logged in) user can't access the manage showcase admin
         page.
         """
-        if toolkit.check_ckan_version(min_version='2.10.0'):
+        if tk.check_ckan_version(min_version='2.10.0'):
             _get_request(app, "/showcase/new", status=401)
         else:
             # Remove when dropping support for 2.9

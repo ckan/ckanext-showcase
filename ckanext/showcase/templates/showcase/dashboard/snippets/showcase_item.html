@@ -1,0 +1,51 @@
+{% set lang = h.lang() %}
+{% set showcase_list_route = 'showcase_blueprint.dashboard_index' %}
+{% set showcase_read_route = 'showcase_blueprint.read' %}
+{% set showcase_update_route = 'showcase_blueprint.dashboard_update' %}
+{% set showcase_approve_route = 'showcase_blueprint.approve' %}
+{% set showcase_reject_route = 'showcase_blueprint.reject' %}
+
+
+<tr>
+  <th scope="row"><strong>{{h.render_datetime(showcase.metadata_created, date_format='%d/%m/%Y')}}</strong></th>
+  <td>{{ showcase.display_title }}</td>
+  <td> {{ showcase.creator.fullname }}</td>
+  <td>{{ showcase.approval_status.display_status }}</td>
+  <td>
+
+    <div class="d-flex flex-row showcase-actions" style="gap:2px;">
+      {% if showcase.approval_status.status != 'd'  %} 
+      <span 
+        title="{{ _('Approve Reuse Case') }}" 
+        class="showcase-actions approve-showcase"
+        data-module-content="{{ _('Are you sure you want to approve this reuse case?') }}"
+        data-id="{{ showcase.id }}"
+        style="cursor: pointer;"
+        >
+          <img src="/images/approved.png">  
+      </span>
+      {% endif %}
+
+      {% if showcase.approval_status.status != 'c'  %} 
+      <span
+        title="{{ _('Reject Reuse Case') }}"
+        class="showcase-actions reject-showcase"
+        data-id="{{ showcase.id }}"
+        data-module-content="{{ _('Are you sure you want to reject this reuse case?') }}"
+        style="cursor: pointer;"
+        >
+          <img src="/images/reject.png"> 
+      </span>
+      {% endif %}
+    </div>
+  
+  
+  </td>
+
+  <td>
+    <a href="{{ h.url_for(showcase_update_route, id=showcase.id) }}">
+      {{_('More Details')}} 
+    </a>
+  </td>
+
+</tr>

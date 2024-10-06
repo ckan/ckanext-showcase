@@ -9,7 +9,7 @@
 
 
 
-{% block subtitle %}{{ _('Showcases') }}{% endblock %}
+{% block subtitle %}{{ _('Reuses') }}{% endblock %}
 
 {% block styles %}
   {{ super() }}
@@ -21,12 +21,12 @@
 {% block breadcrumb_content %}
   {% if pkg %}
     {% set showcase = pkg.title or pkg.name %}
-    <li>{% link_for _('Showcases'), named_route=showcase_index_route %}</li>
+    <li>{% link_for _('Reuses'), named_route=showcase_index_route %}</li>
     <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route=showcase_read_route, id=pkg.name %}</li>
     <li class="active">{% link_for _('Edit'), named_route=showcase_edit_route, id=pkg.name %}</li>
   {% else %}
-    <li>{% link_for _('Showcases'), named_route=showcase_index_route %}</li>
-    <li class="active"><a href="">{{ _('Create Showcase') }}</a></li>
+    <li>{% link_for _('Reuses'), named_route=showcase_index_route %}</li>
+    <li class="active"><a href="">{{ _('Submit Reuse') }}</a></li>
   {% endif %}
 {% endblock %}
 
@@ -39,13 +39,13 @@
             {% if self.content_action() | trim %}
               <div class="content_action">
                 {% block content_action %}
-                  {% link_for _('View showcase'), named_route=showcase_read_route, id=pkg.name, class_='btn', icon='eye-open' %}
+                  {% link_for _('View reuse'), named_route=showcase_read_route, id=pkg.name, class_='btn', icon='eye-open' %}
                 {% endblock %}
               </div>
             {% endif %}
             <ul class="nav nav-tabs">
               {% block content_primary_nav %}
-                {{ h.build_nav_icon(showcase_edit_route, _('Edit showcase'), id=pkg.name) }}
+                {{ h.build_nav_icon(showcase_edit_route, _('Edit reuse'), id=pkg.name) }}
                 {{ h.build_nav_icon(showcase_manage_route, _('Manage datasets'), id=pkg.name) }}
               {% endblock %}
             </ul>

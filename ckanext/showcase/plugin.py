@@ -18,6 +18,7 @@ from ckanext.showcase.logic import auth, action
 
 import ckanext.showcase.logic.schema as showcase_schema
 import ckanext.showcase.logic.helpers as showcase_helpers
+from ckan.common import request
 
 _ = tk._
 
@@ -90,11 +91,8 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     # ITemplateHelpers
 
     def get_helpers(self):
-        return {
-            'facet_remove_field': showcase_helpers.facet_remove_field,
-            'get_site_statistics': showcase_helpers.get_site_statistics,
-            'showcase_get_wysiwyg_editor': showcase_helpers.showcase_get_wysiwyg_editor,
-        }
+        return showcase_helpers.get_helpers()
+
 
     # IFacets
 
@@ -102,7 +100,9 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         '''Only show tags for Showcase search list.'''
         if package_type != DATASET_TYPE_NAME:
             return facets_dict
-        return OrderedDict({'tags': _('Tags')})
+        return OrderedDict(
+            # {'tags': _('Tags')}
+            )
 
     # IAuthFunctions
 
@@ -119,7 +119,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     def _add_to_pkg_dict(self, context, pkg_dict):
         '''Add key/values to pkg_dict and return it.'''
 
-        if pkg_dict['type'] != 'showcase':
+        if pkg_dict['type'] != DATASET_TYPE_NAME:
             return pkg_dict
 
         # Add a display url for the Showcase image to the pkg dict so template
@@ -139,12 +139,35 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
             tk.get_action('ckanext_showcase_package_list')(
                 context, {'showcase_id': pkg_dict['id']}))
 
+        # ADD EXTRAS TEMP SOLUTION
+        for extra in pkg_dict.get('extras', {}):
+            pkg_dict[extra['key']] = extra['value']
+
         # Rendered notes
         if showcase_helpers.showcase_get_wysiwyg_editor() == 'ckeditor':
             pkg_dict['showcase_notes_formatted'] = pkg_dict['notes']
+            pkg_dict['showcase_notes_formatted_ar'] = pkg_dict.get('notes_ar','')
         else:
             pkg_dict['showcase_notes_formatted'] = \
                 h.render_markdown(pkg_dict['notes'])
+            pkg_dict['showcase_notes_formatted_ar'] = \
+                h.render_markdown(pkg_dict.get('notes_ar',''))
+
+
+
+        current_lang = request.environ.get('CKAN_LANG', 'en')
+        if current_lang == 'ar':
+            display_title = pkg_dict.get('title_ar', '') or pkg_dict.get('title', '') or pkg_dict.get('name', '')
+            display_notes = pkg_dict.get('notes_ar', '') or pkg_dict.get('notes', '')
+            display_notes_formatted = pkg_dict.get('showcase_notes_formatted_ar', '') or pkg_dict.get('showcase_notes_formatted', '')
+        else:
+            display_title = pkg_dict.get('title', '') or  pkg_dict.get('name', '')
+            display_notes = pkg_dict.get('notes', '')
+            display_notes_formatted = pkg_dict.get('showcase_notes_formatted', '')
+
+        pkg_dict['display_title'] = display_title
+        pkg_dict['display_notes'] = display_notes
+        pkg_dict['display_notes_formatted'] = display_notes_formatted
 
         return pkg_dict
 
@@ -169,6 +192,16 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         filter = 'dataset_type:{0}'.format(DATASET_TYPE_NAME)
         if filter not in fq:
             search_params.update({'fq': fq + " -" + filter})
+
+        if "+" + filter in fq:
+            approved_ids = utils.get_approved_showcase_ids()
+            q = 'id:(' + ' OR '.join(['{0}'.format(x) for x in approved_ids]) + ')'
+
+            applied_query = search_params.get('q')
+            if applied_query:   q+=(' AND ' + applied_query)
+
+            search_params.update({'q':q})
+
         return search_params
 
     # CKAN < 2.10 (Remove when dropping support for 2.9)

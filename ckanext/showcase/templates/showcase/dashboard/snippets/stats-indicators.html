@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-md-3 mt-3">
+    <div class="innerindicators">
+      <img src="/images/r1.png">
+      <p class="sectortitle">{{_('Total')}}</p>
+      <p class="sectorcounter">
+        {{ statistics.total or 0 }}
+      </p>
+    </div>
+  </div>
+
+  <div class="col-md-3 mt-3">
+    <div class="innerindicators">
+      <img src="/images/r2.png">
+      <p class="sectortitle">{{_('Pending')}}</p>
+      <p class="sectorcounter">
+        {{ statistics.status_breakdown.a or 0 }}
+      </p>
+    </div>
+  </div>
+
+
+    <div class="col-md-3 mt-3">
+      <div class="innerindicators">
+        <img src="/images/r3.png">
+        <p class="sectortitle">{{_('Rejected')}}</p>
+        <p class="sectorcounter">
+        {{ statistics.status_breakdown.c or 0 }}
+      </p>
+      
+      </div>
+    </div>
+
+
+    <div class="col-md-3 mt-3">
+          
+      <div class="innerindicators">
+        <img src="/images/r5.png">
+        <p class="sectortitle">{{_('Needs Revision')}}</p>
+        <p class="sectorcounter">
+        {{ statistics.status_breakdown.b or 0 }}
+      </p>
+      
+      </div>
+    </div>
+
+
+    <div class="col-md-3 mt-3">
+          
+      <div class="innerindicators">
+        <img src="/images/r4.png">
+        <p class="sectortitle">{{_('Approved')}}</p>
+        <p class="sectorcounter">
+        {{ statistics.status_breakdown.d or 0 }}
+      </p>
+      
+      </div>
+    </div>
+
+</div>
+    

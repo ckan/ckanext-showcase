@@ -1,0 +1,21 @@
+<div class="module module-narrow module-shallow">
+    <h2 class="module-heading">
+      <i class="fa fa-info-circle"></i>
+      {{ _('The User Information') }}
+    </h2>
+    <div class="module-content">
+      <div class="image" style="text-align: center;">{{ h.user_image(user_info.user_dict.id, size=270) }}</div>
+      <h4 class="mt-3">{{ user_info.user_dict.display_name }}</h4>
+      {% if submitted_date %}
+      <p> 
+        <img class="me-3" src="/images/dateicon.png">
+        <span>{{ _('Submitted on') }}</span>
+        <span>{{ h.date_str_to_datetime(submitted_date).strftime('%d/%m/%Y') }}</span> 
+      </p>
+      {% endif %}
+
+      {% if user_info.org_dict and not user_info.user_dict.sysadmin %}
+        <p>{{user_info.org_dict.display_name}}</p>
+      {% endif %}
+    </div>
+  </div>

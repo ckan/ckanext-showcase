@@ -1,0 +1,175 @@
+{% import 'macros/autoform.html' as autoform %}
+{% extends "page.html" %}
+
+{% import 'macros/form.html' as form %}
+
+{% set showcase_list_route = 'showcase_blueprint.dashboard_index' %}
+{% set showcase_read_route = 'showcase_blueprint.dashboard_read' %}
+{% set showcase_update_route = 'showcase_blueprint.dashboard_update' %}
+
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" href="/css/container2.css">
+{% endblock %}
+
+{% block subtitle %}{{ _('Reuse Case Management') }}{% endblock %}
+
+{% block breadcrumb_content %}
+<li>{% link_for _('Reuse Cases'), named_route=showcase_list_route %}</li>
+  {% if showcase %}
+    {% set ShowcaseTitle = showcase.display_title %}
+    <li>{% link_for ShowcaseTitle|truncate(30), named_route=showcase_read_route, id=showcase.id %}</li>
+  {% endif %}
+{% endblock %}
+
+{% block page_header %}
+  {{ super() }}
+{% endblock %}
+
+{% block content_action %}
+    {% link_for _('View'), named_route=showcase_read_route, id=showcase.id, class_='btn btn-default', icon='eye' %}
+{% endblock %}
+
+{% block content_primary_nav %}
+    {{ h.build_nav_icon(showcase_update_route, _('Reuse Case Actions'), id=showcase.id, icon='wrench') }}
+{% endblock %}
+
+
+{% block primary_content_inner %}
+
+<h4>{{ _('Manage Reuse Case') }}</h4>
+<form action="" method="">
+  {{ h.csrf_input() if 'csrf_input' in h }}
+
+  {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
+
+  {{ form.input('title', id='field-title', label=_('Title En'), value=showcase.title, classes=["control-full"], attrs={"disabled": "disabled"}) }}
+  {{ form.input('title_ar', id='field-title_ar', label=_('Title Ar'), value=showcase.title_ar, classes=["control-full"], attrs={"disabled": "disabled"}) }}
+
+  {{ form.markdown('notes', id='field-notes', label=_('Description English'), value=showcase.notes, error=errors.notes, attrs={"disabled": "disabled"}) }}
+  {{ form.markdown('notes_ar', id='field-notes_ar', label=_('Description Arabic'), value=showcase.notes_ar, error=errors.notes_ar, attrs={"disabled": "disabled"}) }}
+
+
+  {{ form.input('author', label=_('Submitted By'), id='field-author', value=showcase.author, error=errors.author, classes=['control-full'], attrs={"disabled": "disabled"}) }}
+  {{ form.input('author_email', label=_('Submitter Email'), id='field-author-email', value=showcase.author_email, error=errors.author_email, classes=['control-full'], attrs={"disabled": "disabled"}) }}
+
+
+  <div class="row">
+    <div class="col-9">
+      {{ form.input('url', label=_('External link'), id='field-url', value=showcase.url, error=errors.url, classes=['control-full'], attrs={"disabled": "disabled"}) }}
+    </div>
+    <div class="col-3" style="align-content: center;">
+      <a href="{{showcase.url}}" style="display: inline-block;" class="btn btn-primary w-100">
+        {{ _('Visit External Link') }}
+      </a>
+    </div>
+  </div>
+
+  {% if showcase_datasets %}
+  <div class="row">
+    <label class="form-label" for="field-dataset-0">{{_('Associated Datasets')}}</label>
+    {% for dataset in showcase_datasets %}
+    <div class="col-9">
+      <div class="form-group control-full">
+        <div class="controls ">
+          <input id="field-dataset-{{index}}" type="text" name="dataset-{{index}}" value="{{dataset.display_name}}" disabled="disabled">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <a href="{{ h.url_for('dataset.read', id=dataset.id ) }}" style="display: inline-block;" class="btn btn-primary w-100">
+        {{ _('Go to Dataset') }}
+      </a>
+    </div>
+
+    {% endfor %}
+  </div>
+  {% endif %}
+
+
+  {% if showcase.image_display_url %}
+  <div class="row">
+    <label class="form-label" for="field-display_image">{{_('Reuse Case Image')}}</label>
+    <div class="col">
+      <div class="form-group control-full">
+        <div class="controls">
+          <img height="200px" width="50%" src="{{showcase.image_display_url}}">
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+
+
+  <div class="form-group control-full">
+    <label class="form-label" for="field-reuse_type">
+      {{ _("Reuse Type") }}
+    </label>
+    <div class="controls">
+      <select id="field-reuse_type" name="reuse_type" multiple="multiple" data-module="autocomplete" disabled>
+        {% set existing_types = showcase.get('reuse_type', []) %}
+        {% set missing_error = _('Missing value') %}
+        {% set empty_group = _('Please select the Reuse Type') %}
+        <option value="" disabled>{{ empty_group }}</option>
+        {% for reuse_type in h.ckanext_showcase_types() %}
+          <option 
+            value="{{ reuse_type.value }}" 
+            {% if reuse_type.value in existing_types and error!=missing_error %}
+              selected="selected"
+            {% endif %}>
+            {{ reuse_type.text }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>  
+  
+  {% if h.check_access('ckanext_showcase_status_show', {'id': showcase.id}) %}
+    {{ form.select('status_old', id='field-status_old', label=_('Reuse Case Status'), options=h.showcase_status_options(), selected=showcase_status.status, classes=["control-full"], attrs={"disabled": "disabled"}) }}
+
+    {% if showcase_status.feedback %}
+      {{ form.textarea('feedback_old', id='field-feedback_old', label=_('Admin feedback'), placeholder=_('Admin feedback'), value=showcase_status.feedback, classes=["control-full"], attrs={"disabled": "disabled"}) }}
+    {% endif %}
+
+  {% endif %}
+
+</form>
+
+
+<!-- Status Update -->
+<h3 class="mb-4">{{_('Reuse Case Actions')}}</h3>
+{% if h.check_access('ckanext_showcase_status_update', {'id': data.id}) %}
+{% asset 'showcase/showcase-conditional-fields' %}
+<form action="" method="post" class="" data-module="showcase-conditional-fields">
+  {{ form.select('status', id='field-status', label=_('Reuse Case Status'), options=h.showcase_status_options(), selected=data.status, classes=["control-full"], is_required=true) }}
+  {{ form.textarea('feedback', id='field-feedback', label=_('Admin feedback'), placeholder=_('Admin feedback'), value=data.feedback, classes=["control-full"], is_required=true) }}
+
+  <button 
+      class="btn btn-primary" 
+      type="submit" 
+      >
+      {{ _('Update Status') }}
+  </button>
+</form>
+{% endif %}
+
+
+<a 
+    class="btn btn-secondary pull-right mb-2" 
+    href="{{ h.url_for(showcase_list_route) }}"
+>
+    {{ _('Back') }}
+</a>
+
+{% endblock %}
+
+
+{% block scripts %}
+  {{ super() }}
+{% endblock %}
+
+{% block secondary_content %}
+  {% snippet "showcase/dashboard/snippets/user_info.html", user_info = user_info, submitted_date=showcase.metadata_created %}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "package/search.html" %}
+{% import 'macros/form.html' as form %}
+
+{% set showcase_list_route = 'showcase_blueprint.dashboard_index' %}
+{% set showcase_read_route = 'showcase_blueprint.read' %}
+{% set showcase_update_route = 'showcase_blueprint.dashboard_update' %}
+{% set showcase_new_route = 'showcase_blueprint.new' %}
+
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" href="/css/container2.css">
+{% endblock %}
+
+
+{% block subtitle %}{{ _('Reuse Cases') }}{% endblock %}
+
+{% block breadcrumb_content %}
+    <li>{{ _('User Dashboard') }}</li>
+    <li>{% link_for _('Reuse Cases'), named_route=showcase_list_route %}</li>
+{% endblock %}
+
+{% block page_primary_action %}
+  {% if h.check_access('ckanext_showcase_create') %}
+    <div class="page_primary_action">
+      {% link_for _('Submit Reuse Case'), named_route=showcase_new_route, class_='btn btn-primary', icon='plus-square' %}
+    </div>
+  {% endif %}
+
+  {% snippet 'showcase/dashboard/snippets/stats-indicators.html', statistics=statistics %}
+{% endblock %}
+
+{% block form %}
+  {% set sorting = [
+    (_('Name Ascending'), 'title asc'),
+    (_('Name Descending'), 'title desc'),
+    (_('Last Created'), 'metadata_created desc'),
+    (_('Last Status Update'), 'status_modified desc'),
+    ]
+  %}
+  {% 
+    snippet 'showcase/dashboard/snippets/showcase_search_form.html', 
+    placeholder=_('Search reuse cases...'), 
+    query=data_dict.q, 
+    sorting=sorting, 
+    sorting_selected=selected_sorting, 
+    count=count, 
+    show_empty=request.args, 
+    error=data_dict.errors, 
+    no_bottom_border=true,
+    status_options=h.showcase_status_filter_options(),
+    created_start=data_dict.created_start or '',
+    created_end=data_dict.created_end or '',
+    status_selected=data_dict.status or ''
+  %}
+
+{% endblock %}
+
+{% block package_search_results_list %}
+  {{ h.snippet('showcase/dashboard/snippets/list.html', showcases=showcases) }}
+{% endblock %}
+
+
+{% block package_search_results_api %}
+{% endblock %}
+
+
+{% block secondary_content %}
+  {% snippet "showcase/dashboard/snippets/helper.html" %}
+{% endblock %}

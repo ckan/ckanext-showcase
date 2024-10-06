@@ -1,0 +1,79 @@
+{% extends "page.html" %}
+
+{% set showcase_list_route = 'showcase_blueprint.dashboard_index' %}
+{% set showcase_read_route = 'showcase_blueprint.dashboard_read' %}
+{% set showcase_update_route = 'showcase_blueprint.dashboard_update' %}
+{% set editor = h.showcase_get_wysiwyg_editor() %}
+{% set display_title = showcase.display_title %}
+{% set display_notes = showcase.display_notes %}
+{% set display_notes_formatted = showcase.display_notes_formatted %}
+
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" href="/css/container2.css">
+{% endblock %}
+
+{% block subtitle %}{{ _('Reuse Case Management') }}{% endblock %}
+
+{% block breadcrumb_content %}
+<li>{% link_for _('Reuse Cases'), named_route=showcase_list_route %}</li>
+  {% if showcase %}
+    {% set ShowcaseTitle = showcase.display_title %}
+    <li>{% link_for ShowcaseTitle|truncate(30), named_route=showcase_read_route, id=showcase.id %}</li>
+  {% endif %}
+{% endblock %}
+
+{% block content_action %}
+  {% if h.check_access('ckanext_showcase_status_show', {'id': showcase.id}) %}
+    {% link_for _('Take Action'), named_route=showcase_update_route, id=showcase.id, class_='btn btn-default', icon='wrench' %}
+  {% endif %}
+{% endblock %}
+
+{% block content_primary_nav %}
+    {{ h.build_nav_icon(showcase_read_route, _('Reuse Case Details'), id=showcase.id, icon='wrench') }}
+{% endblock %}
+
+
+{% block primary_content_inner %}
+    <span class="dataset-private label label-inverse pull-right">
+        <i class="fa fa-lock icon-lock"></i>
+        {{ showcase.approval_status.display_status }}
+    </span>
+    <h1>
+    {% block page_heading %}
+        {{ display_title }}
+        {% if showcase.state.startswith('draft') %}
+            [{{ _('Draft') }}]
+        {% endif %}
+    {% endblock %}
+    </h1>
+
+    {% if showcase.image_display_url %}
+        <p class="ckanext-showcase-image-container">
+            <img width="50%" height="200px" src="{{ showcase.image_display_url }}" alt="{{ showcase.display_title }}" class="media-image ckanext-showcase-image img-fluid">
+        </p>
+    {% endif %}
+
+
+    {% block package_notes %}
+      {% if display_notes_formatted and editor == 'ckeditor' %}
+        <div class="ck-content">
+          {{ display_notes_formatted|safe }}
+        </div>
+      {% elif display_notes_formatted %}
+        <div class="notes embedded-content ckanext-showcase-notes">
+          {{ display_notes_formatted }}
+        </div>
+      {% endif %}
+    {% endblock %}
+
+
+    {% set metadata =  h.ckanext_showcase_metatdata(showcase, showcase_datasets, user_info) %}
+    {% snippet 'package/snippets/metadata.html', extras = metadata, table_title = _('Showcase Metadata') %}
+
+{% endblock %}
+
+
+{% block secondary_content %}
+  {% snippet "showcase/dashboard/snippets/user_info.html", user_info = user_info, submitted_date=showcase.metadata_created %}
+{% endblock %}

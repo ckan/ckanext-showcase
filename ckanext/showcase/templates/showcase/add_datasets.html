@@ -1,6 +1,6 @@
 {% extends 'showcase/edit_base.html' %}
 
-{% block subtitle %}{{ _('Showcases - Add datasets') }}{% endblock %}
+{% block subtitle %}{{ _('Reuses - Add datasets') }}{% endblock %}
 
 {% block wrapper_class %} ckanext-showcase-edit-wrapper{% endblock %}
 
@@ -28,7 +28,7 @@
       {% endblock %}
        <h3 class="page-heading">
         {% block page_heading %}
-            {{ _('Datasets available to add to this showcase') }}
+            {{ _('Datasets available to add to this reuse') }}
         {% endblock %}
       </h3>
       {% block package_search_results_list %}
@@ -46,7 +46,7 @@
                     <div class="btn-group">
                       <button name="bulk_action.showcase_add" value="add" class="btn" type="submit">
                         <i class="fa fa-plus icon-plus"></i>
-                        {{ _('Add to Showcase') }}
+                        {{ _('Add to Reuse') }}
                       </button>
                     </div>
                   </th>

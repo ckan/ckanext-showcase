@@ -8,7 +8,7 @@
 
 {% block primary_content_inner %}
   <h1 class="page-heading">
-    {% block page_heading %}{{  _('Manage Showcase Admins') }}{% endblock %}
+    {% block page_heading %}{{  _('Manage Reuse Admins') }}{% endblock %}
   </h1>
   {% block form %}
     <form class="dataset-form form-horizontal add-member-form" method='post'>
@@ -19,7 +19,7 @@
             {{ _('Add an Existing User') }}
           </label>
           <span>
-            {{ _('To make an existing user a Showcase Admin, search for their username below.') }}
+            {{ _('To make an existing user a Reuse Admin, search for their username below.') }}
           </span>
 
           <div class="controls">
@@ -38,7 +38,7 @@
     </form>
   {% endblock %}
 
-  <h3 class="page-heading">{{ _('Showcase Admins') }}</h3>
+  <h3 class="page-heading">{{ _('Reuse Admins') }}</h3>
   {% if c.showcase_admins %}
   <table class="table table-header table-hover table-bordered">
     <thead>
@@ -51,7 +51,7 @@
       <tr>
         <td class="media">
           {{ h.linked_user(user_dict['id'], maxlength=20) }}
-          {% set locale = h.dump_json({'content': _('Are you sure you want to remove this user from the Showcase Admin list?')}) %}
+          {% set locale = h.dump_json({'content': _('Are you sure you want to remove this user from the Reuse Admin list?')}) %}
           <div class="btn-group pull-right">
             <a class="btn btn-danger btn-sm" href="{{ h.url_for(showcase_admin_remove_route, user=user_dict['id']) }}" data-module="confirm-action" data-module-i18n="{{ locale }}" title="{{ _('Remove') }}">{% block delete_button_text %}<i class="icon-remove"></i> {{ _('Remove') }}{% endblock %}</a>
           </div>
@@ -61,7 +61,7 @@
     </tbody>
   </table>
   {% else %}
-    <p>{{ _('There are currently no Showcase Admins.') }}</p>
+    <p>{{ _('There are currently no Reuse Admins.') }}</p>
   {% endif %}
 {% endblock %}
 
@@ -70,7 +70,7 @@
   <div class="module module-narrow module-shallow">
     <div class="module-content">
       {% trans %}
-         <p><strong>Showcase Admin:</strong> Can create and remove showcases. Can add and remove datasets from showcases.</p>
+         <p><strong>Reuse Admin:</strong> Can create and remove reuses. Can add and remove datasets from reuses.</p>
       {% endtrans %}
     </div>
   </div>

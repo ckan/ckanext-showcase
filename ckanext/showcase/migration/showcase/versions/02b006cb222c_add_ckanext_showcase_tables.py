@@ -7,7 +7,7 @@ Create Date: 2024-07-12 12:04:18.803072
 """
 from alembic import op
 import sqlalchemy as sa
-
+from ckanext.showcase.data.constants import *
 
 # revision identifiers, used by Alembic.
 revision = "02b006cb222c"
@@ -49,8 +49,31 @@ def upgrade():
                 nullable=False,
             ),
         )
+    
+    if "showcase_approval" not in tables:
+        op.create_table(
+            "showcase_approval",
+            sa.Column(
+                "showcase_id",
+                sa.UnicodeText,
+                sa.ForeignKey("package.id", ondelete="CASCADE", onupdate="CASCADE"),
+                primary_key=True,
+                nullable=False,
+            ),
+            sa.Column("feedback", sa.UnicodeText, nullable=True),
+            sa.Column(
+                "status",
+                sa.Enum(
+                    ApprovalStatus, 
+                    name="status_enum"
+                    ), 
+                nullable=False, 
+                default=ApprovalStatus.PENDING
+        )
+        )
 
 
 def downgrade():
     op.drop_table("showcase_package_association")
     op.drop_table("showcase_admin")
+    op.drop_table("showcase_approval")

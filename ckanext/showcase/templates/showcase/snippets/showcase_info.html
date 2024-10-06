@@ -34,7 +34,7 @@ Example:
         </section>
 
         <section class="module module-narrow">
-            <h3 class="module-heading"><i class="fa fa-sitemap icon-medium icon-sitemap"></i> {{ _('Datasets in Showcase') }}</h2>
+            <h3 class="module-heading"><i class="fa fa-sitemap icon-medium icon-sitemap"></i> {{ _('Datasets in Reuse') }}</h2>
                 {% if showcase_pkgs %}
                     <ul class="nav nav-simple">
                         {% for package in showcase_pkgs %}
@@ -44,7 +44,7 @@ Example:
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <p class="module-content empty">{{_('There are no Datasets in this Showcase')}}</p>
+                    <p class="module-content empty">{{_('There are no Datasets in this Reuse')}}</p>
                 {% endif %}
         </section>
     {% endif %}

@@ -2,7 +2,7 @@ import pytest
 
 from ckan.model.package import Package
 import ckan.model as model
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 from ckan.tests import factories, helpers
 
@@ -27,7 +27,7 @@ class TestCreateShowcase(object):
             == 0
         )
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_create", context=context,
             )
@@ -83,7 +83,7 @@ class TestCreateShowcase(object):
             == 1
         )
 
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_create", context=context, name="my-showcase",
             )
@@ -106,7 +106,7 @@ class TestCreateShowcasePackageAssociation(object):
         """
         sysadmin = factories.User(sysadmin=True)
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_association_create", context=context,
             )
@@ -122,7 +122,7 @@ class TestCreateShowcasePackageAssociation(object):
         package_id = factories.Dataset()["id"]
 
         context = {"user": sysadmin["name"]}
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_association_create",
                 context=context,
@@ -195,7 +195,7 @@ class TestCreateShowcasePackageAssociation(object):
             showcase_id=showcase_id,
         )
         # Attempted duplicate creation results in ValidationError
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_package_association_create",
                 context=context,
@@ -268,7 +268,7 @@ class TestCreateShowcaseAdmin(object):
         assert model.Session.query(ShowcaseAdmin).count() == 1
 
         # Attempt second add
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_admin_add",
                 context={},
@@ -283,7 +283,7 @@ class TestCreateShowcaseAdmin(object):
         Calling ckanext_showcase_admin_add with non-existent username raises
         ValidationError and no ShowcaseAdmin object is created.
         """
-        with pytest.raises(toolkit.ObjectNotFound):
+        with pytest.raises(tk.ObjectNotFound):
             helpers.call_action(
                 "ckanext_showcase_admin_add", context={}, username="missing",
             )
@@ -296,7 +296,7 @@ class TestCreateShowcaseAdmin(object):
         Calling ckanext_showcase_admin_add with no args raises ValidationError
         and no ShowcaseAdmin object is created.
         """
-        with pytest.raises(toolkit.ValidationError):
+        with pytest.raises(tk.ValidationError):
             helpers.call_action(
                 "ckanext_showcase_admin_add", context={},
             )

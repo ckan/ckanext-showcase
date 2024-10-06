@@ -15,6 +15,8 @@ ckan.module('showcase-ckeditor', function ($) {
     },
 
     _onReady: function(){
+        var editorId = this.el.data('editor');
+        var lang = this.el.data('lang');
         var config = {};
         config.toolbar = [
                 'heading',
@@ -39,7 +41,7 @@ ckan.module('showcase-ckeditor', function ($) {
             styles: ['alignLeft', 'full', 'alignRight']
         }
 
-        config.language = 'en'
+        config.language = lang
 
         var csrf_field = $('meta[name=csrf_field_name]').attr('content');
         var csrf_token = $('meta[name='+ csrf_field +']').attr('content');
@@ -48,14 +50,16 @@ ckan.module('showcase-ckeditor', function ($) {
             headers: {'X-CSRFToken': csrf_token}
         }
 
-        ClassicEditor
-        .create(
-            document.querySelector('#editor'),
-            config
-            )
-        .catch( error => {
-            console.error( error.stack );
-        } );
+        if (editorId) {
+          ClassicEditor
+          .create(
+              document.querySelector('#'+ editorId),
+              config
+              )
+          .catch( error => {
+              console.error( error.stack );
+          } );
+        }
     }
 
 

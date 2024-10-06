@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import ckan.plugins.toolkit as toolkit
+import ckan.plugins.toolkit as tk
 
 from ckan.logic.schema import (default_tags_schema,
                                default_extras_schema,
@@ -7,27 +7,40 @@ from ckan.logic.schema import (default_tags_schema,
 
 from ckanext.showcase.logic.validators import (
     convert_package_name_or_id_to_id_for_type_dataset,
-    convert_package_name_or_id_to_id_for_type_showcase)
+    convert_package_name_or_id_to_id_for_type_showcase,
+    is_valid_filter_status,
+    is_valid_status,
+    validate_reuse_types,
+    validate_status_feedback
+    )
 
-if toolkit.check_ckan_version("2.10"):
-    unicode_safe = toolkit.get_validator("unicode_safe")
+if tk.check_ckan_version("2.10"):
+    unicode_safe = tk.get_validator("unicode_safe")
 else:
     unicode_safe = str
 
-not_empty = toolkit.get_validator("not_empty")
-empty = toolkit.get_validator("empty")
-if_empty_same_as = toolkit.get_validator("if_empty_same_as")
-ignore_missing = toolkit.get_validator("ignore_missing")
-ignore = toolkit.get_validator("ignore")
-keep_extras = toolkit.get_validator("keep_extras")
+not_empty = tk.get_validator("not_empty")
+empty = tk.get_validator("empty")
+if_empty_same_as = tk.get_validator("if_empty_same_as")
+ignore_missing = tk.get_validator("ignore_missing")
+ignore = tk.get_validator("ignore")
+keep_extras = tk.get_validator("keep_extras")
 
-package_id_not_changed = toolkit.get_validator("package_id_not_changed")
-name_validator = toolkit.get_validator("name_validator")
-user_id_or_name_exists = toolkit.get_validator("user_id_or_name_exists")
-package_name_validator = toolkit.get_validator("package_name_validator")
-tag_string_convert = toolkit.get_validator("tag_string_convert")
-ignore_not_package_admin = toolkit.get_validator("ignore_not_package_admin")
-url_validator = toolkit.get_validator("url_validator")
+package_id_not_changed = tk.get_validator("package_id_not_changed")
+name_validator = tk.get_validator("name_validator")
+user_id_or_name_exists = tk.get_validator("user_id_or_name_exists")
+package_name_validator = tk.get_validator("package_name_validator")
+tag_string_convert = tk.get_validator("tag_string_convert")
+ignore_not_package_admin = tk.get_validator("ignore_not_package_admin")
+url_validator = tk.get_validator("url_validator")
+convert_to_extras = tk.get_validator("convert_to_extras")
+convert_from_extras = tk.get_validator("convert_from_extras")
+ignore_empty = tk.get_validator("ignore_empty")
+isodate = tk.get_validator("isodate")
+natural_number_validator = tk.get_validator("natural_number_validator")
+int_validator = tk.get_validator("int_validator")
+
+
 
 
 def showcase_base_schema():
@@ -35,10 +48,13 @@ def showcase_base_schema():
         'id': [empty],
         'revision_id': [ignore],
         'name': [not_empty, name_validator, package_name_validator],
-        'title': [if_empty_same_as("name"), unicode_safe],
+        'title': [not_empty, unicode_safe],
+        'title_ar': [convert_to_extras, not_empty, unicode_safe],
         'author': [ignore_missing, unicode_safe],
         'author_email': [ignore_missing, unicode_safe],
-        'notes': [ignore_missing, unicode_safe],
+        'notes': [not_empty, unicode_safe],
+        'notes_ar': [convert_to_extras, not_empty, unicode_safe],
+        'reuse_type': [convert_to_extras, not_empty, validate_reuse_types],
         'url': [ignore_missing, url_validator],
         'state': [ignore_not_package_admin, ignore_missing],
         'type': [ignore_missing, unicode_safe],
@@ -50,8 +66,8 @@ def showcase_base_schema():
         'extras': default_extras_schema(),
         'save': [ignore],
         'return_to': [ignore],
-        'image_url': [toolkit.get_validator('ignore_missing'),
-                      toolkit.get_converter('convert_to_extras')]
+        'image_url': [tk.get_validator('ignore_missing'),
+                      tk.get_converter('convert_to_extras')]
     }
     return schema
 
@@ -89,6 +105,9 @@ def showcase_show_schema():
 
     schema.update({
         'state': [ignore_missing],
+        'title_ar': [convert_from_extras, ignore_missing, unicode_safe],
+        'notes_ar': [convert_from_extras, ignore_missing, unicode_safe],
+        'reuse_type': [convert_from_extras, ignore_missing, unicode_safe],
         })
 
     # Remove validators for several keys from the schema so validation doesn't
@@ -109,11 +128,11 @@ def showcase_show_schema():
     schema['tracking_summary'] = [ignore_missing]
 
     schema.update({
-        'image_url': [toolkit.get_converter('convert_from_extras'),
-                      toolkit.get_validator('ignore_missing')],
+        'image_url': [tk.get_converter('convert_from_extras'),
+                      tk.get_validator('ignore_missing')],
         'original_related_item_id': [
-            toolkit.get_converter('convert_from_extras'),
-            toolkit.get_validator('ignore_missing')]
+            tk.get_converter('convert_from_extras'),
+            tk.get_validator('ignore_missing')]
     })
 
     return schema
@@ -149,12 +168,32 @@ def package_showcase_list_schema():
     return schema
 
 
-def showcase_admin_add_schema():
+
+def showcase_status_update_schema():
     schema = {
-        'username': [not_empty, user_id_or_name_exists, unicode_safe],
+        'showcase_id': [
+            not_empty, 
+            unicode_safe,
+            convert_package_name_or_id_to_id_for_type_showcase
+        ],
+        "status": [
+            ignore_missing,
+            is_valid_status
+        ],
+        "feedback": [ignore_missing, unicode_safe],
+        '__after': [validate_status_feedback],
     }
     return schema
 
+def showcase_search_schema():
+    schema = {
+        'q':[ignore_missing, unicode_safe],
+        "created_start": [ignore_missing, isodate],
+        "created_end": [ignore_missing, isodate],
+        'status': [ignore_empty, is_valid_filter_status],
+        'page': [ignore_empty, natural_number_validator],
+        'limit': [ignore_empty, int_validator],
+        'sort': [ignore_missing, unicode_safe],
+    }
 
-def showcase_admin_remove_schema():
-    return showcase_admin_add_schema()
+    return schema
