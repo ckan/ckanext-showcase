@@ -313,7 +313,6 @@ class ShowcaseApprovalStatus(ShowcaseBaseModel, BaseModel):
     
     @classmethod
     def filter_by_creator_user_id(cls, query, creator_user_id=None):
-        print('DEBUG99', creator_user_id)
         if creator_user_id:
             query = query \
                     .filter(model.Package.creator_user_id == creator_user_id)
