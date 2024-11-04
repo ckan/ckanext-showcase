@@ -156,6 +156,14 @@ The Showcase extension adds the following pages to the user interface:
 
 * To add a Showcase Admin : ``http://127.0.0.1:5000/ckan-admin/showcase_admins``
 
+---
+Fields
+---
+
+* Twitter
+
+* Github
+
 
 ---------------------
 Configuration
