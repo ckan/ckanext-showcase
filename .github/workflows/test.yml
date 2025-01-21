@@ -17,13 +17,14 @@ jobs:
     needs: lint
     strategy:
       matrix:
-        ckan-version: ["2.11", "2.10", 2.9]
+        ckan-version: ["2.11", "2.10"]
       fail-fast: false
 
     name: CKAN ${{ matrix.ckan-version }}
     runs-on: ubuntu-latest
     container:
       image: ckan/ckan-dev:${{ matrix.ckan-version }}
+      options: --user root
     services:
       solr:
         image: ckan/ckan-solr:${{ matrix.ckan-version }}-solr9
@@ -52,9 +53,11 @@ jobs:
         pip install -e .
         # Replace default path to CKAN core config file with the one on the container
         sed -i -e 's/use = config:.*/use = config:\/srv\/app\/src\/ckan\/test-core.ini/' test.ini
+
     - name: Setup extension (CKAN >= 2.9)
       run: |
         ckan -c test.ini db init
+
     - name: Run tests
       run: pytest --ckan-ini=test.ini --cov=ckanext.showcase --cov-report=term-missing --cov-append --disable-warnings ckanext/showcase/tests
 
