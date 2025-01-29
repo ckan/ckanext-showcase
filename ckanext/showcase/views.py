@@ -95,7 +95,7 @@ class EditView(dataset.EditView):
             error_summary = e.error_summary
             return self.get(id, data_dict, errors, error_summary)
 
-        tk.c.pkg_dict = pkg
+        tk.g.pkg_dict = pkg
 
         # redirect to showcase details page
         url = h.url_for('showcase_blueprint.read', id=pkg['name'])
