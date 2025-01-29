@@ -87,7 +87,8 @@ def read_view(id):
 
     package_type = DATASET_TYPE_NAME
     return tk.render('showcase/read.html',
-                     extra_vars={'dataset_type': package_type})
+                     extra_vars={'dataset_type': package_type,
+                                 'pkg_dict': tk.g.pkg_dict,})
 
 
 def manage_datasets_view(id):
@@ -182,7 +183,18 @@ def manage_datasets_view(id):
             'showcase_id': tk.g.pkg_dict['id']
         })
 
-    return tk.render('showcase/manage_datasets.html')
+    extra_vars = {
+        'facet_titles': tk.g.facet_titles,
+        'fields_grouped': tk.g.fields_grouped,
+        'page': tk.g.page,
+        'pkg_dict': tk.g.pkg_dict,
+        'remove_field': tk.g.remove_field,
+        'search_facets': tk.g.search_facets,
+        'showcase_pkgs': tk.g.showcase_pkgs
+    }
+
+    return tk.render('showcase/manage_datasets.html',
+                     extra_vars=extra_vars)
 
 
 def _add_dataset_search(showcase_id, showcase_name):
@@ -423,7 +435,8 @@ def delete_view(id):
         tk.abort(404, _('Showcase not found'))
 
     return tk.render('showcase/confirm_delete.html',
-                     extra_vars={'dataset_type': DATASET_TYPE_NAME})
+                     extra_vars={'dataset_type': DATASET_TYPE_NAME,
+                                 'pkg_dict': tk.g.pkg_dict})
 
 
 def dataset_showcase_list(id):
@@ -500,8 +513,14 @@ def dataset_showcase_list(id):
                            for showcase in site_showcases
                            if showcase['id'] not in pkg_showcase_ids]
 
+    extra_vars = {
+        'pkg_dict': tk.g.pkg_dict,
+        'showcase_dropdown': tk.g.showcase_dropdown,
+        'showcase_list': tk.g.showcase_list,
+    }
+
     return tk.render("package/dataset_showcase_list.html",
-                     extra_vars={'pkg_dict': tk.g.pkg_dict})
+                     extra_vars=extra_vars)
 
 
 def manage_showcase_admins():
@@ -540,7 +559,8 @@ def manage_showcase_admins():
 
     tk.g.showcase_admins = tk.get_action('ckanext_showcase_admin_list')({},{})
 
-    return tk.render('admin/manage_showcase_admins.html')
+    return tk.render('admin/manage_showcase_admins.html',
+                     extra_vars={'showcase_admins': tk.g.showcase_admins})
 
 
 def remove_showcase_admin():
