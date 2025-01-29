@@ -11,11 +11,11 @@
     <div class="module-content">
       {% block form %}
         {% set facets = {
-          'fields': c.fields_grouped,
-          'search': c.search_facets,
-          'titles': c.facet_titles,
-          'translated_fields': c.translated_fields,
-          'remove_field': c.remove_field }
+          'fields': fields_grouped,
+          'search': search_facets,
+          'titles': facet_titles,
+          'translated_fields': translated_fields,
+          'remove_field': remove_field }
         %}
         {% set sorting = [
           (_('Relevance'), 'score desc, metadata_modified desc'),
@@ -24,7 +24,7 @@
           (_('Last Modified'), 'metadata_modified desc'),
           (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
         %}
-        {% snippet 'snippets/search_form.html', type='dataset', query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, show_empty=request.args, error=c.query_error, fields=c.fields %}
+        {% snippet 'snippets/search_form.html', type='dataset', query=q, sorting=sorting, sorting_selected=sort_by_selected, count=page.item_count, facets=facets, show_empty=request.args, error=query_error, fields=fields %}
       {% endblock %}
        <h3 class="page-heading">
         {% block page_heading %}
@@ -32,7 +32,7 @@
         {% endblock %}
       </h3>
       {% block package_search_results_list %}
-        {% if c.page.items %}
+        {% if page.items %}
           <form method="POST" data-module="basic-form">
             {{ h.csrf_input() if 'csrf_input' in h }}
             {#{% block errors %}{{ form.errors(error_summary) }}{% endblock %}#}
@@ -53,7 +53,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for package in c.page.items %}
+                {% for package in page.items %}
                   {% set truncate = truncate or 180 %}
                   {% set truncate_title = truncate_title or 80 %}
                   {% set title = package.title or package.name %}
@@ -82,7 +82,7 @@
     </div>
 
     {% block page_pagination %}
-      {{ c.page.pager(q=c.q) }}
+      {{ page.pager(q=q) }}
     {% endblock %}
   </section>
 

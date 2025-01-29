@@ -1,6 +1,6 @@
 {% extends "page.html" %}
 
-{% set pkg = pkg_dict or c.pkg_dict %}
+{% set pkg = pkg_dict %}
 {% set showcase_delete_route = 'showcase_blueprint.delete' %}
 
 {% block subtitle %}{{ _("Confirm Delete") }}{% endblock %}
@@ -15,7 +15,7 @@
             {% block form %}
                 <p>{{ _('Are you sure you want to delete showcase - {showcase_name}?').format(showcase_name=pkg.name) }}</p>
                 <p class="form-actions">
-                    <form action="{{ h.url_for(showcase_delete_route, id=c.pkg_dict.name) }}" method="post">
+                    <form action="{{ h.url_for(showcase_delete_route, id=pkg_dict.name) }}" method="post">
                         {{ h.csrf_input() if 'csrf_input' in h }}
                         <button class="btn" type="submit" name="cancel" >{{ _('Cancel') }}</button>
                         <button class="btn btn-primary" type="submit" name="delete" >{{ _('Confirm Delete') }}</button>
