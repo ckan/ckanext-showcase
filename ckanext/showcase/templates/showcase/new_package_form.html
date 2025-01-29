@@ -1,6 +1,6 @@
 {% import 'macros/form.html' as form %}
-{% set action = c.form_action or '' %}
-{% set form_style = c.form_style or c.action %}
+{% set action = form_action or '' %}
+{% set form_style = form_style or action %}
 {% set showcase_read_route = 'showcase_blueprint.read' %}
 {% set showcase_delete_route = 'showcase_blueprint.delete' %}
 
