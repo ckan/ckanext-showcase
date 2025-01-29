@@ -1,5 +1,10 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.8.1 2025-01-29
+
+*  Fixes delete and update showcase buttons (#173)
+*  Update MANIFEST.in to include migration files and public assets (#174)
+
 ## v1.8.0 2025-01-28
 
 * Add CKAN 2.11 support (#170) 
