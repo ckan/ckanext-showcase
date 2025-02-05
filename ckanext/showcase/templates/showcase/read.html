@@ -38,7 +38,7 @@
 
 {% block breadcrumb_content %}
     {% set showcase = pkg.title or pkg.name %}
-    <li>{{ h.nav_link(_('Showcases'), named_route=showcase_index_route, highlight_actions = 'new index') }}</li>
+    <li>{{ h.nav_link(_('Showcases'), named_route=showcase_index_route) }}</li>
     <li{{ self.breadcrumb_content_selected() }}>{% link_for showcase|truncate(30), named_route=showcase_read_route, id=pkg.name %}</li>
 {% endblock %}
 
