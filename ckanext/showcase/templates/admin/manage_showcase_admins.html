@@ -2,7 +2,7 @@
 
 {% import 'macros/form.html' as form %}
 
-{% set user = c.user_dict %}
+{% set user = user_dict %}
 {% set showcase_admin_remove_route = 'showcase_blueprint.admin_remove' %}
 
 
@@ -39,7 +39,7 @@
   {% endblock %}
 
   <h3 class="page-heading">{{ _('Showcase Admins') }}</h3>
-  {% if c.showcase_admins %}
+  {% if showcase_admins %}
   <table class="table table-header table-hover table-bordered">
     <thead>
       <tr>
@@ -47,7 +47,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for user_dict in c.showcase_admins %}
+      {% for user_dict in showcase_admins %}
       <tr>
         <td class="media">
           {{ h.linked_user(user_dict['id'], maxlength=20) }}

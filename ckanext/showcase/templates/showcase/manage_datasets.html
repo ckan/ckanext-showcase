@@ -14,11 +14,11 @@
 
     <div class="module-content">
       {% set facets = {
-        'fields': c.fields_grouped,
-        'search': c.search_facets,
-        'titles': c.facet_titles,
-        'translated_fields': c.translated_fields,
-        'remove_field': c.remove_field }
+        'fields': fields_grouped,
+        'search': search_facets,
+        'titles': facet_titles,
+        'translated_fields': translated_fields,
+        'remove_field': remove_field }
       %}
       {% set sorting = [
         (_('Relevance'), 'score desc, metadata_modified desc'),
@@ -27,7 +27,7 @@
         (_('Last Modified'), 'metadata_modified desc'),
         (_('Popular'), 'views_recent desc') if g.tracking_enabled else (false, false) ]
       %}
-      {% snippet 'snippets/search_form.html', type='dataset', query=c.q, sorting=sorting, sorting_selected=c.sort_by_selected, count=c.page.item_count, facets=facets, show_empty=request.args, error=c.query_error, fields=c.fields %}
+      {% snippet 'snippets/search_form.html', type='dataset', query=q, sorting=sorting, sorting_selected=sort_by_selected, count=page.item_count, facets=facets, show_empty=request.args, error=query_error, fields=fields %}
     </div>
 
     <div class="row row2">
@@ -35,7 +35,7 @@
         <div class="module-content">
           <h3 class="page-heading">{{ _('Datasets available to add to this showcase') }}</h3>
           {% block package_search_results_list %}
-            {% if c.page.items %}
+            {% if page.items %}
               <form method="POST" data-module="basic-form">
                 {{ h.csrf_input() if 'csrf_input' in h }}
                 {#{% block errors %}{{ form.errors(error_summary) }}{% endblock %}#}
@@ -56,7 +56,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for package in c.page.items %}
+                    {% for package in page.items %}
                       {% set truncate = truncate or 180 %}
                       {% set truncate_title = truncate_title or 80 %}
                       {% set title = package.title or package.name %}
@@ -76,10 +76,10 @@
                       </tr>
                     {% endfor %}
                   </tbody>
-                  {% if c.page.pager() %}
+                  {% if page.pager() %}
                       <tfoot>
                           <tr>
-                              <td colspan="2" class="ckanext_showcase_pagination_footer">{{ c.page.pager(q=c.q) }}</td>
+                              <td colspan="2" class="ckanext_showcase_pagination_footer">{{ page.pager(q=q) }}</td>
                           </tr>
                       </tfoot>
                   {% endif %}
@@ -95,7 +95,7 @@
       <section class="span6">
           <div class="module-content">
               <h3 class="page-heading">{{ _('Datasets in this showcase') }}</h3>
-              {% if c.showcase_pkgs %}
+              {% if showcase_pkgs %}
                   <form method="POST" data-module="basic-form">
                     {{ h.csrf_input() if 'csrf_input' in h }}
                       <table class="table table-bordered table-header table-hover table-bulk-edit table-edit-hover" data-module="table-selectable-rows">
@@ -115,7 +115,7 @@
                               </tr>
                           </thead>
                           <tbody>
-                              {% for package in c.showcase_pkgs %}
+                              {% for package in showcase_pkgs %}
                                   {% set truncate = truncate or 180 %}
                                   {% set truncate_title = truncate_title or 80 %}
                                   {% set title = package.title or package.name %}

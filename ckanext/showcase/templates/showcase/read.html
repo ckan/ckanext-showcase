@@ -1,6 +1,6 @@
 {% extends "page.html" %}
 
-{% set pkg = pkg_dict or c.pkg_dict %}
+{% set pkg = pkg_dict %}
 {% set name = pkg.title or pkg.name %}
 {% set editor = h.showcase_get_wysiwyg_editor() %}
 
@@ -105,7 +105,7 @@
     {% block secondary_help_content %}{% endblock %}
 
     {% block package_info %}
-        {% snippet 'showcase/snippets/showcase_info.html', pkg=pkg, showcase_pkgs=c.showcase_pkgs %}
+        {% snippet 'showcase/snippets/showcase_info.html', pkg=pkg, showcase_pkgs=showcase_pkgs %}
     {% endblock %}
 
     {% block package_social %}

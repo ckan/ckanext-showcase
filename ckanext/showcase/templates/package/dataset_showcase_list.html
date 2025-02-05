@@ -3,11 +3,11 @@
 {% block subtitle %}{{ _('Showcases') }} - {{ super() }}{% endblock %}
 
 {% block primary_content_inner %}
-    {% if h.check_access('ckanext_showcase_update') and c.showcase_dropdown %}
+    {% if h.check_access('ckanext_showcase_update') and showcase_dropdown %}
         <form method="post" class="form-horizontal" id="showcase-add">
             {{ h.csrf_input() if 'csrf_input' in h }}
             <select id="field-add_showcase" name="showcase_added" data-module="autocomplete">
-                {% for option in c.showcase_dropdown %}
+                {% for option in showcase_dropdown %}
                     <option value="{{ option[0] }}"> {{ option[1] }}</option>
                 {% endfor %}
             </select>
@@ -15,10 +15,10 @@
         </form>
     {% endif %}
 
-    <h2>{% block page_heading %}{{ _('Showcases featuring {dataset_name}').format(dataset_name=h.dataset_display_name(c.pkg_dict)) }}{% endblock %}</h2>
+    <h2>{% block page_heading %}{{ _('Showcases featuring {dataset_name}').format(dataset_name=h.dataset_display_name(pkg_dict)) }}{% endblock %}</h2>
     {% block showcase_list %}
-        {% if c.showcase_list %}
-            {% snippet "showcase/snippets/showcase_list.html", packages=c.showcase_list, pkg_id=c.pkg_dict.name, show_remove=h.check_access('ckanext_showcase_update') %}
+        {% if showcase_list %}
+            {% snippet "showcase/snippets/showcase_list.html", packages=showcase_list, pkg_id=pkg_dict.name, show_remove=h.check_access('ckanext_showcase_update') %}
         {% else %}
             <p class="empty">{{ _('There are no showcases that feature this dataset') }}</p>
         {% endif %}
