@@ -55,7 +55,13 @@ def showcase_package_list(context, data_dict):
     '''
 
     toolkit.check_access('ckanext_showcase_package_list', context, data_dict)
-
+    
+    # check if showcase_id is in context or is valid
+    if 'package' not in context or not context['package']:
+        log.warning("Showcase is not available. Showcase ID: {0}".format(
+            data_dict.get('showcase_id')))
+        return []
+      
     # validate the incoming data_dict
     validated_data_dict, errors = validate(data_dict,
                                            showcase_package_list_schema(),
