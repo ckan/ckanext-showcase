@@ -286,25 +286,16 @@ def _add_dataset_search(showcase_id, showcase_name):
             'auth_user_obj': tk.g.userobj
         }
 
-        # Unless changed via config options, don't show other dataset
-        # types any search page. Potential alternatives are do show them
-        # on the default search page (dataset) or on one other search page
-        search_all_type = tk.config.get('ckan.search.show_all_types')
-        search_all = False
-
-        try:
-            # If the "type" is set to True or False, convert to bool
-            # and we know that no type was specified, so use traditional
-            # behaviour of applying this only to dataset type
-            search_all = tk.asbool(search_all_type)
-            search_all_type = 'dataset'
-        # Otherwise we treat as a string representing a type
-        except ValueError:
-            search_all = True
-
-        if not search_all or package_type != search_all_type:
-            # Only show datasets of this particular type
-            fq += ' +dataset_type:{type}'.format(type=package_type)
+        # Search for packages of the configured package types or of type 'dataset' 
+        # for the Showcase
+        search_package_types = tk.aslist(
+            tk.config.get('ckanext.showcase.show_dataset_types', 'dataset'))
+        if search_package_types:
+            fq += ' +dataset_type:({types})'.format(
+                types=' OR '.join(search_package_types))
+        else:
+            fq += ' +dataset_type:{type}'.format(
+                type=package_type)
 
         # Only search for packages that aren't already associated with the
         # Showcase

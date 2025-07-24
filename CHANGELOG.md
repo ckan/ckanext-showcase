@@ -1,5 +1,9 @@
 # Ckanext-showcase CHANGELOG
 
+## v1.9.0 2025-07-24
+
+* Change the logic of managing datasets of certain types in showcase 
+
 ## v1.8.4 2025-07-22
 
 * Remove unused add_datasets.html template (#186)

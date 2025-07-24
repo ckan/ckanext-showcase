@@ -165,6 +165,11 @@ If you want to use the WYSIWYG editor instead of Markdown to write the content o
 
     ckanext.showcase.editor = ckeditor
 
+Set the dataset types to show in the showcase. By default it is set to
+`dataset`, but you can change it to `dataset dataset_series custom_dataset_type`::
+
+    ckanext.showcase.show_dataset_types = dataset dataset_series custom_dataset_type
+
 -----------------------------------------------
 Migrating Showcases Notes from Markdown to HTML
 -----------------------------------------------
