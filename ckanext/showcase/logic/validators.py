@@ -36,7 +36,7 @@ def convert_package_name_or_id_to_id_for_type(package_name_or_id,
     if not result:
         result = (
             session.query(model.Package)
-            .filter(model.Package.id == package_name_or_id,
+            .filter(model.Package.name == package_name_or_id,
                     model.Package.type.in_(dataset_types)).first()
         )
     if not result:
