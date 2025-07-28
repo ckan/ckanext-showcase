@@ -5,36 +5,50 @@ Invalid = tk.Invalid
 
 
 def convert_package_name_or_id_to_id_for_type(package_name_or_id,
-                                              context, package_type='dataset'):
-    '''
-    Return the id for the given package name or id. Only works with packages
-    of type package_type.
+                                              context, package_type=None):
+    """Convert package name or ID to ID for a specific type.
 
-    Also validates that a package with the given name or id exists.
+    This function retrieves the package ID based on the provided name or ID,
+    ensuring it matches the specified package type if provided. If no package
+    type is specified, it defaults to checking for any package type.
 
-    :returns: the id of the package with the given name or id
-    :rtype: string
-    :raises: ckan.lib.navl.dictization_functions.Invalid if there is no
-        package with the given name or id
-
-    '''
+    :param package_name_or_id: The name or ID of the package.
+    :param context: The context containing the session and model.
+    :param package_type: The type of the package to filter by (optional).
+    :returns: The ID of the package.
+    :raises: Invalid if no package is found with the given name or ID.
+    """
     session = context['session']
     model = context['model']
-    result = session.query(model.Package) \
-        .filter_by(id=package_name_or_id, type=package_type).first()
+
+    dataset_types = tk.aslist(
+        package_type or tk.config.get('ckanext.showcase.show_dataset_types', 'dataset')
+    )
+    if not dataset_types:
+        result = model.Package.get(package_name_or_id)
+    else:
+        result = (
+            session.query(model.Package)
+            .filter(model.Package.id == package_name_or_id,
+                    model.Package.type.in_(dataset_types)).first()
+        )
+
     if not result:
-        result = session.query(model.Package) \
-            .filter_by(name=package_name_or_id, type=package_type).first()
+        result = (
+            session.query(model.Package)
+            .filter(model.Package.name == package_name_or_id,
+                    model.Package.type.in_(dataset_types)).first()
+        )
     if not result:
-        raise Invalid('%s: %s' % (_('Not found'), _('Dataset')))
+        raise Invalid('No package is found with the given name or ID')
+
     return result.id
 
 
 def convert_package_name_or_id_to_id_for_type_dataset(package_name_or_id,
                                                       context):
     return convert_package_name_or_id_to_id_for_type(package_name_or_id,
-                                                     context,
-                                                     package_type='dataset')
+                                                     context)
 
 
 def convert_package_name_or_id_to_id_for_type_showcase(package_name_or_id,
