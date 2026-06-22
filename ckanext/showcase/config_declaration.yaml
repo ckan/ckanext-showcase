@@ -1,0 +1,20 @@
+version: 1
+groups:
+    - annotation: showcase configuration
+      options:
+          - key: ckan.upload.showcase.types
+            type: list
+            default: image
+            example: image text
+          - key: ckan.upload.showcase.mimetypes
+            type: list
+            default: image/png image/gif image/jpeg
+            example: image/png
+          - key: ckan.upload.showcase_image.types
+            type: list
+            default: image
+            example: image text
+          - key: ckan.upload.showcase_image.mimetypes
+            type: list
+            default: image/png image/gif image/jpeg
+            example: image/png

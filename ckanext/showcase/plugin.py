@@ -26,6 +26,7 @@ log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = utils.DATASET_TYPE_NAME
 
 
+@tk.blanket.config_declarations
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
