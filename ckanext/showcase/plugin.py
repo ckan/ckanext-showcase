@@ -76,6 +76,7 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
         path = default_config.setdefault("path", "")
         default_config["path"] = os.path.join(path, "storage", "uploads", "showcase")
         default_config["initialize"] = True
+        default_config["public"] = True
         storages.register(name, make_storage(name, default_config))
 
     # IBlueprint
