@@ -68,24 +68,22 @@ class TestShowcaseIndex(object):
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseNewView(object):
-    def test_showcase_create_form_renders(self, app):
-
-        sysadmin = factories.Sysadmin()
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
-        response = app.get(url=url_for("showcase_new"), extra_environ=env,)
+    def test_showcase_create_form_renders(self, app, sysadmin, api_token_factory):
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+        response = app.get(url=url_for("showcase_new"), headers=headers)
         assert "dataset-edit" in response
 
-    def test_showcase_new_redirects_to_manage_datasets(self, app):
+    def test_showcase_new_redirects_to_manage_datasets(self, app, sysadmin, api_token_factory):
         """Creating a new showcase redirects to the manage datasets form."""
-        sysadmin = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+
         # need a dataset for the 'bulk_action.showcase_add' button to show
         factories.Dataset()
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         response = app.post(
             url=url_for("showcase_blueprint.new"),
-            extra_environ=env,
+            headers=headers,
             data={"name": "my-showcase"},
             follow_redirects=False
             )
@@ -96,13 +94,13 @@ class TestShowcaseNewView(object):
             in response.location
         )
 
-    def test_create_showcase(self, app):
-        sysadmin = factories.Sysadmin()
+    def test_create_showcase(self, app, sysadmin, api_token_factory):
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         app.post(
             url=url_for("showcase_blueprint.new"),
-            extra_environ=env,
+            headers=headers,
             data={
                 "name": "my-test-showcase",
                 "image_url": "",
@@ -112,7 +110,7 @@ class TestShowcaseNewView(object):
 
         res = app.get(
             url=url_for("showcase_blueprint.read", id="my-test-showcase"),
-            extra_environ=env,
+            headers=headers,
         )
         assert "my-test-showcase" in res.body
         assert "My new description!" in res.body
@@ -121,52 +119,29 @@ class TestShowcaseNewView(object):
 
 @pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 class TestShowcaseEditView(object):
-    def test_showcase_edit_form_renders(self, app):
+    def test_showcase_edit_form_renders(self, app, sysadmin, api_token_factory):
         """
         Edit form renders in response for ShowcaseController edit action.
         """
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        sysadmin = factories.Sysadmin()
         factories.Dataset(name="my-showcase", type="showcase")
 
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         response = app.get(
-            url=url_for("showcase_edit", id="my-showcase"), extra_environ=env,
+            url=url_for("showcase_edit", id="my-showcase"), headers=headers,
         )
         assert "dataset-edit" in response
 
-    def test_showcase_edit_redirects_to_showcase_details(self, app):
-        """Editing a showcase redirects to the showcase details page."""
-        if tk.check_ckan_version("2.9"):
-            pytest.skip("submit_and_follow not supported")
+    def test_edit_showcase(self, app, sysadmin, api_token_factory):
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        sysadmin = factories.Sysadmin()
         factories.Dataset(name="my-showcase", type="showcase")
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
-        response = app.get(
-            url=url_for("showcase_edit", id="my-showcase"), extra_environ=env,
-        )
-
-        # edit showcase
-        form = response.forms["dataset-edit"]
-        form["name"] = u"my-changed-showcase"
-        edit_response = helpers.submit_and_follow(app, form, env, "save")
-
-        # Requested page is the showcase read url.
-        assert (
-            url_for("showcase_read", id="my-changed-showcase")
-            == edit_response.request.path
-        )
-
-    def test_edit_showcase(self, app):
-        sysadmin = factories.Sysadmin()
-        factories.Dataset(name="my-showcase", type="showcase")
-        env = {"REMOTE_USER": sysadmin["name"]}
 
         app.post(
             url=url_for("showcase_blueprint.edit", id="my-showcase"),
-            extra_environ=env,
+            headers=headers,
             data={
                 "name": "my-edited-showcase",
                 "notes": "My new description!",
@@ -175,7 +150,7 @@ class TestShowcaseEditView(object):
         )
         res = app.get(
             url=url_for("showcase_blueprint.edit", id="my-edited-showcase"),
-            extra_environ=env,
+            headers=headers,
         )
         assert "my-edited-showcase" in res.body
         assert "My new description!" in res.body
@@ -257,12 +232,14 @@ class TestDatasetView(object):
         assert "my-second-showcase" in response
         assert "my-third-showcase" not in response
 
-    def test_dataset_showcase_page_add_to_showcase_dropdown_list(self, app):
+    def test_dataset_showcase_page_add_to_showcase_dropdown_list(self, app, sysadmin, api_token_factory):
         """
         Add to showcase dropdown only lists showcases that aren't already
         associated with dataset.
         """
-        sysadmin = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+
         dataset = factories.Dataset(name="my-dataset")
         showcase_one = factories.Dataset(
             name="my-first-showcase", type="showcase"
@@ -284,20 +261,22 @@ class TestDatasetView(object):
 
         response = app.get(
             url=url_for("showcase_blueprint.dataset_showcase_list", id=dataset["id"]),
-            extra_environ={"REMOTE_USER": str(sysadmin["name"])},
+            headers=headers,
         )
 
         assert f'<option value="{showcase_one["id"]}' not in response.body
         assert f'<option value="{showcase_two["id"]}' in response.body
         assert f'<option value="{showcase_three["id"]}' in response.body
 
-    def test_dataset_showcase_page_add_showcase_button_submit(self, app):
+    def test_dataset_showcase_page_add_showcase_button_submit(self, app, sysadmin, api_token_factory):
         """
         Submitting 'Add to showcase' form with selected showcase value creates
         a sc/pkg association.
         """
 
-        sysadmin = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+
         dataset = factories.Dataset(name="my-dataset")
         showcase_one = factories.Dataset(
             name="my-first-showcase", type="showcase"
@@ -307,12 +286,10 @@ class TestDatasetView(object):
 
         assert model.Session.query(ShowcasePackageAssociation).count() == 0
 
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
-
         response = app.post(
             url=url_for("showcase_blueprint.dataset_showcase_list", id=dataset["id"]),
             data={"showcase_added": showcase_one["id"]},
-            extra_environ=env,
+            headers=headers,
         )
 
         # Flash message containing confirmation
@@ -321,13 +298,14 @@ class TestDatasetView(object):
         # an association is created
         assert model.Session.query(ShowcasePackageAssociation).count() == 1
 
-    def test_dataset_showcase_page_remove_showcase_button_submit(self, app):
+    def test_dataset_showcase_page_remove_showcase_button_submit(self, app, sysadmin, api_token_factory):
         """
         Submitting 'Remove' form with selected showcase value deletes a sc/pkg
         association.
         """
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        sysadmin = factories.Sysadmin()
         dataset = factories.Dataset(name="my-dataset")
         showcase_one = factories.Dataset(
             name="my-first-showcase", type="showcase"
@@ -343,12 +321,10 @@ class TestDatasetView(object):
 
         assert model.Session.query(ShowcasePackageAssociation).count() == 1
 
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
-
         response = app.post(
             url=url_for("showcase_blueprint.dataset_showcase_list", id=dataset["id"]),
             data={"remove_showcase_id": showcase_one["id"]},
-            extra_environ=env,
+            headers=headers,
         )
 
         # Flash message containing confirmation
@@ -363,30 +339,27 @@ class TestShowcaseAdminManageView(object):
 
     """Plugin adds a showcase admin management page to ckan-admin section."""
 
-    def test_ckan_admin_has_showcase_config_tab(self, app):
+    def test_ckan_admin_has_showcase_config_tab(self, app, sysadmin, api_token_factory):
         """
         ckan-admin index page has a showcase config tab.
         """
-        sysadmin = factories.Sysadmin()
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
         response = app.get(
-            url=url_for("admin.index"), extra_environ=env
+            url=url_for("admin.index"), headers=headers
         )
         # response contains link to dataset's showcase list
         assert "/ckan-admin/showcase_admins" in response
 
-    def test_showcase_admin_manage_page_returns_correct_status(self, app):
+    def test_showcase_admin_manage_page_returns_correct_status(self, app, sysadmin, api_token_factory):
         """
         /ckan-admin/showcase_admins can be successfully accessed.
         """
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+        app.get(url=url_for("showcase_blueprint.admins"), status=200, headers=headers)
 
-        sysadmin = factories.Sysadmin()
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
-        app.get(url=url_for("showcase_blueprint.admins"), status=200, extra_environ=env)
-
-    def test_showcase_admin_manage_page_lists_showcase_admins(self, app):
+    def test_showcase_admin_manage_page_lists_showcase_admins(self, app, sysadmin, api_token_factory):
         """
         Showcase admins are listed on the showcase admin page.
         """
@@ -402,27 +375,24 @@ class TestShowcaseAdminManageView(object):
             "ckanext_showcase_admin_add", context={}, username=user_two["name"]
         )
 
-        sysadmin = factories.Sysadmin()
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
         response = app.get(
-            url=url_for("showcase_blueprint.admins"), status=200, extra_environ=env
+            url=url_for("showcase_blueprint.admins"), status=200, headers=headers
         )
 
         assert "/user/{0}".format(user_one["name"]) in response
         assert "/user/{0}".format(user_two["name"]) in response
         assert "/user/{0}".format(user_three["name"]) not in response
 
-    def test_showcase_admin_manage_page_no_admins_message(self, app):
+    def test_showcase_admin_manage_page_no_admins_message(self, app, sysadmin, api_token_factory):
         """
         Showcase admins page displays message if no showcase admins present.
         """
-
-        sysadmin = factories.Sysadmin()
-
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
         response = app.get(
-            url=url_for("showcase_blueprint.admins"), status=200, extra_environ=env
+            url=url_for("showcase_blueprint.admins"), status=200, headers=headers
         )
 
         assert "There are currently no Showcase Admins" in response
@@ -446,35 +416,36 @@ class TestSearch(object):
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestCKEditor(object):
     @pytest.mark.ckan_config("ckanext.showcase.editor", "ckeditor")
-    def test_rich_text_editor_is_shown_when_configured(self, app):
+    def test_rich_text_editor_is_shown_when_configured(self, app, sysadmin, api_token_factory):
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        sysadmin = factories.Sysadmin()
         factories.Dataset(name="my-showcase", type="showcase")
 
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         response = app.get(
-            url=url_for("showcase_edit", id="my-showcase",), extra_environ=env,
+            url=url_for("showcase_edit", id="my-showcase",), headers=headers,
         )
         assert '<textarea id="editor"' in response.body
 
-    def test_rich_text_editor_is_not_shown_when_not_configured(self, app):
+    def test_rich_text_editor_is_not_shown_when_not_configured(self, app, sysadmin, api_token_factory):
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        sysadmin = factories.Sysadmin()
         factories.Dataset(name="my-showcase", type="showcase")
 
-        env = {"REMOTE_USER": sysadmin["name"].encode("ascii")}
         response = app.get(
-            url=url_for("showcase_blueprint.edit", id="my-showcase",), extra_environ=env,
+            url=url_for("showcase_blueprint.edit", id="my-showcase",), headers=headers,
         )
         assert '<textarea id="editor"' not in response.body
 
     @pytest.mark.ckan_config("ckanext.showcase.editor", "ckeditor")
-    def test_custom_div_content_is_used_with_ckeditor(self, app):
-        sysadmin = factories.Sysadmin()
+    def test_custom_div_content_is_used_with_ckeditor(self, app, sysadmin, api_token_factory):
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+
         factories.Dataset(name='my-showcase', type='showcase')
 
-        env = {'REMOTE_USER': sysadmin['name'].encode('ascii')}
         response = app.get(
-            url=url_for("showcase_blueprint.read", id="my-showcase",), extra_environ=env,
+            url=url_for("showcase_blueprint.read", id="my-showcase",), headers=headers,
         )
         assert '<div class="ck-content">' in response.body

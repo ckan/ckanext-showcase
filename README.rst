@@ -30,7 +30,7 @@ ckanext-showcase is intended to be a more powerful replacement for the
 Requirements
 ------------
 
-Tested on CKAN 2.9 to 2.11.
+Tested on CKAN 2.10 to 2.12.
 
 Note: Use `1.5.2` for older CKAN versions (2.7 and 2.8).
 
@@ -60,8 +60,14 @@ To install ckanext-showcase:
 
     ckan db upgrade -p showcase
 
+5. On CKAN v2.12 or newer, configure `showcase` storage::
 
-5. Restart CKAN. 
+    ckan.files.storage.showcase.type = ckan:fs
+    ckan.files.storage.showcase.path = /var/ckan/storage/uploads/showcase
+    ckan.files.storage.showcase.initialize = true
+    ckan.files.storage.showcase.public = true
+
+6. Restart CKAN.
 
 ------------------------
 Development Installation
@@ -264,4 +270,3 @@ See: "Internationalizing strings in extensions" : http://docs.ckan.org/en/latest
 3. Compile your language catalog ( You can force pybabel compile to compile messages marked as fuzzy with the -f)
 
        python setup.py compile_catalog -f -l es
-
