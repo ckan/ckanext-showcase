@@ -1,0 +1,10 @@
+version: 1
+groups:
+  - annotation: ckanext-showcase
+    options:
+      - key: ckan.files.default_storages.showcase
+        default: showcase
+        description: |
+          The name of storage (CKAN v2.12) to use for showcase files. If
+          specified storage is not configured, it will be initialized by
+          clonning default storage and appending ``showcase`` to its path.

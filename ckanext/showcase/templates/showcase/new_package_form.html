@@ -50,7 +50,8 @@
       {% set is_upload = data.image_url and not data.image_url.startswith('http') %}
       {% set is_url = data.image_url and data.image_url.startswith('http') %}
 
-      {{ form.image_upload(data, errors, is_upload_enabled=h.uploads_enabled(), is_url=is_url, is_upload=is_upload) }}
+      {%- set uploads_enabled = h.uploads_enabled("showcase") if h.check_ckan_version("2.12a0") else h.uploads_enabled() -%}
+      {{ form.image_upload(data, errors, is_upload_enabled=uploads_enabled, is_url=is_url, is_upload=is_upload) }}
   {% endblock %}
 
   {% block metadata_fields %}

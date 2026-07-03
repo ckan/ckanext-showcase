@@ -29,17 +29,15 @@ class TestShowcaseAuthIndex(object):
 
         app.get("/showcase", status=200)
 
-    def test_auth_logged_in_user_can_view_showcase_index(self, app):
+    def test_auth_logged_in_user_can_view_showcase_index(self, app, api_token):
         """
         A logged in user can view the Showcase index.
         """
 
-        user = factories.User()
-
         app.get(
             "/showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
     def test_auth_anon_user_cant_see_add_showcase_button(self, app):
@@ -53,35 +51,32 @@ class TestShowcaseAuthIndex(object):
         # test for new showcase link in response
         assert "/showcase/new" not in response.body
 
-    def test_auth_logged_in_user_cant_see_add_showcase_button(self, app):
+    def test_auth_logged_in_user_cant_see_add_showcase_button(self, app, api_token):
         """
         A logged in user can't see the Add Showcase button on the showcase
         index page.
         """
-
-        user = factories.User()
-
         response = app.get(
             "/showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
         # test for new showcase link in response
         assert "/showcase/new" not in response.body
 
-    def test_auth_sysadmin_can_see_add_showcase_button(self, app):
+    def test_auth_sysadmin_can_see_add_showcase_button(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can see the Add Showcase button on the showcase index
         page.
         """
-
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         response = app.get(
             "/showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
         # test for new showcase link in response
@@ -99,19 +94,16 @@ class TestShowcaseAuthDetails(object):
 
         app.get("/showcase/my-showcase", status=200)
 
-    def test_auth_logged_in_user_can_view_showcase_details(self, app):
+    def test_auth_logged_in_user_can_view_showcase_details(self, app, api_token):
         """
         A logged in user can view an individual Showcase details page.
         """
-
-        user = factories.User()
-
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
     def test_auth_anon_user_cant_see_manage_button(self, app):
@@ -126,39 +118,37 @@ class TestShowcaseAuthDetails(object):
 
         assert "/showcase/edit/my-showcase" not in response.body
 
-    def test_auth_logged_in_user_can_see_manage_button(self, app):
+    def test_auth_logged_in_user_can_see_manage_button(self, app, api_token):
         """
         A logged in user can't see the Manage button on an individual showcase
         details page.
         """
 
-        user = factories.User()
-
         factories.Dataset(type="showcase", name="my-showcase")
 
         response = app.get(
             "/showcase/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
         # test for url to edit page
         assert "/showcase/edit/my-showcase" not in response.body
 
-    def test_auth_sysadmin_can_see_manage_button(self, app):
+    def test_auth_sysadmin_can_see_manage_button(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can see the Manage button on an individual showcase details
         page.
         """
-
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         response = app.get(
             "/showcase/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
         # test for url to edit page
@@ -179,36 +169,36 @@ class TestShowcaseAuthDetails(object):
 
         assert json_response["success"]
 
-    def test_auth_showcase_show_normal_user_can_access(self, app):
+    def test_auth_showcase_show_normal_user_can_access(self, app, api_token):
         """
         Normal logged in user can request showcase show.
         """
-        user = factories.User()
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         response = app.get(
             "/api/3/action/ckanext_showcase_show?id=my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
         json_response = json.loads(response.body)
 
         assert json_response["success"]
 
-    def test_auth_showcase_show_sysadmin_can_access(self, app):
+    def test_auth_showcase_show_sysadmin_can_access(self, app, sysadmin, api_token_factory):
         """
         Normal logged in user can request showcase show.
         """
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         response = app.get(
             "/api/3/action/ckanext_showcase_show?id=my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
         json_response = json.loads(response.body)
@@ -228,26 +218,27 @@ class TestShowcaseAuthCreate(object):
             # Remove when dropping support for 2.9
             _get_request(app, "/showcase/new", status=302)
 
-    def test_auth_logged_in_user_cant_view_create_showcase_page(self, app):
+    def test_auth_logged_in_user_cant_view_create_showcase_page(self, app, api_token):
         """
         A logged in user can't access the create showcase page.
         """
-        user = factories.User()
         app.get(
             "/showcase/new",
             status=401,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
-    def test_auth_sysadmin_can_view_create_showcase_page(self, app):
+    def test_auth_sysadmin_can_view_create_showcase_page(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can access the create showcase page.
         """
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
+
         app.get(
             "/showcase/new",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
 
@@ -266,36 +257,36 @@ class TestShowcaseAuthList(object):
 
         assert json_response["success"]
 
-    def test_auth_showcase_list_normal_user_can_access(self, app):
+    def test_auth_showcase_list_normal_user_can_access(self, app, api_token):
         """
         Normal logged in user can request showcase list.
         """
-        user = factories.User()
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         response = app.get(
             "/api/3/action/ckanext_showcase_list",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
         json_response = json.loads(response.body)
 
         assert json_response["success"]
 
-    def test_auth_showcase_list_sysadmin_can_access(self, app):
+    def test_auth_showcase_list_sysadmin_can_access(self, app, sysadmin, api_token_factory):
         """
         Normal logged in user can request showcase list.
         """
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         response = app.get(
             "/api/3/action/ckanext_showcase_list",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
         json_response = json.loads(response.body)
@@ -316,42 +307,40 @@ class TestShowcaseAuthEdit(object):
             # Remove when dropping support for 2.9
             _get_request(app, "/showcase/edit/my-showcase", status=302)
 
-    def test_auth_logged_in_user_cant_view_edit_showcase_page(self, app):
+    def test_auth_logged_in_user_cant_view_edit_showcase_page(self, app, api_token):
         """
         A logged in user can't access the showcase edit page.
         """
-
-        user = factories.User()
-
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/edit/my-showcase",
             status=401,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
-    def test_auth_sysadmin_can_view_edit_showcase_page(self, app):
+    def test_auth_sysadmin_can_view_edit_showcase_page(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can access the showcase edit page.
         """
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        user = factories.Sysadmin()
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/edit/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
-    def test_auth_showcase_admin_can_view_edit_showcase_page(self, app):
+    def test_auth_showcase_admin_can_view_edit_showcase_page(self, app, user, api_token_factory):
         """
         A showcase admin can access the showcase edit page.
         """
-
-        user = factories.User()
+        token = api_token_factory(user=user["name"])
+        headers = {"Authorization": token["token"]}
 
         # Make user a showcase admin
         helpers.call_action(
@@ -363,7 +352,7 @@ class TestShowcaseAuthEdit(object):
         app.get(
             "/showcase/edit/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
     def test_auth_anon_user_cant_view_manage_datasets(self, app):
@@ -378,42 +367,40 @@ class TestShowcaseAuthEdit(object):
             # Remove when dropping support for 2.9
             _get_request(app, "/showcase/manage_datasets/my-showcase", status=302)
 
-    def test_auth_logged_in_user_cant_view_manage_datasets(self, app):
+    def test_auth_logged_in_user_cant_view_manage_datasets(self, app, api_token):
         """
         A logged in user (not sysadmin) can't access the showcase manage datasets page.
         """
-
-        user = factories.User()
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/manage_datasets/my-showcase",
             status=401,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
-    def test_auth_sysadmin_can_view_manage_datasets(self, app):
+    def test_auth_sysadmin_can_view_manage_datasets(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can access the showcase manage datasets page.
         """
-
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/manage_datasets/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
-    def test_auth_showcase_admin_can_view_manage_datasets(self, app):
+    def test_auth_showcase_admin_can_view_manage_datasets(self, app, user, api_token_factory):
         """
         A showcase admin can access the showcase manage datasets page.
         """
-
-        user = factories.User()
+        token = api_token_factory(user=user["name"])
+        headers = {"Authorization": token["token"]}
 
         # Make user a showcase admin
         helpers.call_action(
@@ -425,7 +412,7 @@ class TestShowcaseAuthEdit(object):
         app.get(
             "/showcase/manage_datasets/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
     def test_auth_anon_user_cant_view_delete_showcase_page(self, app):
@@ -440,42 +427,39 @@ class TestShowcaseAuthEdit(object):
             # Remove when dropping support for 2.9
             _get_request(app, "/showcase/delete/my-showcase", status=302)
 
-    def test_auth_logged_in_user_cant_view_delete_showcase_page(self, app):
+    def test_auth_logged_in_user_cant_view_delete_showcase_page(self, app, api_token):
         """
         A logged in user can't access the showcase delete page.
         """
-
-        user = factories.User()
-
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/delete/my-showcase",
             status=401,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
-    def test_auth_sysadmin_can_view_delete_showcase_page(self, app):
+    def test_auth_sysadmin_can_view_delete_showcase_page(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can access the showcase delete page.
         """
-
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         factories.Dataset(type="showcase", name="my-showcase")
 
         app.get(
             "/showcase/delete/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
-    def test_auth_showcase_admin_can_view_delete_showcase_page(self, app):
+    def test_auth_showcase_admin_can_view_delete_showcase_page(self, app, user, api_token_factory):
         """
         A showcase admin can access the showcase delete page.
         """
-
-        user = factories.User()
+        token = api_token_factory(user=user["name"])
+        headers = {"Authorization": token["token"]}
 
         # Make user a showcase admin
         helpers.call_action(
@@ -487,7 +471,7 @@ class TestShowcaseAuthEdit(object):
         app.get(
             "/showcase/delete/my-showcase",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
     def test_auth_anon_user_cant_view_addtoshowcase_dropdown_dataset_showcase_list(
@@ -508,33 +492,32 @@ class TestShowcaseAuthEdit(object):
         assert "showcase-add" not in showcase_list_response.body
 
     def test_auth_normal_user_cant_view_addtoshowcase_dropdown_dataset_showcase_list(
-        self, app
+            self, app, api_token
     ):
         """
         A normal (logged in) user can't view the 'Add to showcase' dropdown
         selector from a datasets showcase list page.
         """
-        user = factories.User()
-
         factories.Dataset(name="my-showcase", type="showcase")
         factories.Dataset(name="my-dataset")
 
         showcase_list_response = app.get(
             "/dataset/showcases/my-dataset",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
         assert "showcase-add" not in showcase_list_response.body
 
     def test_auth_sysadmin_can_view_addtoshowcase_dropdown_dataset_showcase_list(
-        self, app
+        self, app, sysadmin, api_token_factory
     ):
         """
         A sysadmin can view the 'Add to showcase' dropdown selector from a
         datasets showcase list page.
         """
-        user = factories.Sysadmin()
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
         factories.Dataset(name="my-showcase", type="showcase")
         factories.Dataset(name="my-dataset")
@@ -542,20 +525,20 @@ class TestShowcaseAuthEdit(object):
         showcase_list_response = app.get(
             "/dataset/showcases/my-dataset",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
         assert "showcase-add" in showcase_list_response.body
 
     def test_auth_showcase_admin_can_view_addtoshowcase_dropdown_dataset_showcase_list(
-        self, app
+            self, app, user, api_token_factory
     ):
         """
         A showcase admin can view the 'Add to showcase' dropdown selector from
         a datasets showcase list page.
         """
-
-        user = factories.User()
+        token = api_token_factory(user=user["name"])
+        headers = {"Authorization": token["token"]}
 
         # Make user a showcase admin
         helpers.call_action(
@@ -568,7 +551,7 @@ class TestShowcaseAuthEdit(object):
         showcase_list_response = app.get(
             "/dataset/showcases/my-dataset",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )
 
         assert "showcase-add" in showcase_list_response.body
@@ -807,27 +790,26 @@ class TestShowcaseAuthManageShowcaseAdmins(object):
             _get_request(app, "/showcase/new", status=302)
 
     def test_auth_logged_in_user_cant_view_showcase_admin_manage_page(
-        self, app
+            self, app, api_token
     ):
         """
         A logged in user can't access the manage showcase admin page.
         """
-
-        user = factories.User()
         app.get(
             "/showcase/new",
             status=401,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers={"Authorization": api_token["token"]},
         )
 
-    def test_auth_sysadmin_can_view_showcase_admin_manage_page(self, app):
+    def test_auth_sysadmin_can_view_showcase_admin_manage_page(self, app, sysadmin, api_token_factory):
         """
         A sysadmin can access the manage showcase admin page.
         """
+        token = api_token_factory(user=sysadmin["name"])
+        headers = {"Authorization": token["token"]}
 
-        user = factories.Sysadmin()
         app.get(
             "/showcase/new",
             status=200,
-            extra_environ={"REMOTE_USER": str(user["name"])},
+            headers=headers,
         )

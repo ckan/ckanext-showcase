@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import os
 import sys
@@ -9,6 +9,8 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as tk
 import ckan.lib.plugins as lib_plugins
 import ckan.lib.helpers as h
+from ckan import types
+from ckan.exceptions import CkanConfigurationException
 from ckan.lib.munge import munge_title_to_name
 
 from ckanext.showcase import cli
@@ -26,7 +28,9 @@ log = logging.getLogger(__name__)
 DATASET_TYPE_NAME = utils.DATASET_TYPE_NAME
 
 
+@tk.blanket.config_declarations
 class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
+    plugins.implements(plugins.IConfigurable)
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IDatasetForm)
     plugins.implements(plugins.IFacets, inherit=True)
@@ -37,6 +41,43 @@ class ShowcasePlugin(plugins.SingletonPlugin, lib_plugins.DefaultDatasetForm):
     plugins.implements(plugins.ITranslation)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IClick)
+
+    # IConfigurable
+    def configure(self, config: types.CKANConfig) -> None:
+        """Initialize storage for showcase files."""
+        try:
+            from ckan.lib.files import storages, make_storage, STORAGE_PREFIX
+            from ckan.config.declaration.load import config_tree
+        except ImportError:
+            # CKAN < v2.12
+            return
+
+        # FKUploader will use this option internally to find the name of the
+        # storage for uploads of the given type. Most likely it will not be
+        # modified and will keep the default value `showcase`, but still it's
+        # better to avoid hardcoding the expected name and rely on config.
+        name = config["ckan.files.default_storages.showcase"]
+        if name in storages:
+            return
+
+        # if `showcase` storage is not configured, get configuration of the
+        # default storage
+        default = config["ckan.files.default_storages.default"]
+        default_config = config_tree(config, prefix=f"{STORAGE_PREFIX}{default}.", depth=-1)
+
+        # without storage, uploads will be disabled on showcase form
+        if not default_config:
+            return
+
+        # classic implementation of uploader used
+        # `storage/uploads/<object_type>` folder for uploads. If no explicit
+        # configuration for `showcase` storage is provided, it's better to keep
+        # the original behavior.
+        path = default_config.setdefault("path", "")
+        default_config["path"] = os.path.join(path, "storage", "uploads", "showcase")
+        default_config["initialize"] = True
+        default_config["public"] = True
+        storages.register(name, make_storage(name, default_config))
 
     # IBlueprint
 
