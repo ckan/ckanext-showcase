@@ -5,6 +5,12 @@ from ckan.logic.schema import (default_tags_schema,
                                default_extras_schema,
                                default_resource_schema)
 
+try:
+    from ckan.logic.schema import default_show_extras_schema
+except ImportError:
+    # CKAN 2.10 does not provide a separate show extras schema.
+    default_show_extras_schema = default_extras_schema
+
 from ckanext.showcase.logic.validators import (
     convert_package_name_or_id_to_id_for_type_dataset,
     convert_package_name_or_id_to_id_for_type_showcase)
@@ -83,6 +89,9 @@ def showcase_show_schema():
     schema = showcase_base_schema()
     # Don't strip ids from package dicts when validating them.
     schema['id'] = []
+
+    # Replace the create/update extras schema for show-time processing.
+    schema['extras'] = default_show_extras_schema()
 
     schema.update({
         'tags': {'__extras': [keep_extras]}})
