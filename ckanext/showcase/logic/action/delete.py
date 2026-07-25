@@ -1,6 +1,7 @@
 import logging
 
 import ckan.plugins.toolkit as toolkit
+from ckan import logic
 from ckan.logic.converters import convert_user_name_or_id_to_id
 import ckan.lib.navl.dictization_functions
 
@@ -33,6 +34,7 @@ def showcase_delete(context, data_dict):
 
     toolkit.check_access('ckanext_showcase_delete', context, data_dict)
 
+    logic.index_remove_package(entity.id)
     entity.purge()
     model.repo.commit()
 

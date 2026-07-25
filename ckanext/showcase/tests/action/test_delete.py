@@ -11,6 +11,23 @@ from ckan.model.package import Package
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeleteShowcase(object):
+    def test_showcase_delete_removes_search_index(self, monkeypatch):
+        """Deleting a showcase removes its document from the search index."""
+        removed_package_ids = []
+        monkeypatch.setattr(
+            "ckan.logic.index_remove_package",
+            removed_package_ids.append,
+        )
+        sysadmin = factories.Sysadmin()
+        context = {"user": sysadmin["name"]}
+        showcase = factories.Dataset(type="showcase")
+
+        helpers.call_action(
+            "ckanext_showcase_delete", context=context, id=showcase["id"]
+        )
+
+        assert removed_package_ids == [showcase["id"]]
+
     def test_showcase_delete_no_args(self):
         """
         Calling showcase delete with no args raises a ValidationError.
