@@ -28,6 +28,19 @@ class TestDeleteShowcase(object):
 
         assert removed_package_ids == [showcase["id"]]
 
+    def test_showcase_delete_without_explicit_index_helper(self, monkeypatch):
+        """Older CKAN versions continue using automatic index cleanup."""
+        sysadmin = factories.Sysadmin()
+        context = {"user": sysadmin["name"]}
+        showcase = factories.Dataset(type="showcase")
+        monkeypatch.delattr("ckan.logic.index_remove_package")
+
+        helpers.call_action(
+            "ckanext_showcase_delete", context=context, id=showcase["id"]
+        )
+
+        assert model.Package.get(showcase["id"]) is None
+
     def test_showcase_delete_no_args(self):
         """
         Calling showcase delete with no args raises a ValidationError.
