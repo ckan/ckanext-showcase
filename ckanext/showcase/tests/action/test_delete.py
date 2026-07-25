@@ -17,6 +17,7 @@ class TestDeleteShowcase(object):
         monkeypatch.setattr(
             "ckan.logic.index_remove_package",
             removed_package_ids.append,
+            raising=False,
         )
         sysadmin = factories.Sysadmin()
         context = {"user": sysadmin["name"]}
@@ -33,7 +34,7 @@ class TestDeleteShowcase(object):
         sysadmin = factories.Sysadmin()
         context = {"user": sysadmin["name"]}
         showcase = factories.Dataset(type="showcase")
-        monkeypatch.delattr("ckan.logic.index_remove_package")
+        monkeypatch.delattr("ckan.logic.index_remove_package", raising=False)
 
         helpers.call_action(
             "ckanext_showcase_delete", context=context, id=showcase["id"]
