@@ -11,33 +11,49 @@ from ckan.model.package import Package
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeleteShowcase(object):
-    def test_showcase_delete_removes_search_index(self, monkeypatch):
-        """Deleting a showcase removes its document from the search index."""
-        removed_package_ids = []
-        monkeypatch.setattr(
-            "ckan.logic.index_remove_package",
-            removed_package_ids.append,
-            raising=False,
-        )
+    def test_showcase_delete_delegates_to_dataset_purge(self, monkeypatch):
+        """Deleting a showcase delegates permanent removal to CKAN."""
         sysadmin = factories.Sysadmin()
         context = {"user": sysadmin["name"]}
         showcase = factories.Dataset(type="showcase")
+        purge_calls = []
+        original_get_action = toolkit.get_action
+
+        def get_action(action):
+            if action == "dataset_purge":
+                return lambda context, data_dict: purge_calls.append(
+                    (context, data_dict)
+                )
+            return original_get_action(action)
+
+        monkeypatch.setattr(toolkit, "get_action", get_action)
 
         helpers.call_action(
             "ckanext_showcase_delete", context=context, id=showcase["id"]
         )
 
-        assert removed_package_ids == [showcase["id"]]
+        assert len(purge_calls) == 1
+        purge_context, purge_data = purge_calls[0]
+        assert purge_context is not context
+        assert purge_context["ignore_auth"] is True
+        assert purge_data == {"id": showcase["id"]}
 
-    def test_showcase_delete_without_explicit_index_helper(self, monkeypatch):
-        """Older CKAN versions continue using automatic index cleanup."""
+    def test_showcase_admin_can_delete(self):
+        """Showcase admins can use the internally authorized purge action."""
         sysadmin = factories.Sysadmin()
-        context = {"user": sysadmin["name"]}
+        showcase_admin = factories.User()
         showcase = factories.Dataset(type="showcase")
-        monkeypatch.delattr("ckan.logic.index_remove_package", raising=False)
 
         helpers.call_action(
-            "ckanext_showcase_delete", context=context, id=showcase["id"]
+            "ckanext_showcase_admin_add",
+            context={"user": sysadmin["name"]},
+            username=showcase_admin["name"],
+        )
+
+        helpers.call_action(
+            "ckanext_showcase_delete",
+            context={"user": showcase_admin["name"]},
+            id=showcase["id"],
         )
 
         assert model.Package.get(showcase["id"]) is None
