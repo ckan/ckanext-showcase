@@ -33,8 +33,9 @@ def showcase_delete(context, data_dict):
 
     toolkit.check_access('ckanext_showcase_delete', context, data_dict)
 
-    entity.purge()
-    model.repo.commit()
+    purge_context = toolkit.fresh_context(context)
+    purge_context['ignore_auth'] = True
+    toolkit.get_action('dataset_purge')(purge_context, {'id': entity.id})
 
 
 def showcase_package_association_delete(context, data_dict):

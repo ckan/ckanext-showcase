@@ -11,6 +11,24 @@ from ckan.model.package import Package
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeleteShowcase(object):
+    @pytest.mark.usefixtures("clean_index")
+    def test_showcase_delete_removes_from_search(self):
+        """A deleted showcase is no longer returned by package search."""
+        showcase = factories.Dataset(type="showcase")
+
+        def search_showcase_ids():
+            result = helpers.call_action(
+                "package_search",
+                fq="dataset_type:showcase",
+            )
+            return [item["id"] for item in result["results"]]
+
+        assert showcase["id"] in search_showcase_ids()
+        helpers.call_action(
+            "ckanext_showcase_delete", id=showcase["id"]
+        )
+        assert showcase["id"] not in search_showcase_ids()
+
     def test_showcase_delete_no_args(self):
         """
         Calling showcase delete with no args raises a ValidationError.
