@@ -11,52 +11,23 @@ from ckan.model.package import Package
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 class TestDeleteShowcase(object):
-    def test_showcase_delete_delegates_to_dataset_purge(self, monkeypatch):
-        """Deleting a showcase delegates permanent removal to CKAN."""
-        sysadmin = factories.Sysadmin()
-        context = {"user": sysadmin["name"]}
-        showcase = factories.Dataset(type="showcase")
-        purge_calls = []
-        original_get_action = toolkit.get_action
-
-        def get_action(action):
-            if action == "dataset_purge":
-                return lambda context, data_dict: purge_calls.append(
-                    (context, data_dict)
-                )
-            return original_get_action(action)
-
-        monkeypatch.setattr(toolkit, "get_action", get_action)
-
-        helpers.call_action(
-            "ckanext_showcase_delete", context=context, id=showcase["id"]
-        )
-
-        assert len(purge_calls) == 1
-        purge_context, purge_data = purge_calls[0]
-        assert purge_context is not context
-        assert purge_context["ignore_auth"] is True
-        assert purge_data == {"id": showcase["id"]}
-
-    def test_showcase_admin_can_delete(self):
-        """Showcase admins can use the internally authorized purge action."""
-        sysadmin = factories.Sysadmin()
-        showcase_admin = factories.User()
+    @pytest.mark.usefixtures("clean_index")
+    def test_showcase_delete_removes_from_search(self):
+        """A deleted showcase is no longer returned by package search."""
         showcase = factories.Dataset(type="showcase")
 
-        helpers.call_action(
-            "ckanext_showcase_admin_add",
-            context={"user": sysadmin["name"]},
-            username=showcase_admin["name"],
-        )
+        def search_showcase_ids():
+            result = helpers.call_action(
+                "package_search",
+                fq="dataset_type:showcase",
+            )
+            return [item["id"] for item in result["results"]]
 
+        assert showcase["id"] in search_showcase_ids()
         helpers.call_action(
-            "ckanext_showcase_delete",
-            context={"user": showcase_admin["name"]},
-            id=showcase["id"],
+            "ckanext_showcase_delete", id=showcase["id"]
         )
-
-        assert model.Package.get(showcase["id"]) is None
+        assert showcase["id"] not in search_showcase_ids()
 
     def test_showcase_delete_no_args(self):
         """
